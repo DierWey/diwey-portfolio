@@ -1,0 +1,113 @@
+/* ============================================================
+   Footer — 3 blocs (Copyright, Liens, Ancre), fond accent-soft.
+   Desktop : 1 ligne. Tablette : Liens / Copyright+Ancre.
+   Mobile : 1 bloc par ligne. Réordre en grid-template-areas
+   (HTML sémantique inchangé). Filets 16 + 1 + 16 en empilé.
+   ============================================================ */
+
+.footer {
+  background-color: var(--accent-soft);
+  padding-block: 32px;
+}
+
+.footer__inner {
+  max-width: calc(var(--content-width) + 2 * var(--page-margin-x));
+  margin-inline: auto;
+  padding-inline: var(--page-margin-x);
+  display: grid;
+  grid-template-areas: "copyright links top";
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: var(--space-8);
+  row-gap: var(--space-4);
+}
+
+.footer__copyright {
+  grid-area: copyright;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.footer__links {
+  grid-area: links;
+  display: flex;
+  gap: var(--space-8);
+  justify-content: center;
+}
+
+.footer__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) 12px;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  color: var(--ink);
+  border: 1px solid transparent;   /* pilule-fantôme : jamais de décalage */
+  border-radius: 6px;
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.footer__link:hover,
+.footer__link:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.footer__link--top {
+  grid-area: top;
+  justify-self: end;
+}
+
+/* ---- Tablette : Liens pleine largeur, puis Copyright + Ancre ---- */
+@media (max-width: 1023px) {
+  .footer__inner {
+    grid-template-areas:
+      "links links"
+      "copyright top";
+    grid-template-columns: 1fr auto;
+  }
+
+  .footer__links {
+    justify-content: space-between;
+    gap: var(--space-6);          /* ← 32 → 24 en dessous du desktop (règle Figma) */
+  }
+
+  /* Filet entre les lignes : le séparateur vit sur les éléments,
+     pas sur la pilule elle-même (règle « Retour en haut ») */
+  .footer__copyright,
+  .footer__link--top {
+    border-top: 1px solid var(--line);
+    padding-top: var(--space-4);
+  }
+}
+
+/* ---- Mobile : 1 bloc par ligne ---- */
+@media (max-width: 767px) {
+  .footer__inner {
+    grid-template-areas:
+      "links"
+      "copyright"
+      "top";
+    grid-template-columns: 1fr;
+  }
+
+  /* Rang 16 → 12 en mobile (plancher, autorisé au footer) */
+  .footer__copyright,
+  .footer__link {
+    font-size: 12px;
+  }
+
+  .footer__copyright {
+    text-align: center;
+  }
+
+  .footer__link {
+    padding: var(--space-1);      /* 8 partout — les liens tiennent dans 327 */
+  }
+
+  .footer__link--top {
+    justify-self: center;
+  }
+}

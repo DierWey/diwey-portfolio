@@ -1,0 +1,99 @@
+/* ============================================================
+   Header — bandeau logo + nav (fond accent-soft, spec 21/10)
+   Nav rev.2 (24/10) : boutons-fantômes, cadre accent au survol
+   uniquement ; actif = accent + 700, sans cadre persistant.
+   ============================================================ */
+
+.header {
+  background-color: var(--accent-soft);
+  padding-block: 24px;
+}
+
+.header__inner {
+  max-width: calc(var(--content-width) + 2 * var(--page-margin-x));
+  margin-inline: auto;
+  padding-inline: var(--page-margin-x);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+}
+
+.header__logo {
+  display: flex;
+  flex-direction: column;
+}
+
+.header__name {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: var(--weight-bold);
+  color: var(--ink);
+  transition: color var(--transition);
+}
+
+.header__logo:hover .header__name,
+.header__logo:focus-visible .header__name {
+  color: var(--accent);
+}
+
+.header__baseline {
+  font-family: var(--font-mono);
+  font-size: var(--rank16-size);
+  color: var(--ink-muted);
+}
+
+.header__nav {
+  display: flex;
+  gap: var(--space-8);
+}
+
+/* Pilule-fantôme : bordure permanente transparente (aucun décalage de layout) */
+.header__link {
+  display: inline-block;
+  padding: var(--space-2) 12px;
+  font-family: var(--font-mono);
+  font-size: 24px;
+  color: var(--ink);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.header__link:hover,
+.header__link:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* État actif : accent + gras, SANS cadre persistant */
+.header__link--active {
+  color: var(--accent);
+  font-weight: var(--weight-bold);
+}
+
+/* ---- Mobile : empilé, tailles −8 (nav 16, Diwey.dev 16, baseline 12) ---- */
+@media (max-width: 767px) {
+  .header__inner {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  .header__name {
+  font-size: 16px;
+}
+
+  .header__baseline {
+    font-size: 12px;   /* plancher absolu, exception nav mobile confirmée */
+  }
+
+  .header__link {
+    font-size: 16px;
+    padding: var(--space-1);
+  }
+
+  .header__nav {
+    gap: var(--space-6);
+  }
+}

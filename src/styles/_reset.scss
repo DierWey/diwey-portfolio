@@ -1,0 +1,86 @@
+/* ============================================================
+   Le détail compte — reset minimal moderne (validé 26/10)
+   Importé EN PREMIER dans main.scss
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+/* Médias : block + fluide, jamais de débordement */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Héritage typographique sur les éléments de formulaire et titres */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font: inherit;
+  overflow-wrap: break-word;
+}
+
+p,
+li,
+figcaption {
+  overflow-wrap: break-word;
+}
+
+/* Liens : aucune couleur ni soulignement par défaut (tout est posé) */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Boutons : aucune chrome par défaut */
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* Curseur pointer sur tout ce qui est interactif non-disabled */
+button:not(:disabled),
+[role='button'] {
+  cursor: pointer;
+}
+
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+}
+
+/* Accessibilité mouvement : l'exception canonique assumée à la règle
+   « pas de !important » — transition/animation quasi instantanées */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

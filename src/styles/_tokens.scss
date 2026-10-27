@@ -1,0 +1,88 @@
+/* ============================================================
+   Le détail compte — tokens (custom properties)
+   Source unique de toutes les valeurs. Rien en dur ailleurs.
+   ============================================================ */
+
+:root {
+  /* ---- Couleurs (charte, 21/10) ---- */
+  --accent: #046A38;        /* émeraude — boutons primaires, filets, interactivité */
+  --accent-soft: #DEEFE5;   /* fonds UNIQUEMENT : header, footer, boutons secondaires, badges */
+  --bg: #F7F3EC;            /* fond beige (corrigé 21/10) */
+  --surface: #FFFFFF;       /* cartes, cadres navigateur, texte des boutons primaires */
+  --ink: #1A1A1A;
+  --ink-muted: #6B6B6B;
+  --line: #E6E0D2;          /* bordures, filets, fond top-barre Chrome */
+  --chrome-dot: #C0BBAE;    /* points barre Chrome — Line assombri */
+
+  /* ---- Typographie ---- */
+    --font-serif: 'IBM Plex Serif', Georgia, serif;                   /* titres — statique 400+700 */
+  --font-mono: 'JetBrains Mono Variable', 'Courier New', monospace; /* nav, badges, repères */
+  --font-sans: 'Inter Variable', system-ui, sans-serif;             /* texte courant */
+
+  /* Graisses : 400 / 700 uniquement (medium/semi-bold proscrits) */
+  --weight-regular: 400;
+  --weight-bold: 700;
+
+  /* ---- Échelle typo (21/10) — desktop & tablette ---- */
+  --h1-size: 48px;
+  --h2-size: 32px;
+  --h3-size: 24px;
+  --body-size: 24px;
+
+  /* Rang 16 : 16 desktop/tablette, 12 mobile (12 = plancher absolu) */
+  --rank16-size: 16px;
+
+  /* ---- Espacements — base 8 ---- */
+  --space-2: 8px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;   /* gouttières, padding interne des sections */
+  --space-24: 96px;   /* écart ENTRE sections, marges de page desktop */
+
+  /* ---- Grille ---- */
+  --viewport-target: 1440px;
+  --content-width: 1248px;          /* 3 × 384 + 2 × 48 */
+  --card-width: 384px;
+  --page-margin-x: 96px;            /* desktop — 48 tablette, 24 mobile */
+  --page-margin-y: 96px;            /* desktop/tablette — 48 mobile */
+
+  /* ---- Carrousel ---- */
+  --carousel-frame: 472px;   /* chrome 32 + capture 440 */
+  --carousel-nav: 64px;
+
+  /* ---- Composants ---- */
+  --radius: 6px;             /* boutons */
+  --filet-h2: 2px solid var(--accent);
+  --transition: 250ms ease-out;       /* toutes les transitions couleur/opacité du site */
+  --transition-filet: 500ms ease-out; /* filet intérieur au survol (24/10) */
+
+  /* ---- Focus clavier (AA) ---- */
+  --focus-outline: 2px solid var(--accent);
+  --focus-offset: 2px;
+}
+
+/* ---- Mobile : descente d'un cran (−8), sauf règles spécifiques en composants ---- */
+@media (max-width: 767px) {
+  :root {
+    --h1-size: 40px;
+    --h2-size: 24px;
+    --h3-size: 16px;
+    --body-size: 16px;
+    --rank16-size: 12px;   /* plancher absolu */
+    --page-margin-y: 48px;
+  }
+}
+
+/* ---- Marges de page horizontales par palier ---- */
+@media (max-width: 1023px) {
+  :root {
+    --page-margin-x: 48px;   /* tablette */
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --page-margin-x: 24px;   /* mobile */
+  }
+}

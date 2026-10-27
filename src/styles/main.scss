@@ -1,0 +1,20 @@
+/* ============================================================
+   Le détail compte — point d'entrée des styles
+   Architecture en couches : global d'abord, puis composants, pages en dernier.
+   Chaque décision a une source unique.
+   ============================================================ */
+
+@use './reset';
+@use './tokens';
+@use './base';
+
+/* Composants (colocalisés : un .scss par composant) */
+@use '../components/Header/header';
+@use '../components/Footer/Footer';
+// @use '../components/CtaButton/CtaButton';
+
+/* Pages — uniquement la mise en page propre à chaque page */
+// @use '../pages/Home/home';
+// @use '../pages/PortfolioGrid/portfolio-grid';
+// @use '../pages/ProjectDetail/project-detail';
+// @use '../pages/Contact/contact';
