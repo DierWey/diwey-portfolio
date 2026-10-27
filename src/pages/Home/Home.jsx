@@ -1,5 +1,6 @@
 /* Squelette — page Accueil (Hero, Démarche). Structure spécifiée le 21/10. */
 import { Link } from 'react-router-dom';
+import Carousel from '../../components/Carousel/Carousel';
 
 export default function Home() {
   return (
@@ -13,7 +14,7 @@ export default function Home() {
             <Link className="pill-link" to="/portfolio">Tout voir →</Link>
           </div>
 
-          {/* Brique 2 : le carrousel */}
+          <Carousel />
           <div className="home__carousel-slot">Carrousel — brique suivante</div>
         </div>
 

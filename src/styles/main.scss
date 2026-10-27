@@ -11,6 +11,7 @@
 /* Composants (colocalisés : un .scss par composant) */
 @use '../components/Header/header';
 @use '../components/Footer/Footer';
+@use '../components/Carousel/carousel';
 // @use '../components/CtaButton/CtaButton';
 
 /* Pages — uniquement la mise en page propre à chaque page */

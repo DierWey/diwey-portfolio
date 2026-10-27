@@ -6,7 +6,7 @@
 
 .home__hero {
   display: grid;
-  row-gap: var(--space-6);          /* 48 : h1 ↔ bannière ↔ accroche */
+  row-gap: var(--space-12);          /* 48 : h1 ↔ bannière ↔ accroche */
 }
 
 .home__title {
@@ -42,6 +42,10 @@
 
 /* ---- Mobile ---- */
 @media (max-width: 767px) {
+  .home__hero {
+    row-gap: var(--space-8);          /* 32 : h1 → bannière en mobile */
+  }
+
   .home__title {
     font-size: 40px;
   }
