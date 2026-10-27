@@ -15,6 +15,7 @@ body {
 
 /* ---- Titres ---- */
 h1 {
+  text-align: center;
   font-family: var(--font-serif);
   font-size: var(--h1-size);
   line-height: 1.15;
@@ -77,4 +78,28 @@ select:focus-visible,
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+/* Pilule-fantôme — classe utilitaire transverse
+   (« Tout voir → », fil d'Ariane, « Retour en haut »)
+   Bordure permanente transparente : le cadre n'existe que
+   sous le curseur, jamais de décalage de layout au survol. */
+.pill-link {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  color: var(--ink);
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: var(--space-2) 12px;   /* py 8 · px 12 (cote pilule du prototype) */
+  transition:
+    color var(--transition),
+    border-color var(--transition);
+}
+
+.pill-link:hover,
+.pill-link:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
 }
