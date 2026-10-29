@@ -1,0 +1,51 @@
+/* ------------------------------------------------------------------
+   CtaButton — primaire accent/surface, secondaire accent-soft/ink
+   Survol : filet intérieur 1px, inset 2, arrondi 4, couleur du texte
+   (currentColor), naissance 500ms ease-out, sans translation
+   ------------------------------------------------------------------ */
+.cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  text-decoration: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.cta::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 1px solid currentColor;
+  border-radius: 4px;                    /* 6 − inset 2 : concentrique */
+  opacity: 0;
+  transition: opacity var(--transition-filet);
+  pointer-events: none;
+}
+
+.cta:hover::before,
+.cta:focus-visible::before {
+  opacity: 1;
+}
+
+.cta--primary {
+  background-color: var(--accent);
+  color: var(--surface);
+}
+
+.cta--secondary {
+  background-color: var(--accent-soft);
+  color: var(--ink);
+}
+
+.cta--lg {
+  padding: 14px 28px;
+}
+
+.cta--sm {
+  padding: 12px 20px;
+}

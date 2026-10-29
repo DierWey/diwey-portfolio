@@ -57,12 +57,13 @@
 .carousel__bar {
   display: grid;
   grid-template-columns: auto 1fr auto;
+  column-gap: var(--space-2);          /* 8 : air entre flèches et texte */
   align-items: center;
   height: 64px;
-  padding-inline: var(--space-8);        
+  padding-inline: var(--space-8);
   background-color: var(--surface);
   border: 1px solid var(--line);
-  border-top: none;                     
+  border-top: none;
   border-radius: 0 0 6px 6px;
 }
 
@@ -70,9 +71,17 @@
   grid-column: 2;
   text-align: center;
   margin: 0;
+  min-width: 0;                        /* autorise la colonne à rétrécir sous la taille du contenu */
+  overflow: hidden;
+  white-space: nowrap;                 /* jamais de retour à la ligne */
+  text-overflow: ellipsis;             /* « … » quand ça dépasse */
   font-family: var(--font-mono);
   font-size: 16px;
   color: var(--ink);
+}
+
+.carousel__index-num {
+  color: var(--accent);                 /* numéro en accent — rappel des titres de niveau 3 */
 }
 
 .carousel__arrow {
@@ -114,4 +123,12 @@
     height: 32px;
   }
 
+  .carousel__bar {
+    padding-inline: var(--space-4);      /* 16 g/d en mobile (cote Figma mobile) */
+  }
+
+  .carousel__index,
+  .carousel__capture {
+    font-size: 12px;
+  }
 }

@@ -20,8 +20,37 @@
 }
 
 .header__logo {
+  display: inline-flex;
+  align-items: center;                  /* la colonne de textes centrée verticalement sur l'image */
+  flex-shrink: 0;                       /* le header ne peut jamais le comprimer */
+  white-space: nowrap;                  /* ses textes ne wrappent jamais */ 
+  background-color: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: 6px;                   /* famille pilule — cohérent avec la nav */
+  overflow: hidden;                     /* le cadre découpe le carré — fusion parfaite */
+  text-decoration: none;
+  transition: border-color var(--transition);
+}
+
+.header__logo-mark {
+  display: flex;                        /* centre l'image dans le carré */
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;                         /* carré plein — desktop et tablette */
+  background-color: var(--accent);
+}
+
+.header__logo img {
+  display: block;
+  width: 64px;                         /* desktop et tablette */
+  height: auto;                         /* le ratio du fichier suit — jamais déformé */
+}
+
+.header__texts {
   display: flex;
-  flex-direction: column;
+  flex-direction: column;               /* nom au-dessus, baseline dessous */
+  margin-inline: var(--space-2);       /* 8 : contre le carré à gauche, contre le filet à droite */
 }
 
 .header__name {
@@ -32,9 +61,16 @@
   transition: color var(--transition);
 }
 
+/* Survol du logo : le nom passe en accent */
 .header__logo:hover .header__name,
 .header__logo:focus-visible .header__name {
   color: var(--accent);
+}
+
+/* Survol du logo : la bordure passe en accent (famille pilule nav) */
+.header__logo:hover,
+.header__logo:focus-visible {
+  border-color: var(--accent);
 }
 
 .header__baseline {
@@ -45,7 +81,8 @@
 
 .header__nav {
   display: flex;
-  gap: var(--space-8);
+  align-items: center;
+  gap: var(--space-8); 
 }
 
 /* Pilule-fantôme : bordure permanente transparente (aucun décalage de layout) */
@@ -72,7 +109,23 @@
   font-weight: var(--weight-bold);
 }
 
-/* ---- Mobile : empilé, tailles −8 (nav 16, Diwey.dev 16, baseline 12) ---- */
+/* ---------------------------------------------------------------
+   Tablette (768 → 1023)
+   --------------------------------------------------------------- */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .header__nav {
+    gap: var(--space-2);                /* 8 : entre les trois items (simulation Figma validée) */
+  }
+
+  .header__link {
+    font-size: 16px;                    /* rang 16 en tablette — les tailles desktop ne tiennent pas à 768 */
+  }
+}
+
+/*  --------------------------------------------------------------- 
+    Mobile (767 -> 375) : 
+    empilé, tailles −8 (nav 16, Diwey.dev 16, baseline 12) 
+    --------------------------------------------------------------- */
 @media (max-width: 767px) {
   .header__inner {
     flex-direction: column;
@@ -80,12 +133,17 @@
     gap: var(--space-6);
   }
 
+  .header__logo-mark {
+    width: 56px;
+    height: 56px;                      /* carré 56 en mobile */
+  }
+
   .header__name {
   font-size: 16px;
-}
+  }
 
   .header__baseline {
-    font-size: 12px;   /* plancher absolu, exception nav mobile confirmée */
+    font-size: 12px;                  /* plancher absolu, exception nav mobile confirmée */
   }
 
   .header__link {

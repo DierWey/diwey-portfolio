@@ -29,7 +29,7 @@
   color: var(--ink);
 }
 
-.footer__links {
+.footer__nav {
   grid-area: links;
   display: flex;
   gap: var(--space-8);
@@ -72,7 +72,7 @@
 
   /* Filet entre les lignes : porté par la ligne du dessus (nav pleine
      largeur), JAMAIS sur la pilule — elle reste pure (règle Rev. 2) */
-  .footer__links {
+  .footer__nav {
     justify-content: space-between;
     gap: var(--space-6);
     padding-bottom: var(--space-4);        /* 16 */
@@ -103,7 +103,7 @@
   }
 
   /* Deux filets inter-lignes, portés par les lignes au-dessus (16 + 1 + 16) */
-  .footer__links {
+  .footer__nav {
     padding-bottom: var(--space-4);
     border-bottom: 1px solid var(--line);
   }

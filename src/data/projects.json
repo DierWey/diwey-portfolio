@@ -1,16 +1,175 @@
-[
-  {
-    "slug": "ohmyfood",
-    "title": "ohmyfood — Menu dynamique",
-    "stack": [],
-    "features": [],
-    "method": [],
-    "approach": "",
-    "level": "Projet 2",
-    "role": "Intégrateur",
-    "year": "2025",
-    "demo": null,
-    "repo": null,
-    "detail": { "desktop": null, "tablet": null, "mobile": null }
-  }
-]
+{
+  "projects": [
+    {
+      "slug": "ohmyfood",
+      "title": "ohmyfood — site de réservation gastronomique",
+      "stack": ["HTML", "CSS", "SASS"],
+      "role": "Projet de formation",
+      "year": "2025",
+      "level": "Intégration",
+      "desc": "Site mobile first répertoriant les menus de 4 restaurants gastronomiques parisiens : accueil, 4 pages menus, réservation et composition du repas à l'avance.",
+      "demo": "https://dierwey.github.io/ohmyfood/",
+      "repo": "https://github.com/DierWey/ohmyfood",
+      "context": "En tant que développeur junior, j'intègre ohmyfood, une startup de commande de repas en ligne déjà présente à New York, et qui ouvre ses services à Paris. La phase 1 du lancement doit livrer un site mobile first présentant les menus de 4 grands restaurants parisiens : le client y compose son repas à l'avance pour que ses plats soient prêts à son arrivée. Je livre cette première version en un mois, et le CTO valide chaque étape.",
+      "approach": "Identité graphique imposée : Shrikhand (logo et titres), Roboto (texte), palette #9356DC / #FF79DA / #99E2D0. Intégration mobile first à partir des maquettes Figma, puis responsive tablette et desktop. Fidélité pixel aux maquettes.",
+      "features": [
+        "Page d'accueil : localisation, présentation, cartes des 4 menus",
+        "4 pages de menu, une par restaurant (entrées, plats, desserts)",
+        "Boutons avec éclaircissement au survol et ombre portée renforcée",
+        "Bouton « J'aime » en forme de cœur qui se remplit progressivement",
+        "Loader plein écran de 1 à 3 s à l'arrivée sur l'accueil (CSS pur)",
+        "Apparition progressive des plats avec décalage temporel",
+        "Coche qui coulisse de la droite vers la gauche au survol d'un plat",
+        "Footer identique sur toutes les pages, header avec bouton retour sur les menus"
+      ],
+      "method": [
+        "Analyse des maquettes et du prototype Figma avant d'écrire une ligne de code",
+        "CSS avec Sass : partials pour layout / composants / pages, variables pour les couleurs et polices — sources .scss et CSS compilé livrés",
+        "Mobile first strict : intégration mobile d'abord, puis media queries tablette et desktop",
+        "Zéro framework, zéro JavaScript : toutes les animations en keyframes et transitions CSS pures, avec effet inverse au quittement du survol",
+        "Versionné sur GitHub avec commits réguliers, pages validées W3C HTML et CSS sans erreur",
+        "Projet évalué et validé sur les trois compétences : intégration mobile first, animations CSS, versionnage Git/GitHub"
+      ]
+    },
+    {
+      "slug": "sophie-bluel",
+      "title": "Sophie Bluel — portfolio d'architecte",
+      "stack": ["JavaScript", "API REST", "DOM"],
+      "role": "Projet de formation",
+      "year": "2025",
+      "level": "JavaScript",
+      "desc": "Site dynamique pour une architecte d'intérieur : formulaires interactifs, galerie filtrable et données du back end affichées via des appels API.",
+      "demo": null,
+      "repo": "https://github.com/DierWey/Portfolio-Sophie-Bluel",
+      "context": "En renfort chez ArchiWebos (50 salariés), j'intègre l'équipe en charge du portfolio d'une architecte d'intérieur. Le site statique et le back end existant déjà, ma mission consiste à implémenter toute la couche dynamique : côté visiteur, afficher les œuvres depuis l'API et permettre de les filtrer ; côté administrateur, construire un mode complet, de la connexion à la suppression d'œuvres.",
+      "approach": "JavaScript natif sans framework : fetch vers l'API REST (documentée via Swagger), manipulation du DOM, événements délégués. Authentification par token stocké pour les requêtes protégées. Design imposé par la maquette Figma, fidélité au pixel.",
+      "features": [
+        "Galerie alimentée par l'API — plus aucune œuvre en dur dans le HTML",
+        "Filtres par catégorie générés dynamiquement depuis les données",
+        "Connexion avec message d'erreur, token, puis mode édition (bandeau, logout, filtres masqués)",
+        "Modale à deux zones : suppression d'œuvres et formulaire d'ajout avec preview",
+        "Ajout et suppression persistés via l'API, DOM actualisé sans rechargement"
+      ],
+      "method": [
+        "API explorée en amont via Swagger et Postman avant d'écrire le premier fetch",
+        "Séparation stricte : récupération des données / affichage / interactions",
+        "Événements délégués plutôt qu'un écouteur par élément",
+        "Gestion explicite des erreurs et des états de chargement — jamais de fetch sans catch"
+      ]
+    },
+    {
+      "slug": "kasa",
+      "title": "Kasa — plateforme de location d'appartements",
+      "stack": ["React", "React Router", "Vite"],
+      "role": "Projet de formation",
+      "year": "2026",
+      "level": "React",
+      "desc": "Refonte complète d'une plateforme de location entre particuliers : migration du legacy ASP.NET vers une application React, composants réutilisables et routing complet, à partir des maquettes Figma.",
+      "demo": null,
+      "repo": "https://github.com/DierWey/site-kasa",
+      "context": "Kasa, leader français de la location d'appartements entre particuliers (plus de 500 annonces par jour), demande une refonte totale de son site vieux de dix ans (code legacy ASP.NET) et une migration vers une stack JavaScript avec React côté front-end. Ma mission : développer l'ensemble de l'application front — composants React et routes React Router — en suivant les maquettes Figma responsives. Le back-end n'étant pas encore recruté, les 20 dernières annonces extraites en JSON servent de données réalistes en attendant l'API.",
+      "approach": "Application React montée avec Vite selon les coding guidelines de Kasa. Découpage en composants aligné sur la logique de composants du Figma, routing React Router avec paramètres d'URL, données logement isolées dans une couche mockée prête à brancher sur l'API NodeJS à venir.",
+      "features": [
+        "Page d'accueil : les 20 annonces en cartes cliquables vers leur fiche",
+        "Galerie photo en boucle — « précédent » depuis la première affiche la dernière, et inversement ; boutons et numérotation masqués si une seule image ; hauteur de cadre constante, images cadrées et centrées",
+        "Fiche logement : titre, localisation, tags, hôte, note, description et équipements",
+        "Composants Collapse fermés par défaut, ouverture/fermeture au clic, animés comme sur le prototype Figma",
+        "Pages À propos et 404, navigation React Router complète"
+      ],
+      "method": [
+        "Arbre de composants dessiné avant le code, à partir de la logique de composants du Figma — qui affiche quoi, qui détient quel état",
+        "Un composant = une responsabilité, réutilisé dès que le besoin apparaît deux fois",
+        "Contraintes fonctionnelles traitées en cas limites explicites : galerie à une image, boucle infinie, état initial des Collapse",
+        "Données mockées dans une couche séparée — le jour où l'API arrive, rien d'autre à changer"
+      ]
+    },
+    {
+      "slug": "nina-carducci",
+      "title": "Nina Carducci — optimisation SEO et performance",
+      "stack": ["SEO", "Accessibilité", "Schema.org"],
+      "role": "Projet de formation",
+      "year": "2026",
+      "level": "Optimisation",
+      "desc": "Optimisation complète d'un site de photographe existant : performance, SEO, accessibilité et référencement local, mesurés avant/après avec Lighthouse et WAVE.",
+      "demo": "https://dierwey.github.io/site-ninacarducci/",
+      "repo": "https://github.com/DierWey/site-ninacarducci",
+      "context": "Développeur freelance, je propose mes services d'optimisation à Nina Carducci, une photographe portraits et événementiel basée à Bordeaux, dont le site est long à charger et ne lui a jamais apporté de client. Elle me confie une mission complète : optimiser les performances et le référencement global du site ; mettre en place le référencement local avec Schema.org ; ajouter les métas pour les réseaux sociaux ; corriger l'accessibilité ; et enfin livrer un rapport d'optimisation qui mesure l'impact de chaque action.",
+      "approach": "Une étude de cas avant/après : le diagnostic précède la correction, chaque modification est documentée dans le rapport, et l'effet est mesuré à l'audit Lighthouse et WAVE. L'objectif est mesurable ou il n'existe pas.",
+      "features": [
+        "Images redimensionnées et converties en WebP — le poids passe de 30,08 MB à 1,20 MB",
+        "Fichiers minifiés réellement chargés par le HTML (bootstrap.css, bootstrap.bundle.js)",
+        "SEO : balise title et meta description ajoutées, hiérarchie hn corrigée, attributs alt sur les 12 images",
+        "Accessibilité : balises sémantiques, labels reliés aux inputs, lang=\"fr\", contrastes corrigés (chevrons du carrousel, menu de tri)",
+        "Référencement local Schema.org en JSON-LD : adresse, horaires, Instagram — extraits enrichis validés par Google",
+        "Métas Open Graph et Twitter Cards pour les aperçus sur les réseaux sociaux"
+      ],
+      "method": [
+        "Audit Lighthouse et WAVE avant de toucher au code — le diagnostic précède la correction",
+        "Chaque action consignée dans le rapport d'optimisation : problème identifié, modification, impact",
+        "Données structurées vérifiées avec l'outil Google Rich Snippet",
+        "Résultats mesurés : Performance 98 % (+41), SEO 100 % (+27), Accessibilité 100 % (+33), WAVE sans erreur"
+      ]
+    },
+    {
+      "slug": "argent-bank",
+      "title": "Argent Bank — application bancaire",
+      "stack": ["React", "Redux", "API REST", "Swagger"],
+      "role": "Projet de formation",
+      "year": "2026",
+      "level": "Avancé",
+      "desc": "Tableau de bord d'une banque en ligne : application React complète avec authentification et état global Redux, puis conception du contrat d'API des transactions en Swagger.",
+      "demo": null,
+      "repo": "https://github.com/DierWey/ArgentBank",
+      "context": "Je viens d'intégrer Argent Bank, une nouvelle banque en ligne qui cherche à percer dans le secteur, où j'occupe le poste de développeur front-end aux côtés de Mila, la cheffe de projet. Le CTO me confie le développement du tableau de bord utilisateur qui doit se dérouler en deux phases. D'une part, je dois livrer l'application React complète — authentification, profil, déconnexion — avec Redux pour gérer l'état global. D'autre part, comme les transactions sont encore en conception, je dois proposer la modélisation des routes API dans un document Swagger, sans implémenter la page.",
+      "approach": "Intervention sur un existant : les repos front et back sont fournis, le design est posé — le sujet est l'architecture d'état. Store Redux et appels API authentifiés au token, routes protégées, et pour la phase 2 une réflexion en amont : spécifier le contrat d'API côté back end avant qu'il ne soit codé.",
+      "features": [
+        "Application React complète et responsive : accueil, connexion, profil",
+        "Authentification : connexion avec gestion des erreurs d'identifiants, déconnexion, routes protégées",
+        "Profil visible seulement connecté ; nom et prénom non modifiables, pseudo modifiable",
+        "État global Redux : actions, reducers, selectors — token et profil partagés entre les pages",
+        "Green Code : images optimisées en poids et dimensions, composants réutilisables au maximum",
+        "Phase 2 : proposition d'API transactions en Swagger (YAML) — transactions groupées par compte, détail d'une transaction, modification catégorie et note"
+      ],
+      "method": [
+        "Suivi du travail via les issues GitHub des repos fournis, avec leurs modèles",
+        "Documentation Swagger du back end explorée avant de consommer la moindre route",
+        "Redux posé dès la phase 1 comme l'anticipe le CTO : peu de données aujourd'hui, beaucoup avec les transactions demain",
+        "Contrat d'API spécifié endpoint par endpoint : méthode HTTP, route, paramètres, codes de réponse"
+      ]
+    },
+    {
+      "slug": "portfolio",
+      "title": "Ce portfolio",
+      "stack": ["React", "SASS", "Vite"],
+      "role": "Side project",
+      "year": "2026",
+      "level": "Transverse",
+      "desc": "Le site que vous êtes en train de voir : brief, identité visuelle, design system et développement, fait de bout en bout.",
+      "demo": "https://diwey.dev",
+      "repo": "https://github.com/DierWey/portfolio",
+      "context": "Après les projets de formation, il me fallait une vitrine. Plutôt que d'utiliser un template, j'ai tout conçu : le brief (que je me suis écrit), l'identité visuelle, le design system, puis l'intégration. Un projet sans maquette fournie — les décisions étaient toutes les miennes.",
+      "approach": "Minimalisme suisse sur base 8px : beige, encre, vert émeraude. IBM Plex Serif pour les titres, JetBrains Mono pour les labels. Une seule durée d'animation (250ms), un seul easing, partout.",
+      "features": [
+        "Page d'accueil, portfolio, pages projet détaillées et contact",
+        "Pages projet structurées en étude de cas : contexte, fonctionnalités, méthode",
+        "Navigation avec état actif cohérent sur les sous-pages",
+        "Animations d'apparition au scroll, transitions de survol calibrées",
+        "Responsive mobile / tablette / desktop"
+      ],
+      "method": [
+        "Brief rédigé avant le design : cible, positionnement, ton, sections",
+        "Design system d'abord — les tokens existent avant les pages",
+        "Développement composant par composant, données projets séparées de l'UI",
+        "Même exigence que les projets de formation : aucune valeur hors échelle, aucun effet gratuit"
+      ]
+    }
+  ],
+  "skills": [
+    { "name": "HTML / CSS", "level": "Pixel perfect" },
+    { "name": "JavaScript", "level": "Solide" },
+    { "name": "React", "level": "Projets complets" },
+    { "name": "Accessibilité", "level": "RGAA / WCAG AA" },
+    { "name": "Responsive", "level": "375px → 4K" },
+    { "name": "Outils", "level": "Git, Figma, Vite" }
+  ]
+}

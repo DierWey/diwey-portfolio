@@ -12,7 +12,7 @@
 @use '../components/Header/header';
 @use '../components/Footer/Footer';
 @use '../components/Carousel/carousel';
-// @use '../components/CtaButton/CtaButton';
+@use '../components/CtaButton/cta-button';
 
 /* Pages — uniquement la mise en page propre à chaque page */
 @use '../pages/Home/home';

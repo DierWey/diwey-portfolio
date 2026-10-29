@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import projects from '../../data/projects.json';
+import data from '../../data/projects.json';
+
+const projects = data.projects;
 
 export default function Carousel() {
   const [index, setIndex] = useState(0);
@@ -41,7 +43,7 @@ export default function Carousel() {
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
         </button>
         <p className="carousel__index">
-          {numero} / {current.title}
+          <span className="carousel__index-num">{numero} /</span> {current.title}
         </p>
         <button
           type="button"
