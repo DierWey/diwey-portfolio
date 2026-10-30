@@ -163,13 +163,5 @@
         "Même exigence que les projets de formation : aucune valeur hors échelle, aucun effet gratuit"
       ]
     }
-  ],
-  "skills": [
-    { "name": "HTML / CSS", "level": "Pixel perfect" },
-    { "name": "JavaScript", "level": "Solide" },
-    { "name": "React", "level": "Projets complets" },
-    { "name": "Accessibilité", "level": "RGAA / WCAG AA" },
-    { "name": "Responsive", "level": "375px → 4K" },
-    { "name": "Outils", "level": "Git, Figma, Vite" }
   ]
 }

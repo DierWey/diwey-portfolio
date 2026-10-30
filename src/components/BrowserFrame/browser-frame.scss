@@ -1,0 +1,99 @@
+// BrowserFrame — barre Chrome décorative (charte « Le détail compte », 30/10)
+// Cotes : chrome 32 CONSTANT tous paliers (décision 30/10 — cadres 472/288/232 base 8),
+// pilule 24 (émergente : align-items center dans 32 → 4/4 automatiques, jamais posés),
+// pilule rayon 999, fond pilule --surface partout, URL mono 12 --ink-muted,
+// fond de barre --line SANS bordure (32 veut dire 32), pas de rayon (le parent cadre).
+// Tokens consommés : --line, --surface, --ink-muted, --font-mono, --chrome-dot.
+//
+// Écarts — DEUX lois, DEUX conteneurs (v5) :
+//   - loi CONSTANTE, portée par le chrome  : padding g/d 8, gap groupe↔pilule 8 ;
+//   - loi VARIABLE, portée par le groupe  : écart interne = taille des points
+//     (8 en lg, 5 en sm ; lg passe à 5 en mobile via media query).
+// v4 confondait les deux en un gap unique ; le groupe __dots les sépare.
+
+.browser-frame {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  // ── Barre chrome : 32px, padding g/d 8, fond line, zéro bordure ──
+  // Gap constant : groupe de points ↔ pilule = 8, TOUS paliers, TOUTES variantes.
+  &__chrome {
+    display: flex;
+    align-items: center; // pilule 24 dans 32 → marges 4/4 émergentes
+    height: 32px;
+    padding-inline: 8px;
+    gap: 8px;
+    background: var(--line);
+    flex-shrink: 0;
+  }
+
+  // ── Groupe des 3 points — la loi variable vit ICI ──
+  &__dots {
+    display: flex;
+    flex-shrink: 0;
+    gap: 8px; // écart interne = taille des points (8 en lg)
+  }
+
+  // ── Points : token --chrome-dot, aucune marge (le gap du groupe décide) ──
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--chrome-dot);
+    flex-shrink: 0;
+  }
+
+  // ── Pilule URL : 24, rayon 999, surface, mono 12 ink-muted ──
+  // 12px = plancher CONSTANT, pas --rank16-size (qui vaut 16 en desktop).
+  &__url {
+    flex: 1;
+    min-width: 0;
+    height: 24px;
+    padding-inline: 12px;
+    border-radius: 999px;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 12px; // taille plancher, pas d'exception — même en déco
+    color: var(--ink-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; // longueur inconnue demain : la pilule dégrade proprement
+  }
+
+  // ── Contenu (capture) : flex column — l'enfant (Link, img) la remplit ──
+  // Le parent décide hauteur, ratio, rognage.
+  &__content {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  // ── Variante sm (carte) : points 5 et écart interne 5 dès le desktop ──
+  &--sm &__dots {
+    gap: 5px;
+  }
+
+  &--sm &__dot {
+    width: 5px;
+    height: 5px;
+  }
+}
+
+// ── Palier mobile : lg passe à 5 — uniquement la loi interne du groupe ──
+// Le gap groupe↔pilule du chrome (8) et le padding ne sont PAS touchés.
+@media (max-width: 767px) {
+  .browser-frame--lg .browser-frame__dots {
+    gap: 5px;
+  }
+
+  .browser-frame--lg .browser-frame__dot {
+    width: 5px;
+    height: 5px;
+  }
+}

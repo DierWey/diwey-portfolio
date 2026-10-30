@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import data from '../../data/projects.json';
+import BrowserFrame from '../BrowserFrame/BrowserFrame';
 
 const projects = data.projects;
 
@@ -15,22 +16,21 @@ export default function Carousel() {
 
   return (
     <div className="carousel" aria-roledescription="carrousel" aria-label="Projets sélectionnés">
+      {/* Cadre parent : porte bordure + rayon + hauteur totale (472/288/232).
+          Le chrome vit dans BrowserFrame (32 constant, points 8, pilule URL). */}
       <div className="carousel__frame">
-        <div className="carousel__chrome" aria-hidden="true">
-          <span className="carousel__dot" />
-          <span className="carousel__dot" />
-          <span className="carousel__dot" />
-        </div>
-        <Link
-          className="carousel__slide"
-          to={`/portfolio/${current.slug}`}
-          aria-label={`Voir le projet ${current.title}`}
-        >
-          {/* Placeholder en attendant les captures — remplacé par <img> à la brique assets */}
-          <div className="carousel__capture">
-            <span>Capture — {current.title}</span>
-          </div>
-        </Link>
+        <BrowserFrame url={`${current.slug}.diwey.dev`}>
+          <Link
+            className="carousel__slide"
+            to={`/portfolio/${current.slug}`}
+            aria-label={`Voir le projet ${current.title}`}
+          >
+            {/* Placeholder en attendant les captures — remplacé par <img> à la brique assets */}
+            <div className="carousel__capture">
+              <span>Capture — {current.title}</span>
+            </div>
+          </Link>
+        </BrowserFrame>
       </div>
 
       <div className="carousel__bar">

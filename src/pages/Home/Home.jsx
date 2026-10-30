@@ -1,5 +1,5 @@
 /* Page Accueil — Hero (h1, bannière, carrousel, accroche, identité) + Démarche.
-   Structure spécifiée le 21/10. */
+   Typo des titres : _base.scss ; tailles et descentes : _tokens.scss. */
 import { Link } from 'react-router-dom';
 import Carousel from '../../components/Carousel/Carousel';
 import CtaButton from '../../components/CtaButton/CtaButton';
@@ -10,7 +10,7 @@ export default function Home() {
     <main className="page home">
       {/* ---------- HERO ---------- */}
       <section className="home__hero">
-        <h1 className="home__title">Didier Wey — Développeur Frontend</h1>
+        <h1>Didier Wey — Développeur Frontend</h1>
 
         <div className="home__banner">
           <div className="home__banner-head">
@@ -21,29 +21,30 @@ export default function Home() {
           <Carousel />
         </div>
 
-        {/* Accroche + Carte d'identité */}
+        {/* Brique 3 : Accroche + Carte d'identité */}
         <div className="home__about">
           {/* --- Accroche --- */}
           <div className="pitch">
             <p className="pitch__promise">Chaque pixel a une raison d'être.</p>
             <div className="pitch__text">
               <p>
-                J'ai découvert le web au début des années 2000, puis mon parcours m'a mené
-                des bibliothèques à la co-gérance d'une société d'informatique, où j'ai
-                conçu l'identité de l'entreprise et supervisé la création de son site.
+                J'ai découvert le web au début des années 2000, puis mon
+                parcours m'a mené des bibliothèques à la co-gérance d'une
+                société d'informatique, où j'ai conçu l'identité de
+                l'entreprise et supervisé la création de son site.
               </p>
               <p>
-                C'est ce fil rouge — organiser l'information pour la rendre claire et
-                utilisable — qui m'a ramené au développement.
+                C'est ce fil rouge — organiser l'information pour la rendre
+                claire et utilisable — qui m'a ramené au développement.
               </p>
               <p>
-                En formation Intégrateur Web chez OpenClassrooms (2025-2026), j'ai consolidé
-                HTML, CSS, JavaScript et React, avec une appétence pour l'accessibilité et
-                la performance.
+                En formation Intégrateur Web chez OpenClassrooms (2025-2026),
+                j'ai consolidé HTML, CSS, JavaScript et React, avec une
+                appétence pour l'accessibilité et la performance.
               </p>
               <p>
-                Aujourd'hui, je cherche un poste en entreprise ou en agence, au sein d'une
-                équipe où chaque détail compte.
+                Aujourd'hui, je cherche un poste en entreprise ou en agence, au
+                sein d'une équipe où chaque détail compte.
               </p>
             </div>
             <div className="pitch__actions">
@@ -96,8 +97,8 @@ export default function Home() {
                 Télécharger le CV
                 <svg className="id-card__cv-icon" viewBox="0 0 24 24" width="16"
                      height="16" fill="none" stroke="currentColor"
-                     stroke-width="2.5" stroke-linecap="round"
-                     stroke-linejoin="round" aria-hidden="true">
+                     strokeWidth="2.5" strokeLinecap="round"
+                     strokeLinejoin="round" aria-hidden="true">
                   <path d="M7 17 17 7" />
                   <path d="M7 7h10v10" />
                 </svg>
@@ -107,9 +108,41 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- DÉMARCHE — section 2 (écart 96 porté par elle) ---------- */}
+      {/* ---------- DÉMARCHE — écart 96 (48 mobile) porté par la section ---------- */}
       <section className="home__approach">
-        {/* Brique 4 : h2 « Ma démarche » + filet + 3 principes */}
+        <div className="home__approach-head">
+          <h2>Ma démarche</h2>
+          <span className="home__approach-rule" aria-hidden="true"></span>
+        </div>
+
+        <div className="home__approach-list">
+          <article className="principle">
+            <h3>01 / Clarté</h3>
+            <p className="principle__tagline">Faire simple, vraiment.</p>
+            <p className="principle__text">
+              Une hiérarchie lisible, des parcours évidents. Je retire ce qui
+              détourne de l'essentiel.
+            </p>
+          </article>
+
+          <article className="principle">
+            <h3>02 / Accessibilité</h3>
+            <p className="principle__tagline">Penser à chacun.</p>
+            <p className="principle__text">
+              Navigation au clavier, contrastes et sémantique : l'accessibilité
+              fait partie du point de départ.
+            </p>
+          </article>
+
+          <article className="principle">
+            <h3>03 / Précision</h3>
+            <p className="principle__tagline">Soigner jusqu'au code.</p>
+            <p className="principle__text">
+              Des composants réutilisables, un responsive juste et une attention
+              constante aux détails.
+            </p>
+          </article>
+        </div>
       </section>
     </main>
   );

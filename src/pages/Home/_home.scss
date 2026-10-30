@@ -1,32 +1,27 @@
 /* ============================================================
    Page Accueil — Hero (h1, bannière, carrousel, accroche, identité)
-   + Démarche (squelette).
-   Écarts structurels : 48 entre les blocs du Hero (grid row-gap),
-   96 entre Hero et Démarche (porté par la Démarche, pas le Hero).
+   + Démarche.
+   Typo des titres : _base.scss (h1 bold ink centré, h2/h3 bold
+   accent, h3 uppercase regular). Tailles et descentes : _tokens.scss.
+   Écarts : 48 entre blocs du Hero, 96 Hero↔Démarche (porté par la
+   Démarche ; 48 en mobile).
    ============================================================ */
 
 .home__hero {
   display: grid;
-  row-gap: var(--space-12);          /* 48 : h1 ↔ bannière ↔ accroche */
-}
-
-.home__title {
-  font-family: var(--font-serif);
-  font-size: 48px;                    /* h1 desktop/tablette ; dérive mobile 40 */
-  font-weight: var(--weight-bold);
-  color: var(--ink);
+  row-gap: var(--space-12);           /* 48 : h1 ↔ bannière ↔ accroche — vaut aussi en mobile */
 }
 
 .home__banner-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--space-4);     /* 16 : surtitre/carrousel */
+  margin-bottom: var(--space-4);      /* 16 : surtitre/carrousel */
 }
 
 .home__kicker {
   font-family: var(--font-mono);
-  font-size: 16px;                    /* rang 16 : dérive mobile 12 */
+  font-size: var(--rank16-size);      /* rang 16 : 16 → 12 mobile via token */
   text-transform: uppercase;
   color: var(--accent);
   margin: 0;
@@ -38,87 +33,86 @@
 
 .home__about {
   display: grid;
-  grid-template-columns: 1fr 464px;  /* 464 fixe — tranché 21/10 */
-  gap: var(--space-12);              /* gouttière 48 */
+  grid-template-columns: 1fr 464px;   /* 464 fixe — tranché 21/10 */
+  gap: var(--space-12);               /* gouttière 48 */
 }
 
 /* --- Accroche --- */
 .pitch {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);               /* espaces internes 32 */
+  gap: var(--space-8);                /* espaces internes 32 */
 }
 
 .pitch__promise {
   font-family: var(--font-serif);
-  font-style: italic;                /* Plex Serif italique — validé */
-  font-size: 32px;
-  color: var(--ink);
+  font-style: italic;                 /* Plex Serif italique — validé */
+  font-size: 32px;                    /* dérive mobile 24 */
 }
 
 .pitch__text {
   display: flex;
-  flex-direction: column;           /* les 4 phrases empilées... */
-  gap: 0;                           /* ...sans air — Figma : retours continus */
-  font-size: 24px;                   /* corps desktop/tablette ; 16 mobile */
+  flex-direction: column;             /* les 4 phrases empilées... */
+  gap: 0;                             /* ...sans air — Figma : retours continus */
+  font-size: var(--body-size);        /* 24 → 16 : descente tokenisée */
   line-height: 1.5;
   color: var(--ink);
 }
 
 .pitch__actions {
   display: flex;
-  justify-content: space-between;    /* boutons aux extrémités */
+  justify-content: space-between;     /* boutons aux extrémités */
 }
 
 /* --- Carte d'identité --- */
 .id-card {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);                 /* 32 entre les trois blocs — cohérent avec le padding */
-  padding: var(--space-8);             /* 32 : bordure de carte ↔ blocs */
+  gap: var(--space-8);                /* 32 entre les trois blocs — cohérent avec le padding */
+  padding: var(--space-8);            /* 32 : bordure de carte ↔ blocs */
   background-color: var(--surface);
-  border: 1px solid var(--line);      /* filet 1px — comme les filets internes, même couleur */
+  border: 1px solid var(--line);      /* filet 1px — même encre que les filets internes */
   border-radius: 6px;                  /* les quatre coins — famille des pilules */
   font-family: var(--font-mono);
-  font-size: 16px;
+  font-size: var(--rank16-size);      /* rang 16 partout, tous breakpoints */
   color: var(--ink);
 }
 
 /* Bloc Identité — monogramme + noms empilés */
 .id-card__identity {
   display: flex;
-  align-items: center;               /* les deux blocs centrés verticalement */
-  gap: var(--space-4);               /* 16 : monogramme ↔ textes */
+  align-items: center;
+  gap: var(--space-4);                /* 16 : monogramme ↔ textes */
 }
 
 .id-card__mark {
   width: 64px;
   height: 64px;
-  object-fit: contain;               /* proportion respectée, letterbox dans le carré */
+  object-fit: contain;                /* proportion préservée, letterbox accent */
   border-radius: 6px;
-  background-color: var(--accent);  /* le letterbox se remplit d'accent */
+  background-color: var(--accent);
 }
 
 .id-card__names {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: var(--space-2);               /* 8 : pseudo ↔ métier */
+  gap: var(--space-2);                /* 8 : pseudo ↔ métier */
 }
 
 .id-card__name {
   font-family: var(--font-mono);
-  font-size: 16px;
-  color: var(--ink);                 /* « Diwey » */
+  font-size: var(--rank16-size);
+  color: var(--ink);                  /* « Diwey » */
 }
 
 .id-card__tld {
-  color: var(--accent);              /* « .dev » */
+  color: var(--accent);               /* « .dev » */
 }
 
 .id-card__role {
-  font-family: var(--font-sans);     /* Inter — le métier change de registre */
-  font-size: 16px;
+  font-family: var(--font-sans);      /* Inter — le métier change de registre */
+  font-size: var(--rank16-size);
   color: var(--ink);
 }
 
@@ -130,23 +124,23 @@
 
 .id-card__row {
   display: flex;
-  justify-content: space-between;    /* clé ↔ valeur aux extrémités */
-  gap: var(--space-4);               /* ... avec 16 de plancher minimum */
-  padding-block: var(--space-4);     /* 16 haut/bas, 0 g/d — le bloc respire */
-  border-bottom: 1px solid var(--line);  /* filet bas : présent sur les 4 blocs */
+  justify-content: space-between;     /* clé ↔ valeur aux extrémités */
+  gap: var(--space-4);                /* 16 en plancher — la clé-valeur ne se touche jamais */
+  padding-block: var(--space-4);      /* 16 haut/bas, 0 g/d */
+  border-bottom: 1px solid var(--line);
 }
 
 .id-card__row:first-child {
-  border-top: 1px solid var(--line); /* seul le 1er porte le filet d'ouverture */
+  border-top: 1px solid var(--line);  /* seul le 1er porte le filet d'ouverture */
 }
 
 .id-card__row dt {
-  color: var(--ink-muted);           /* clés mono muted */
+  color: var(--ink-muted);            /* clés mono muted */
 }
 
 .id-card__row dd {
-  margin: 0;                         /* reset navigateur */
-  color: var(--ink);                 /* valeurs encre */
+  margin: 0;                          /* le reset universel couvre, ce margin: 0 protège si le reset évolue */
+  color: var(--ink);                  /* valeurs encre */
   text-align: right;
 }
 
@@ -159,16 +153,16 @@
 
 .id-card__status {
   display: inline-flex;
-  align-items: center;               /* le repère centré verticalement */
-  gap: var(--space-2);               /* 8 : point ↔ texte */
+  align-items: center;
+  gap: var(--space-2);                /* 8 : point ↔ texte */
   padding: var(--space-2);
   font-family: var(--font-mono);
-  font-size: 16px;
+  font-size: var(--rank16-size);
   color: var(--accent);              /* texte en accent, comme le point */
 }
 
 .id-card__dot {
-  width: var(--space-2);             /* 8 px — validé */
+  width: var(--space-2);              /* 8 px — validé */
   height: var(--space-2);
   border-radius: 50%;
   background-color: var(--accent);
@@ -177,13 +171,13 @@
 .id-card__cv {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-4);               /* 16 : texte ↔ icône */
-  padding: var(--space-2);           /* 8 : pilule symétrique */
+  gap: var(--space-4);                /* 16 : texte ↔ icône */
+  padding: var(--space-2);            /* 8 : pilule symétrique */
   font-family: var(--font-mono);
-  font-size: 16px;
+  font-size: var(--rank16-size);
   color: var(--ink);
   text-decoration: none;
-  border: 1px solid transparent;     /* pilule fantôme — jamais de décalage */
+  border: 1px solid transparent;      /* pilule fantôme — jamais de décalage */
   border-radius: 6px;
   transition: color var(--transition), border-color var(--transition);
 }
@@ -195,13 +189,49 @@
 }
 
 /* ============================================================
-   Brique 4 — Démarche (squelette)
-   L'écart 96 Hero ↔ Démarche sera porté par cette section
-   (padding-top: var(--space-24)), jamais par le Hero.
+   Démarche — titre + 3 principes
    ============================================================ */
 
 .home__approach {
-  padding-top: var(--space-24);      /* 96 : écart ENTRE sections */
+  padding-top: var(--space-24);       /* 96 : écart ENTRE sections (48 mobile) */
+}
+
+.home__approach-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);                 /* 16 : titre ↔ filet */
+}
+
+.home__approach-rule {
+  flex: 1;                            /* pousse le filet jusqu'au bout */
+  height: 2px;
+  background-color: var(--accent);
+}
+
+.home__approach-list {
+  margin-top: var(--space-8);         /* 32 : titre de section ↔ principes */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-12);               /* 48 : gouttière desktop */
+}
+
+.principle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);                 /* 16 : h3 ↔ sous-titre ↔ texte */
+}
+
+.principle__tagline {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--body-size);        /* 24 → 16 : descente tokenisée */
+  color: var(--ink);
+}
+
+.principle__text {
+  font-size: var(--body-size);
+  line-height: 1.5;
+  color: var(--ink);
 }
 
 /* ============================================================
@@ -209,48 +239,50 @@
    ============================================================ */
 @media (min-width: 768px) and (max-width: 1023px) {
   .home__about {
-    grid-template-columns: 1fr;      /* carte pleine largeur */
+    grid-template-columns: 1fr;       /* carte pleine largeur */
+  }
+}
+
+/* Tablette + mobile : principes empilés, gouttière 32 dès 1023 */
+@media (max-width: 1023px) {
+  .home__approach-list {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);              /* 48 → 32 dès la tablette, inchangé en mobile */
   }
 }
 
 /* ============================================================
-   Mobile (≤ 767) — descente SAUF boutons et carte (16 partout),
-   écarts du Hero inchangés à 48 (relevé Figma 375, 29/10)
+   Mobile (≤ 767) — descentes ; les écarts du Hero restent à 48
    ============================================================ */
 @media (max-width: 767px) {
-  /* .home__hero : plus d'override du row-gap — le 48 desktop vaut aussi en 375 */
-
-  .home__title {
-    font-size: 40px;
+  .home__hero {
+    row-gap: var(--space-8);           /* 48 → 32 : h1 ↔ bannière ↔ accroche — relevé Figma 375 */
   }
 
-  .home__kicker {
-    font-size: 12px;
+  .home__banner-head {
+    margin-bottom: var(--space-2);     /* 16 → 8 : surtitre ↔ carrousel */
   }
 
   .home__about {
-    grid-template-columns: 1fr;      /* empilement accroche/carte — le 48 du gap vaut tel quel */
-  }
-  
-  .pitch__promise {
-    font-size: 24px;                 /* 32 → 24 */
+    grid-template-columns: 1fr;
+    gap: var(--space-8);               /* 48 → 32 : accroche ↔ carte */
   }
 
-  .pitch__text {
-    font-size: 16px;                 /* 24 → 16 */
+  .pitch__promise {
+    font-size: 24px;                   /* 32 → 24 */
   }
 
   .pitch__actions {
-    flex-direction: column;          /* boutons empilés pleine largeur */
-    gap: var(--space-6);             /* 24 — relevé Figma 375 */
+    flex-direction: column;             /* boutons empilés pleine largeur */
+    gap: var(--space-6);                /* 24 — confirmé */
   }
 
   .home__approach {
-    padding-top: var(--space-12);    /* 96 → 48 : descente réglementaire inter-sections */
+    padding-top: var(--space-12);      /* 96 → 48 : confirmé */
   }
 
   .id-card__row {
-    flex-direction: column;          /* clé puis valeur, sans espace */
+    flex-direction: column;
     gap: 0;
   }
 
