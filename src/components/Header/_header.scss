@@ -2,6 +2,7 @@
    Header — bandeau logo + nav (fond accent-soft, spec 21/10)
    Nav rev.2 (24/10) : boutons-fantômes, cadre accent au survol
    uniquement ; actif = accent + 700, sans cadre persistant.
+   30/10 soir : .dev du logo en accent (span .header__tld).
    ============================================================ */
 
 .header {
@@ -23,7 +24,7 @@
   display: inline-flex;
   align-items: center;                  /* la colonne de textes centrée verticalement sur l'image */
   flex-shrink: 0;                       /* le header ne peut jamais le comprimer */
-  white-space: nowrap;                  /* ses textes ne wrappent jamais */ 
+  white-space: nowrap;                  /* ses textes ne wrappent jamais */
   background-color: var(--surface);
   border: 1px solid var(--accent);
   border-radius: 6px;                   /* famille pilule — cohérent avec la nav */
@@ -61,6 +62,14 @@
   transition: color var(--transition);
 }
 
+/* .dev du logo : accent en permanence (30/10). Le span hérite du
+   gras et du mono du nom — seule la couleur change. Au survol du
+   logo, le nom entier passe en accent : le .dev l'était déjà, la
+   fusion est invisible — aucun cas particulier à gérer. */
+.header__tld {
+  color: var(--accent);
+}
+
 /* Survol du logo : le nom passe en accent */
 .header__logo:hover .header__name,
 .header__logo:focus-visible .header__name {
@@ -82,7 +91,7 @@
 .header__nav {
   display: flex;
   align-items: center;
-  gap: var(--space-8); 
+  gap: var(--space-8);
 }
 
 /* Pilule-fantôme : bordure permanente transparente (aucun décalage de layout) */
@@ -122,9 +131,9 @@
   }
 }
 
-/*  --------------------------------------------------------------- 
-    Mobile (767 -> 375) : 
-    empilé, tailles −8 (nav 16, Diwey.dev 16, baseline 12) 
+/*  ---------------------------------------------------------------
+    Mobile (767 -> 375) :
+    empilé, tailles −8 (nav 16, Diwey.dev 16, baseline 12)
     --------------------------------------------------------------- */
 @media (max-width: 767px) {
   .header__inner {
@@ -139,7 +148,7 @@
   }
 
   .header__name {
-  font-size: 16px;
+    font-size: 16px;
   }
 
   .header__baseline {

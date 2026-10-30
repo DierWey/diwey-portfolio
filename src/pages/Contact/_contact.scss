@@ -1,0 +1,232 @@
+/* ============================================================
+   Page Contact — structure Figma (30/10) :
+   h1 centré (loi h1 de la base) ↔ 48 ↔ bloc infos-form ;
+   desktop : informations 384 + 96 + échanges 768 = 1248 ;
+   tablette/mobile : empilés, écart 96 tablette / 48 mobile
+   (même loi que les sections de l'Accueil).
+
+   Corrections rendu (30/10, soir) :
+   - section informations : Inter regular --body-size (plus de mono) ;
+   - libellés ink-muted, icônes accent ;
+   - valeurs = pilules-fantômes (bordure transparente permanente,
+     hover/focus → texte + bordure accent — zéro décalage) ;
+   - formulaire : row-gap 24 toutes versions, champs padding 16,
+     tout le texte en Inter regular, placeholders ink-muted ;
+   - ligne Confidentialité (icône lock + texte, ink-muted) entre
+     le dernier champ et le bouton.
+   ============================================================ */
+
+.contact {
+  display: grid;
+  row-gap: var(--space-12);           /* 48 : h1 ↔ infos-form — vaut aussi en mobile */
+}
+
+/* ---- Bloc infos-form : la grille 384 + 96 + 768 ----
+   Column-gap ET row-gap posés à 96 : en desktop (une rangée),
+   seul le column-gap s'exprime ; dès l'empilement, c'est le
+   row-gap qui prend le relais — une valeur, deux rôles. */
+.contact__infos-form {
+  display: grid;
+  grid-template-columns: 384px 1fr;   /* 384 + reste = 768 à pleine largeur */
+  column-gap: var(--space-24);        /* 96 : informations ↔ échanges */
+  row-gap: var(--space-24);           /* 96 : sert dès l'empilement tablette/mobile */
+}
+
+/* ---- Section informations (384) ---- */
+.contact__informations {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);                 /* 32 : h2 → mail → linkedin (loi « 32 sous le h2 ») */
+}
+
+/* h2 + filet — même pattern que la Démarche (Accueil) */
+.contact__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);                 /* 16 : titre ↔ filet */
+}
+
+.contact__rule {
+  flex: 1;                            /* le filet court jusqu'au bord droit du bloc */
+  height: 2px;
+  background-color: var(--accent);
+}
+
+/* Blocs mail / linkedin — libellé (icône + texte) puis valeur */
+.contact__mail,
+.contact__linkedin {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);                 /* 8 : libellé ↔ valeur */
+}
+
+/* Libellé : icône accent + texte ink-muted, le tout en Inter regular */
+.contact__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);                 /* 8 : icône ↔ texte */
+  color: var(--accent);                /* l'icône en accent (svg = currentColor) */
+}
+
+.contact__label-text {
+  font-family: var(--font-sans);       /* Inter regular — plus de mono */
+  font-size: var(--body-size);         /* 24 → 16 : descente tokenisée */
+  color: var(--ink-muted);             /* libellé discret, la valeur est l'acteur */
+}
+
+/* Valeur = pilule-fantôme : bordure TRANSPARENTE permanente (aucun
+   décalage de layout), texte ink ; hover/focus → texte + bordure
+   accent. Même langage que la pilule fantôme du footer. */
+.contact__value {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;                  /* la pilule épouse son contenu, pas la colonne */
+  padding: var(--space-2) var(--space-4);  /* 8 vertical · 12 horizontal */
+  font-family: var(--font-sans);
+  font-size: var(--body-size);         /* 24 → 16 : suit la section */
+  color: var(--ink);
+  background-color: transparent;
+  border: 1px solid transparent;       /* fantôme au repos : invisible, mais déjà là */
+  border-radius: var(--radius);        /* 6 : famille pilules */
+  transition: color var(--transition), border-color var(--transition);
+}
+
+.contact__value:hover,
+.contact__value:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Variante lien externe (LinkedIn) : valeur + arrow-up-right.
+   La flèche reste ACCENT en permanence (icône-direction, comme
+   les liens du footer) — seul le texte suit le survol. */
+.contact__value--external {
+  gap: var(--space-2);                 /* 8 : texte ↔ flèche */
+}
+
+.contact__value--external svg {
+  color: var(--accent);
+}
+
+/* ---- Section échanges (768) — accroche + formulaire ---- */
+.contact__echanges {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);                 /* 32 : h2 → accroche → formulaire (loi « 32 sous le h2 ») */
+}
+
+.contact__pitch {
+  font-size: var(--body-size);         /* 24 → 16 : descente tokenisée */
+  line-height: 1.5;
+  color: var(--ink-muted);             /* accroche en muted — à confirmer au rendu contre le Figma */
+}
+
+/* Formulaire : champs, confidentialité et bouton empilés à 24
+   TOUTES versions (30/10 soir) — plus de 16. */
+.contact__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6, 24px);           /* 24 : entre champs, ↔ confidentialité, ↔ bouton */
+}
+
+/* Champ : label au-dessus de l'input, pleine largeur de la colonne
+   échanges (30/10, soir) — plus aucun padding : les surlignages de
+   saisie (autocomplete iOS/Chrome) s'étendent bord à bord. */
+.contact__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);                 /* 8 : label ↔ input */
+}
+
+/* Tout le texte du formulaire en Inter regular */
+.contact__field label {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--ink);
+}
+
+/* Inputs — rayon 6 (famille pilules), bordure line, focus accent.
+   Focus : la BORDURE change de couleur (indicateur visible, WCAG) ;
+   l'outline global de la base est neutralisé ici pour ne pas doubler. */
+.contact__input {
+  font-family: var(--font-sans);       /* Inter regular */
+  font-size: 16px;                     /* CONSTANT : sous 16px, iOS Safari zoome à la prise de focus */
+  color: var(--ink);
+  padding: var(--space-2) var(--space-4); /* 8/16 — à confirmer au rendu contre le Figma */
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);        /* 6 */
+  transition: border-color var(--transition);
+}
+
+/* Placeholder : Inter regular ink-muted */
+.contact__input::placeholder {
+  font-family: var(--font-sans);
+  color: var(--ink-muted);
+  opacity: 1;                          /* iOS pose un opacity par défaut — on l'écrase */
+}
+
+.contact__input:focus {
+  border-color: var(--accent);
+}
+
+.contact__input:focus-visible {
+  outline: none;                       /* la bordure accent EST l'indicateur de focus */
+}
+
+/* Flèche du bouton Envoyer le message : 16 entre le texte et
+   l'icône. Margin plutôt que flex-gap : le rendu interne de
+   CtaButton nous est indifférent, la marge tient partout. */
+.contact__send-arrow {
+  margin-left: var(--space-4);         /* 16 : texte ↔ flèche */
+}
+
+/* Bouton d'envoi — desktop et tablette uniquement : largeur 242
+   justifié au centre (Figma 30/10). En mobile il reprend son
+   comportement naturel (fit-content, aligné à gauche du flux flex).
+   Ciblage par attribut : le nom de classe de CtaButton peut bouger,
+   ce sélecteur, non. */
+@media (min-width: 768px) {
+  .contact__form button[type="submit"] {
+    width: 242px;
+    align-self: center;
+  }
+}
+
+/* Textarea : hauteur fixe côté Figma (rows 5), pas de poignée */
+.contact__input--area {
+  resize: none;
+}
+
+/* Ligne Confidentialité — entre le dernier champ et le bouton.
+   Icône lock + texte, tous deux ink-muted, Inter regular. */
+.contact__privacy {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);                 /* 8 : lock ↔ texte */
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--ink-muted);
+}
+
+/* Honeypot — hors écran, invisible pour tous les humains */
+.contact__honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ---- Paliers ---- */
+@media (max-width: 1023px) {
+  .contact__infos-form {
+    grid-template-columns: 1fr;        /* empilés : tablette ET mobile */
+  }
+}
+
+@media (max-width: 767px) {
+  .contact__infos-form {
+    row-gap: var(--space-12);          /* 96 → 48 mobile (loi Accueil) */
+  }
+}

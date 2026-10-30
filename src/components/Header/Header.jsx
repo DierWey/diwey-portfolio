@@ -10,7 +10,7 @@ export default function Header() {
             <img src={logo} alt="" />
           </div>
           <span className="header__texts">
-            <span className="header__name">Diwey.dev</span>
+            <span className="header__name">Diwey<span className="header__tld">.dev</span></span>
             <span className="header__baseline">Le détail compte.</span>
           </span>
         </Link>
