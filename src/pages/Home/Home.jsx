@@ -49,10 +49,12 @@ export default function Home() {
             </div>
             <div className="pitch__actions">
               <CtaButton to="/portfolio" variant="primary" size="lg">
-                Voir mes projets
+                <span>Voir mes projets</span>
+                <span aria-hidden="true">↓</span>
               </CtaButton>
               <CtaButton to="/contact" variant="secondary" size="lg">
-                Me contacter
+                <span>Me contacter</span>
+                <span aria-hidden="true">↗</span>
               </CtaButton>
             </div>
           </div>

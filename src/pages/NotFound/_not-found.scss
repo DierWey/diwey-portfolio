@@ -1,0 +1,71 @@
+/* ============================================================
+   Page 404 — structure prototype (30/10) traduite en tokens :
+   surtitre mono muted « Erreur 404 » → 24 → h1 nu (base) → 24 →
+   chapeau (816 max en desktop, règle des chapeaux du 24/10) → 48
+   → deux CtaButton (gap 16, wrap en mobile).
+
+   Cotes verticales du prototype : py 96 mobile / 192 desktop —
+   À CONFIRMER CONTRE LE FIGMA (le prototype peut dater).
+   ============================================================ */
+
+.not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;              /* 404 à gauche — dérogation explicite au h1 centré de la base */
+  padding-top: var(--space-24);         /* 96 : respiration haute (prototype : 96/192 à confirmer) */
+  padding-bottom: var(--space-24);     /* 96 */
+}
+
+.not-found__title {
+  align-self: stretch;
+}
+
+/* Surtitre — repère mono muted, rang 16 tokenisé (16 → 12 mobile) */
+.not-found__code {
+  font-family: var(--font-mono);
+  font-size: var(--rank16-size);
+  color: var(--ink-muted);
+  margin-bottom: var(--space-6);       /* 24 : surtitre → h1 */
+}
+
+/* Chapeau — règle des chapeaux (24/10) : 2 colonnes cartes + 1
+   écart = 384 + 48 + 384 = 816px en desktop ; pleine largeur
+   tablette/mobile. Inter, --body-size (24 → 16), ink. */
+.not-found__text {
+  max-width: 816px;
+  font-size: var(--body-size);
+  line-height: 1.6;
+  color: var(--ink);
+  margin-top: var(--space-12);           /* 48 : h1 → chapeau */
+  margin-bottom: var(--space-12);      /* 48 : chapeau → boutons */
+}
+
+/* Sorties — primaire + secondaire, space-between, aligné sur le
+   chapeau du dessus : mêmes extrémités que le bloc texte
+   (816px desktop, pleine largeur tablette/mobile). */
+.not-found__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-4);                 /* 16 : plancher si wrap */
+  max-width: 816px;                    /* = largeur du chapeau — les boutons s'alignent sur le texte */
+  align-self: stretch;                 /* annule le shrink-to-fit du parent → pleine largeur, plafonnée à 816 */
+}
+
+
+/* ---- Mobile : la colonne respire moins, boutons empilés pleine
+   largeur (même loi que le Hero : les CTA empilés = fit-content
+   alignés à gauche ; passer en pleine largeur si le Figma 375
+   le montre ainsi). ---- */
+@media (max-width: 767px) {
+  .not-found {
+    padding-top: var(--space-12);       /* 48 */
+    padding-bottom: var(--space-12);   /* 48 */
+  }
+
+  .not-found__actions {
+    flex-direction: column;
+    align-items: stretch;              /* pleine largeur, empilés — à confirmer au rendu */
+    gap: var(--space-6);               /* 24 : loi des boutons empilés du Hero 375 */
+  }
+}

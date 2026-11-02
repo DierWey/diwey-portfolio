@@ -1,13 +1,16 @@
 /* ------------------------------------------------------------------
    CtaButton — primaire accent/surface, secondaire accent-soft/ink
-   Survol : filet intérieur 1px, inset 2, arrondi 4, couleur du texte
-   (currentColor), naissance 500ms ease-out, sans translation
+   gap 16 entre libellé et flèche (langage directionnel 30/10 :
+   la flèche vit dans un <span aria-hidden> séparé)
+   Survol : filet intérieur 1px, inset 2, arrondi 4, currentColor,
+   naissance 500ms ease-out, sans translation
    ------------------------------------------------------------------ */
 .cta {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: var(--space-4);        /* 16 : libellé ↔ flèche (règle 30/10) */
   font-family: var(--font-sans);
   font-size: 16px;
   text-decoration: none;

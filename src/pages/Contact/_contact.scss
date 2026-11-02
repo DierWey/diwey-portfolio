@@ -174,13 +174,6 @@
   outline: none;                       /* la bordure accent EST l'indicateur de focus */
 }
 
-/* Flèche du bouton Envoyer le message : 16 entre le texte et
-   l'icône. Margin plutôt que flex-gap : le rendu interne de
-   CtaButton nous est indifférent, la marge tient partout. */
-.contact__send-arrow {
-  margin-left: var(--space-4);         /* 16 : texte ↔ flèche */
-}
-
 /* Bouton d'envoi — desktop et tablette uniquement : largeur 242
    justifié au centre (Figma 30/10). En mobile il reprend son
    comportement naturel (fit-content, aligné à gauche du flux flex).
