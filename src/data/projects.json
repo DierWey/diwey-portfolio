@@ -139,7 +139,7 @@
     },
     {
       "slug": "portfolio",
-      "title": "Ce portfolio",
+      "title": "Diwey.dev — Portfolio",
       "stack": ["React", "SASS", "Vite"],
       "role": "Side project",
       "year": "2026",

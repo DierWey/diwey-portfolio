@@ -1,0 +1,73 @@
+/* ------------------------------------------------------------------
+   Page Portfolio — h1 + chapeau + grille des cartes.
+
+   Même configuration que NotFound (31/10) : structure flex column,
+   paddings verticaux 96/48, requêtes max-width desktop-first.
+
+   La page ne style AUCUNE carte : tout le visuel du composant vit
+   dans project-card.scss. Ici : le rythme vertical et la grille.
+
+   Grille (cotes Figma 31/10) :
+   - desktop ≥1024 : 3 colonnes, gouttière 48 → 3×384 + 2×48 = 1248
+   - tablette 768–1023 : 2 colonnes, gouttière 24 → 2×324 + 24 = 672
+   - mobile <768 : 1 colonne pleine largeur (carte 327 à 375)
+   ------------------------------------------------------------------ */
+
+.portfolio {
+  display: flex;
+  flex-direction: column;
+  padding-top: var(--space-24);         /* 96 : py page — loi 96/48 confirmée */
+  padding-bottom: var(--space-24);
+}
+
+/* h1 « Portfolio » — centré et accent via la base (règle des titres
+   universalisés). align-self: stretch : même garde-fou que la 404 —
+   le centrage ne dépend pas du shrink-to-fit du parent flex. */
+.portfolio__title {
+  align-self: stretch;
+}
+
+/* Chapeau — règle des chapeaux (24/10) : 816px = 2 colonnes + 1
+   écart de la grille dessous (384 + 48 + 384) ; pleine largeur
+   tablette/mobile. Corps Inter ink via la base. */
+.portfolio__lede {
+  max-width: 816px;
+  font-size: var(--body-size);
+  line-height: 1.6;
+  color: var(--ink);
+  margin-top: var(--space-12);         /* 48 : h1 → chapeau (loi du 30/10) */
+  margin-bottom: var(--space-12);     /* 48 : chapeau → grille (confirmé 31/10 — le 64 du prototype est invalidé) */
+}
+
+/* ---- Grille : la seule règle qui parle des cartes ---- */
+.portfolio__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));  /* desktop : 3×384 */
+  grid-auto-rows: 1fr;                  /* hauteur commune : toutes les rangées égales (31/10) */
+  gap: var(--space-12);                 /* 48 : gouttière desktop */
+}
+
+/* Tablette : 2×324, gouttière 24 — dérogation confirmée 31/10 */
+@media (max-width: 1023px) {
+  .portfolio__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6);               /* 24 */
+  }
+}
+
+/* Mobile : 1 colonne pleine largeur, py 48 (loi 96/48) */
+@media (max-width: 767px) {
+  .portfolio {
+    padding-top: var(--space-12);      /* 48 */
+    padding-bottom: var(--space-12);
+  }
+
+  .portfolio__lede {
+    margin-bottom: var(--space-8);     /* 32 : chapeau → grille en mobile (confirmé 31/10) */
+  }
+
+  .portfolio__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);               /* 24 : écart vertical entre rangées */
+  }
+}

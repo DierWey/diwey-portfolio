@@ -1,0 +1,140 @@
+/* ------------------------------------------------------------------
+   ProjectCard — socle de la carte projet (grille Portfolio).
+
+   Cotes Figma 31/10 :
+   - Aperçu : fond accent-soft, padding 24, totals 384×253 /
+     324×221 / 327×223 (desktop/tablette/mobile) — la capture et le
+     chrome 32 se partagent l'intérieur sans marge supplémentaire.
+   - Infos : padding 24, 4 blocs (Top/Nom/Description/Bottom)
+     écartés de 16.
+   - Rayon 12 constant (31/10) — les 8/10 du prototype sont invalidés.
+   - HAUTEUR COMMUNE (31/10) : les cartes d'une rangée (et de la
+     grille) partagent la même hauteur — le texte ne décide pas.
+     La carte est un flex column, le Bottom est poussé en bas.
+
+   Le composant ne connaît RIEN de la grille : colonnes, gouttières
+   (48 desktop / 24 tablette / 1 colonne mobile) et égalisation des
+   rangées vivent dans le partial de la page Portfolio.
+   ------------------------------------------------------------------ */
+
+.card {
+  display: flex;                          /* hauteur commune : column pour pousser le Bottom */
+  flex-direction: column;
+  text-decoration: none;
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;                     /* constant 31/10 — pas de token, valeur Figma */
+  overflow: hidden;                        /* arrondit le contenu aux coins de la carte */
+  transition: border-color 250ms ease-out;
+}
+
+/* Survol/focus : contour accent — seul signal (le Nom est ink,
+   il ne signale rien). Sans translation : le détail compte, pas
+   le rebond. */
+.card:hover,
+.card:focus-visible {
+  border-color: var(--accent);
+}
+
+/* ---- Aperçu : le tapis accent-soft qui porte le navigateur ---- */
+.card__preview {
+  padding: var(--space-6);                /* 24 */
+  background-color: var(--accent-soft);
+}
+
+/* Coins du navigateur arrondis DANS la carte (rayon 8, 31/10) —
+   le contrat reste respecté : c'est le parent (la carte) qui
+   arrondit son enfant via ce sélecteur descendant, le composant
+   BrowserFrame ne porte toujours ni bordure ni rayon lui-même.
+   À ajuster si la classe racine réelle du composant diffère. */
+.card__preview .browser-frame {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Capture : zone remplie par l'image du BrowserFrame (flux flex du
+   composant) — aucune hauteur en code, le ratio de l'<img> décide.
+   Placeholder visible en attendant les .webp. */
+.card__capture {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 336 / 173;                 /* ratio placeholder ≈ desktop — l'<img> réelle le remplacera */
+  background-color: var(--bg);           /* fond neutre bg (31/10) — à retirer avec les .webp */
+}
+
+.card__placeholder {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+/* ---- Informations : 4 blocs écartés de 16 ---- */
+.card__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);                    /* 16 : Top / Nom / Description / Bottom */
+  padding: var(--space-6);                /* 24 */
+  flex: 1;                                 /* hauteur commune : absorbe l'espace, étire jusqu'au bas */
+}
+
+/* Top — badges techno : pilules accent-soft, bord accent, mono 16
+   (hauteur 29px au Figma — padding vertical 4, confirmé 31/10) */
+.card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);                    /* 8 : écart entre badges — confirmé Figma 31/10 */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card__badge {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  color: var(--accent);
+  background-color: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  padding: 4px var(--space-2);           /* 4 haut/bas, 8 gauche/droite */
+}
+
+/* Nom — libellé de lien, PAS un titre (tranché 31/10) : il ne
+   consomme NI la fonte NI la couleur de la base des headings —
+   tout vit ici, serif bold 24 ink. */
+.card__name {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: var(--weight-bold);
+  color: var(--ink);
+  margin: 0;
+}
+
+/* Description — Inter ink 16 CONSTANT tous paliers (31/10 :
+   16px littéral, comme les autres constantes — pas de token qui
+   varierait selon le palier). */
+.card__text {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink);
+  margin: 0;
+}
+
+/* Bottom — filet haut, type + année en space-between, POUSSÉ EN
+   BAS de la carte : hauteur commune, le texte ne décide pas. */
+.card__footer {
+  display: flex;
+  justify-content: space-between;
+  padding-top: var(--space-2);            /* 8 : entre le filet et les textes */
+  border-top: 1px solid var(--line);
+  margin-top: auto;                       /* colle le footer au bas, quelle que soit la longueur du texte */
+}
+
+/* Repères mono du Bottom : 12px LITTÉRAL (plancher, même loi que
+   l'URL du chrome — pas de token, comme les autres 12). */
+.card__meta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-muted);
+}

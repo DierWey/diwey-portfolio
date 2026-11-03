@@ -14,10 +14,11 @@
 @use '../components/Carousel/carousel';
 @use '../components/CtaButton/cta-button';
 @use '../components/BrowserFrame/browser-frame';
+@use '../components/ProjectCard/project-card';
 
 /* Pages — uniquement la mise en page propre à chaque page */
 @use '../pages/Home/home';
-// @use '../pages/PortfolioGrid/portfolio-grid';
+@use '../pages/Portfolio/portfolio';
 // @use '../pages/ProjectDetail/project-detail';
 @use '../pages/Contact/contact';
 @use '../pages/NotFound/not-found';

@@ -1,4 +1,4 @@
-import "./browser-frame.scss";
+import "./_browser-frame.scss";
 
 /**
  * Barre Chrome décorative au-dessus d'une capture d'écran.
