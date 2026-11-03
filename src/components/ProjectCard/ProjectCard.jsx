@@ -64,9 +64,10 @@ export default function ProjectCard({ project }) {
           ))}
         </ul>
 
-        {/* Nom — title tronqué au tiret long (loi du fil d'Ariane),
-            libellé de lien, PAS un titre (31/10) */}
-        <p className="card__name">{name}</p>
+        {/* Nom — h2 (31/10 soir, corrige l'alerte WAVE « Possible heading ») ; title tronqué au tiret long
+          (loi du fil d'Ariane). L'override ink vit dans _project-card.scss : la base h2 (serif bold accent)
+          ne doit pas passer ici */}
+        <h2 className="card__name">{name}</h2>
 
         {/* Description — champ `desc` du JSON, 16 constant */}
         <p className="card__text">{desc}</p>

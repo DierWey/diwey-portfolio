@@ -100,9 +100,9 @@
   padding: 4px var(--space-2);           /* 4 haut/bas, 8 gauche/droite */
 }
 
-/* Nom — libellé de lien, PAS un titre (tranché 31/10) : il ne
-   consomme NI la fonte NI la couleur de la base des headings —
-   tout vit ici, serif bold 24 ink. */
+/* Nom — h2 sémantique (WAVE) ; style neutralisé : la base h2 est 
+   accent + --h2-size — ici ink et 24 constants, au repos comme au
+   survol (la bordure reste le seul signal de la carte). */
 .card__name {
   font-family: var(--font-serif);
   font-size: 24px;
