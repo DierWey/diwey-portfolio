@@ -12,6 +12,13 @@
      grille) partagent la même hauteur — le texte ne décide pas.
      La carte est un flex column, le Bottom est poussé en bas.
 
+   Geste de survol (3/11, VALIDÉ) : bordure accent + Nom accent +
+   filet accent qui se déploie de gauche à droite sous le Nom
+   (width 0→100 %, absolute — aucun décalage de layout). Trois
+   signaux assumés : le h2 sémantique devient h2 visuel au survol,
+   et le filet annonce la hiérarchie Portfolio → fiche que le fil
+   d'Ariane confirmera.
+
    Le composant ne connaît RIEN de la grille : colonnes, gouttières
    (48 desktop / 24 tablette / 1 colonne mobile) et égalisation des
    rangées vivent dans le partial de la page Portfolio.
@@ -28,9 +35,8 @@
   transition: border-color 250ms ease-out;
 }
 
-/* Survol/focus : contour accent — seul signal (le Nom est ink,
-   il ne signale rien). Sans translation : le détail compte, pas
-   le rebond. */
+/* Survol/focus : contour accent — premier des trois signaux.
+   Sans translation : le détail compte, pas le rebond. */
 .card:hover,
 .card:focus-visible {
   border-color: var(--accent);
@@ -100,15 +106,54 @@
   padding: 4px var(--space-2);           /* 4 haut/bas, 8 gauche/droite */
 }
 
-/* Nom — h2 sémantique (WAVE) ; style neutralisé : la base h2 est 
-   accent + --h2-size — ici ink et 24 constants, au repos comme au
-   survol (la bordure reste le seul signal de la carte). */
+/* Nom — h2 sémantique (WAVE) ; style neutralisé : la base h2 est
+   accent + --h2-size — ici ink et 24 constants AU REPOS.
+   Au survol/focus de la carte : le Nom passe accent (il adopte la
+   couleur des headings de la base — le h2 devient visuel) et un
+   filet apparaît À CÔTÉ du Nom — même pattern que les h2 de
+   section (Ma démarche) : le texte, puis le trait qui court
+   jusqu'au bord droit du bloc. Flex : le ::after est un item,
+   transform scaleX évite tout décalage de layout. */
 .card__name {
+  display: flex;                           /* le Nom et le filet partagent la ligne */
+  align-items: center;
+  gap: var(--space-4);                     /* 16 : texte ↔ filet, même écart que le pattern h2+filet des sections */
   font-family: var(--font-serif);
   font-size: 24px;
   font-weight: var(--weight-bold);
   color: var(--ink);
   margin: 0;
+  transition: color var(--transition);    /* 250 ms : changement de couleur */
+}
+
+/* Filet — 2px accent À CÔTÉ du Nom (pattern des sections : le
+   trait court de la fin du texte jusqu'au bord droit du bloc
+   info). flex: 1 = il occupe tout le reste de la ligne ; scaleX
+   0→1 le déploie de gauche à droite (transform : aucun décalage
+   de layout), naissance à 500 ms (--transition-filet : un filet
+   naît plus lentement qu'une couleur ne change — règle du
+   24/10). */
+.card__name::after {
+  content: "";
+  flex: 1;                                  /* de la fin du texte au bord droit du bloc */
+  height: 2px;
+  background-color: var(--accent);
+  transform: scaleX(0);                     /* replié au repos */
+  transform-origin: left;                   /* se déploie depuis le texte vers la droite */
+  transition: transform var(--transition-filet);
+}
+
+/* Survol/focus : Nom accent (deuxième signal), filet déployé
+   (troisième). Le focus clavier voit exactement le geste du
+   survol souris. */
+.card:hover .card__name,
+.card:focus-visible .card__name {
+  color: var(--accent);
+}
+
+.card:hover .card__name::after,
+.card:focus-visible .card__name::after {
+  transform: scaleX(1);                     /* le filet se déploie jusqu'au bord droit */
 }
 
 /* Description — Inter ink 16 CONSTANT tous paliers (31/10 :

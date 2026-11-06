@@ -1,0 +1,369 @@
+/* ============================================================
+   Le détail compte — page Fiche projet
+   Route : /portfolio/:slug — générique, pilotée par projects.json.
+   Relevé Figma du 6/11 (complet) — voir la charte portfolio-projet.
+   Aucune cote de cette page n'est globale : tout vit dans ce partial
+   (règle de colocalisation, source unique par décision).
+   ============================================================ */
+
+.project-detail {
+
+  /* ---- Fil d'Ariane — repère de position (tranché 24/10) --------
+     Parent cliquable en pilule-fantôme (utilitaire transverse
+     .pill-link de _base.scss), page courante non cliquable :
+     mono, ink → accent au survol, tailles un cran sous la nav
+     (16 desktop/tablette, 12 mobile). Écran ↔ capture : 40 → 32
+     mobile — VALEURS LOCALES littérales (loi « hauteurs locales,
+     grammaire globale » : le fil est un repère, pas une section ;
+     40 n'est pas dans la rampe 8→96 — c'est du relevé Figma). */
+  &__crumbs {
+    font-family: var(--font-mono);
+    font-size: var(--rank16-size);
+    margin-bottom: 40px;
+
+    .pill-link {
+      font-size: var(--rank16-size);   /* override du 16 littéral de .pill-link */
+    }
+  }
+
+  @media (max-width: 767px) {
+    &__crumbs { margin-bottom: 32px; }
+  }
+
+  &__crumbs-sep {
+    color: var(--ink-muted);   /* visible, contrairement à --line */
+  }
+
+  &__crumbs-current {
+    color: var(--accent);
+    font-weight: var(--weight-bold);
+  }
+
+  /* ---- Cadre navigateur + capture adaptative --------------------
+     Le conteneur PARENT arrondit et borde (contrat BrowserFrame,
+     30/10) : rayon 12 (relevé 6/11 — le 10 + ombre du prototype
+     sont invalidés), SANS ombre portée.
+     Capture adaptative (décision 21/10) : ratios par palier —
+     desktop 16:10 (1248×780) / tablette 3:4 (672×896) /
+     mobile 9:16 (327×581, corrigé 6/11). Zone accent-soft en
+     attendant les .webp (tranche 6/11 : placeholder d'abord,
+     import.meta.glob après). */
+  &__frame {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  &__capture {
+    aspect-ratio: 16 / 10;
+    background: var(--accent-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__capture-placeholder {
+    font-family: var(--font-mono);
+    font-size: var(--rank16-size);
+    color: var(--accent);
+  }
+
+  @media (max-width: 1023px) {
+    &__capture { aspect-ratio: 3 / 4; }
+  }
+
+  @media (max-width: 767px) {
+    &__capture { aspect-ratio: 9 / 16; }
+  }
+
+  /* ---- h1 pleine largeur (21/10) --------------------------------
+     La base pose h1 centré (règle universalisée 30/10) ; la fiche
+     le garde tel quel — À CONFIRMER CONTRE LE FIGMA : si le h1 doit
+     être aligné à gauche comme le reste de la page, décommenter.
+     Écarts : capture ↔ h1 et h1 ↔ grille = 96 desktop/tablette,
+     48 mobile (écart inter-blocs majeur standard). */
+  &__title {
+    margin: 96px 0;
+
+    /* text-align: left; */
+  }
+
+  @media (max-width: 767px) {
+    &__title { margin: 48px 0; }
+  }
+
+  /* ---- Grille 2 colonnes — relevé 6/11 ---------------------------
+     Desktop : colonne principale 800 + gouttière 48 + aside 400
+     (800 + 48 + 400 = 1248 = --content-width). minmax(0,2fr)/
+     minmax(0,1fr) résout exactement en 800/400 à 1248 de contenu.
+     DOM en ordre mono-colonne (intro → fiche technique → sections) ;
+     en desktop, le grid replace la fiche en 2e colonne sur toute
+     la hauteur (grid-row: 1 / 3) — une seule structure, deux
+     mises en page, ordre de lecture naturel au clavier/LÉ. */
+  &__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 0 var(--space-12);   /* 48 ENTRE COLONNES, JAMAIS entre rangées */
+    align-items: start;
+  }
+
+  /* Le row-gap à 0 est VOLONTAIRE et GLOBAL (corrigé 6/11, deux
+     fois le même piège) : un gap: 48 entier s'applique aussi
+     entre les rangées — en desktop, bloc 1 ↔ sections doublait
+     (48 de marge + 48 de row-gap = 96 au lieu de 48) ; en
+     mono-colonne, les écarts autour de la fiche doublaient aussi
+     (96/80 au lieu de 48/32). Loi : dans ce grid, les écarts
+     verticaux sont portés par les MARGES, jamais par le gap. */
+
+  &__intro { grid-column: 1; grid-row: 1; }
+  &__body  { grid-column: 1; grid-row: 2; }
+
+  /* ---- Bloc 1 : desc + badges -----------------------------------
+     24 entre desc et badges ; 48 avant la 1re section (desktop). */
+  &__desc {
+    margin: 0 0 var(--space-6) 0;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  &__intro {
+    margin-bottom: var(--space-12);
+  }
+
+  /* Badges — locaux à la page (la fiche ne partage pas le SCSS de
+     la carte, 6/11) ; mêmes cotes que la carte (31/10) : accent-soft
+     + bordure accent 1px, rayon 999, padding 4/8, mono rang 16,
+     écart 8 tous paliers. */
+  &__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__badge {
+    font-family: var(--font-mono);
+    font-size: var(--rank16-size);
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    padding: 4px 8px;
+  }
+
+  /* ---- Sections (Contexte / Fonctionnalités / Méthode) -----------
+     Inter-sections : 48 desktop/tablette, 32 mobile (relevé 6/11).
+     Espace sous le h2 = h2-size (32 desktop/tablette, 24 mobile) —
+     loi auto-similaire de l'accueil : l'espace suit la taille du
+     titre à chaque palier. Filet 2px accent jusqu'au bord droit
+     (pattern h2 des sections, cf. Démarche). */
+  &__section {
+    margin-bottom: var(--space-12);
+
+    &:last-child { margin-bottom: 0; }
+  }
+
+  &__section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin: 0 0 var(--h2-size) 0;
+
+    &::after {
+      content: "";
+      flex: 1;
+      height: 2px;
+      background: var(--accent);
+    }
+  }
+
+  &__context {
+    margin: 0;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  /* ---- Items numérotés — h3 « 01 / » + texte, même ligne ---------
+     Tranche 6/11 : le h3 est le NUMÉRO SEUL (exception confirmée
+     du 29/10), le texte de l'item est son frère. Overrides de la
+     base h3 (serif regular accent uppercase) : fonte mono (registre
+     repère, règle du 21/10), taille --body-size (h3 et texte à
+     taille IDENTIQUE : 24 desktop/tablette, 16 mobile), graisse
+     400, couleur accent conservée. Texte en Inter (héritage body).
+     NOTE A11Y OUVERTE (WAVE) : un h3 « 01 » est un titre muet pour
+     un lecteur d'écran — si l'audit le signale, ajouter un
+     <span class="visually-hidden">Fonctionnalité 01</span> DANS
+     le h3 sans toucher au visuel. */
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+  }
+
+  &__num {
+    font-family: var(--font-mono);
+    font-size: var(--body-size);
+    font-weight: var(--weight-regular);
+    color: var(--accent);
+    margin: 0;
+    flex-shrink: 0;   /* le numéro ne se comprime jamais */
+  }
+
+  &__item-text {
+    font-size: var(--body-size);
+    color: var(--ink);
+    line-height: 1.6;
+    min-width: 0;    /* laisse le texte wrapper dans l'espace restant */
+  }
+
+  /* ---- FICHE TECHNIQUE (aside) — relevé 6/11 complet -------------
+     Carte : surface, bordure line, rayon 12, padding 24 tous paliers.
+     STICKY en desktop uniquement (top = marge de page) ; en
+     mono-colonne (tablette/mobile), l'aside vit dans le flux ENTRE
+     le bloc desc+badges et la section Contexte : 48 tablette,
+     32 mobile autour de lui. Label : mono 24 ink-muted centré
+     MAJUSCULES (texte en casse normale dans le DOM, transform CSS) ;
+     16 mobile (littéral, échelle propre). Clés mono rang 16
+     ink-muted ↔ valeurs Inter rang 16 ink, séparées de 8 dans le
+     bloc. Filets 1px line ENTRE les blocs, au milieu des 16 :
+     padding 8 haut/bas + bordure basse, sauf premier (padding haut
+     0) et dernier (padding bas 0, SANS filet). */
+  &__sheet {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    position: sticky;
+    top: var(--page-margin-y);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: var(--space-6);
+  }
+
+  /* Label — H2 (promotion 6/11, décision Loftur après alerte WAVE
+     « Possible heading ») : il titre une vraie région complémentaire,
+     promotion sémantiquement juste. VISUEL IDENTIQUE — chaque
+     propriété de la base h2 (serif bold accent 32) est overridée
+     ici : famille mono, graisse régulière (400 — le relevé ne
+     montre pas de gras), taille propre 24 → 16 mobile, couleur
+     ink-muted, centré, majuscules. */
+  &__sheet-label {
+    font-family: var(--font-mono);
+    font-weight: var(--weight-regular);
+    font-size: 24px;
+    color: var(--ink-muted);
+    text-align: center;
+    text-transform: uppercase;
+    margin: 0 0 var(--space-6) 0;
+  }
+
+  &__sheet-list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+  }
+
+  &__sheet-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--line);
+
+    &:first-child { padding-top: 0; }
+    &:last-child  { padding-bottom: 0; border-bottom: 0; }
+  }
+
+  &__sheet-key {
+    font-family: var(--font-mono);
+    font-size: var(--rank16-size);
+    color: var(--ink-muted);
+    font-weight: var(--weight-regular);
+  }
+
+  &__sheet-value {
+    font-family: var(--font-sans);
+    font-size: var(--rank16-size);
+    color: var(--ink);
+    line-height: 1.6;
+    margin: 0;   /* neutralise le rechet dd par défaut */
+  }
+
+  /* Boutons : empilés, 16 entre eux (même bloc, un cran sous les
+     24 qui les séparent des blocs de texte). */
+  &__sheet-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+  }
+
+  &__sheet-norepo {
+    font-family: var(--font-mono);
+    font-size: var(--rank16-size);
+    color: var(--ink-muted);
+    text-align: center;
+    margin: 0;
+  }
+
+  /* ---- Mono-colonne : tablette (≤1023) et mobile (≤767) ----------
+     Une seule colonne, fiche technique dans le flux entre le bloc 1
+     et Contexte. Pas de gap à neutraliser ici : le row-gap est déjà
+     à 0 dans la base du grid (voir plus haut — le piège est traité
+     à la source). Sticky désactivé : coller une carte dans un flux
+     mono-colonne n'a pas de sens. */
+  @media (max-width: 1023px) {
+    &__grid { grid-template-columns: 1fr; }
+
+    &__intro,
+    &__body,
+    &__sheet { grid-column: 1; grid-row: auto; }
+
+    &__sheet {
+      position: static;
+      margin-bottom: var(--space-12);
+    }
+  }
+
+  @media (max-width: 767px) {
+    &__intro { margin-bottom: var(--space-8); }
+    &__sheet { margin-bottom: var(--space-8); }
+    &__section { margin-bottom: var(--space-8); }
+    &__sheet-label { font-size: 16px; }   /* littéral : échelle propre au label */
+  }
+
+  /* ---- Pied de fiche ---------------------------------------------
+     SANS filet ni padding au-dessus (relevé 6/11 — prototype
+     invalidé) : les boutons se détachent du contenu par le
+     margin-top seul (96 desktop/tablette, 48 mobile). Desktop et
+     tablette : côte à côte en space-between ; mobile : empilés,
+     écart 16. */
+  &__footer {
+    margin-top: var(--space-24);
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-12);
+  }
+
+  @media (max-width: 767px) {
+    &__footer {
+      margin-top: var(--space-12);
+      flex-direction: column;
+      gap: var(--space-4);
+      /* Boutons PLEINE LARGEUR en mobile : le width: 100% est porté
+         par CtaButton lui-même (même loi que l'Accueil et la 404 —
+         Loftur 6/11 : cohérence assumée, ne pas surcharger ici). */
+    }
+  }
+}
