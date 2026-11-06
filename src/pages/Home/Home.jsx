@@ -38,8 +38,8 @@ export default function Home() {
                 claire et utilisable — qui m'a ramené au développement.
               </p>
               <p>
-                En formation Intégrateur Web chez OpenClassrooms (2025-2026),
-                j'ai consolidé HTML, CSS, JavaScript et React, avec une
+                Après une formation réussie d'Intégrateur Web chez OpenClassrooms (2025-2026),
+                je possède une réelle expertise en HTML, CSS, JavaScript et React, avec une 
                 appétence pour l'accessibilité et la performance.
               </p>
               <p>

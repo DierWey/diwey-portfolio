@@ -14,6 +14,9 @@
      tout le texte en Inter regular, placeholders ink-muted ;
    - ligne Confidentialité (icône lock + texte, ink-muted) entre
      le dernier champ et le bouton.
+
+   Bascule Formgong (6/11) : ajout du retour d'envoi —
+   .contact__status sous le bouton (voir plus bas).
    ============================================================ */
 
 .contact {
@@ -145,6 +148,32 @@
   color: var(--ink);
 }
 
+/* Ligne label ↔ erreur (6/11) : le label à gauche, le message
+   d'erreur rouge 12 à droite. justify-content: space-between =
+   l'erreur est justifiée à droite dès qu'elle apparaît, et le
+   label ne bouge pas d'un pixel : l'erreur occupe l'espace
+   restant, zéro décalage de layout (même loi que la pilule
+   fantôme). align-items: baseline : le rouge 12 s'aligne sur la
+   ligne de base du label 16, pas sur son milieu. */
+.contact__field-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-2);                 /* 8 : label ↔ erreur */
+}
+
+/* Message d'erreur — ROUGE taille 12 (décision 6/11 : le rouge
+   entre dans la charte pour les erreurs de saisie uniquement).
+   NOUVEAU TOKEN : --error à ajouter dans les tokens de la base
+   (proposition : #B3261E — rouge sobre, lisible sur --surface,
+   contraste > 4.5:1). Aucune autre règle ne l'utilise : c'est
+   la couleur de l'erreur, pas une couleur d'accent. */
+.contact__field-error {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--error);
+}
+
 /* Inputs — rayon 6 (famille pilules), bordure line, focus accent.
    Focus : la BORDURE change de couleur (indicateur visible, WCAG) ;
    l'outline global de la base est neutralisé ici pour ne pas doubler. */
@@ -192,14 +221,49 @@
 }
 
 /* Ligne Confidentialité — entre le dernier champ et le bouton.
-   Icône lock + texte, tous deux ink-muted, Inter regular. */
+   Texte seul ink-muted, Inter regular (6/11) : le cadenas 16px en
+   muted apportait peu, le texte se suffit. Plus de flex/gap non
+   plus : un seul enfant, le flux naturel suffit. Pas d'adresse en
+   clair dans le texte — elle est assemblée à l'exécution dans
+   Contacts directs. */
 .contact__privacy {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);                 /* 8 : lock ↔ texte */
   font-family: var(--font-sans);
   font-size: 16px;
   color: var(--ink-muted);
+}
+
+/* Retour d'envoi (6/11, bascule Formgong) — message de statut sous
+   le bouton : « Envoi en cours… » / « Message envoyé — merci ! » /
+   « Échec de l'envoi… ». role="status" côté JSX : annoncé par les
+   lecteurs d'écran, focus en cas d'échec (reprise en lecture).
+   Inter regular 16 : même langage que la ligne Confidentialité.
+   L'écart avec le bouton vient du gap 24 du formulaire (flex
+   column), pas d'une marge — pas de piège du row-gap en fantôme :p
+
+   Trois teintes (7/11, décision rendu) : MUTED pendant l'envoi
+   (neutre, on ne prétend rien), ACCENT au succès (le vert positif
+   de la charte), ROUGE (--error) à l'échec. La couleur est un ÉCHO
+   du résultat, pas le porteur de l'information : le texte dit déjà
+   tout (daltoniens, lecteurs d'écran — WCAG 1.4.1 : la couleur
+   n'est jamais le seul indicateur). */
+.contact__status {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--ink-muted);            /* « Envoi en cours… » : neutre */
+}
+
+.contact__status--success {
+  color: var(--accent);               /* « Message envoyé » : le vert positif */
+}
+
+.contact__status--error {
+  color: var(--error);                /* échec / connexion impossible : le rouge */
+}
+
+/* Focus du statut : programmatique uniquement (tabIndex -1) — pas
+   d'indicateur visible, l'information EST le message, déjà lu. */
+.contact__status:focus-visible {
+  outline: none;
 }
 
 /* Honeypot — hors écran, invisible pour tous les humains */

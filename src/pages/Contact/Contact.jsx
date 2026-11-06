@@ -3,15 +3,31 @@
    desktop 384 (informations) + 96 + 768 (échanges) = 1248 ;
    tablette/mobile : empilés, écart 96 tablette / 48 mobile.
 
-   Section échanges (30/10) — OPTION A : mailto pré-rempli.
-   Le formulaire valide les champs, puis ouvre le client mail du
-   visiteur avec objet et corps remplis. Zéro dépendance, zéro RGPD
-   (les données ne transitent jamais par le site).
+   OPTION B BASCULÉE (6/11) — FORMGONG, récepteur UE.
+   Décisions (charte, 6/11) : pas de récepteur français existant ;
+   Formgong retenu pour juridiction UE explicite (vs Formcarry :
+   data centers UE mais société US → CLOUD Act), 1000 envois/mois
+   gratuits, honeypot + heuristiques de base sur toute soumission.
+   Réglages posés côté Formgong : Turnstile DÉSACTIVÉ (pas de
+   script Cloudflare sur le site), « signaux du navigateur »
+   DÉSACTIVÉS (notre fetch maison ne passerait pas leurs filtres),
+   conservation 30 jours, notifications e-mail immédiates vers
+   contact@diwey.dev, vérifications serveur : nom (texte,
+   obligatoire), email (format e-mail), message (texte,
+   obligatoire) — les attributs name du JSX restent français.
 
-   BASCULE VERS L'OPTION B (Formspree, évoquée avec le mentor
-   mercredi) : remplacer le corps de handleSubmit par un fetch vers
-   l'endpoint, ajouter les états (envoi, succès, erreur) et une
-   ligne RGPD sous le bouton. Le JSX et les styles ne bougent pas. */
+   Le POST part en FormData vers https://formgong.com/submit avec
+   l'access_key (PUBLIQUE par design, comme l'URL d'un formulaire
+   Formspree — ce n'est pas un secret) et _lang=fr pour que les
+   messages serveur arrivent en français. Honeypot : le champ
+   « botcheck » (le nom reconnu par Formgong), gardé AUSSI côté
+   client — rempli = bot = silence radio, on n'envoie même pas.
+
+   Zéro script tiers chargé : pas de fg.js (analytics e-commerce,
+   inutile ici), pas de Turnstile. Le JS assemblé de l'adresse
+   e-mail (section Informations) reste en place : le mailto
+   disparaît du FORMULAIRE, pas de la page. */
+import { useEffect, useRef, useState } from 'react';
 import CtaButton from '../../components/CtaButton/CtaButton';
 
 /* Anti-bots : l'adresse est assemblée à l'exécution — ni le href
@@ -20,27 +36,101 @@ const MAIL_USER = 'contact';
 const MAIL_TLD = 'diwey.dev';
 const MAIL_TO = `${MAIL_USER}@${MAIL_TLD}`;
 
-/* Option A : validation native (required, type=email) puis mailto
-   pré-rempli. Le honeypot filtre les bots : le champ caché ne doit
-   jamais être rempli par un humain — s'il l'est, silence radio. */
-function handleSubmit(event) {
-  event.preventDefault();
-  const data = new FormData(event.currentTarget);
-
-  if (data.get('entreprise')) return; // honeypot rempli → bot : on ne fait rien
-
-  const nom = data.get('nom');
-  const email = data.get('email');
-  const message = data.get('message');
-
-  const sujet = `Contact depuis diwey.dev — ${nom}`;
-  const corps = `Message de ${nom} (${email}) :\n\n${message}`;
-
-  window.location.href =
-    `mailto:${MAIL_TO}?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`;
-}
+/* Formgong — endpoint générique + access_key publique. */
+const FORM_ENDPOINT = 'https://formgong.com/submit';
+const FORM_ACCESS_KEY = 'fk_wGF7WJufhE4AUSZdkboRzFkT';
 
 export default function Contact() {
+  /* Machine à états : idle → sending → (success | error).
+     Le message de retour prend le focus en cas d'échec —
+     retour clavier/lecteur d'écran, emprunté au snippet
+     officiel Formgong (leur a11y était bonne, on la garde). */
+  const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [status, setStatus] = useState('');
+  const [errors, setErrors] = useState({});
+  const feedback = useRef(null);
+
+  useEffect(() => {
+    if (failed && status) feedback.current?.focus();
+  }, [failed, status]);
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    if (busy) return; // double-clic pendant l'envoi → rien
+
+    const form = event.currentTarget;
+    const data = new FormData(form);
+
+    /* Honeypot côté client : un humain ne voit ni n'atteint ce
+       champ (aria-hidden + tabIndex -1). Rempli = bot → on
+       n'envoie rien, silence radio. */
+    if (data.get('botcheck')) return;
+
+    /* Validation maison (6/11) — noValidate côté JSX : plus
+       d'infobulle native (« Veuillez compléter ce champ », non
+       stylable, elle appartient au navigateur). checkValidity()
+       fonctionne toujours sans l'UI native : valueMissing (champ
+       vide) et typeMismatch (e-mail mal formé) sont lus depuis
+       ValidityState, rien à réinventer. Message : rouge 12 sur la
+       ligne du label, justifié à droite (voir _contact.scss).
+       Focus sur le premier champ en erreur : remplace le
+       comportement natif perdu avec noValidate (a11y). */
+    const next = {};
+    for (const field of form.elements) {
+      if (!field.name) continue;
+      if (field.validity.valueMissing) {
+        next[field.name] = 'Complétez ce champ';
+      } else if (field.name === 'email' && field.validity.typeMismatch) {
+        next[field.name] = 'Adresse e-mail invalide';
+      }
+    }
+    if (Object.keys(next).length) {
+      setErrors(next);
+      form.querySelector(`[name="${Object.keys(next)[0]}"]`)?.focus();
+      return;
+    }
+    setErrors({});
+
+    setBusy(true);
+    setFailed(false);
+    setStatus('Envoi en cours…');
+
+    try {
+      const body = new FormData(form);
+      body.set('access_key', FORM_ACCESS_KEY);
+      body.set('_lang', 'fr');
+
+      const response = await fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body,
+      });
+      const result = await response.json();
+
+      setFailed(!result.success);
+      setStatus(
+        result.success
+          ? 'Message envoyé — merci ! Réponse sous 48 heures.'
+          : result.message || 'Échec de l’envoi. Veuillez réessayer.'
+      );
+      if (result.success) form.reset();
+    } catch {
+      /* Réseau coupé, serveur injoignable… */
+      setFailed(true);
+      setStatus('Connexion impossible. Veuillez réessayer.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  /* Efface l'erreur du champ dès que la personne retape dedans :
+     le message est un rappel, pas une punition :p */
+  function handleFieldChange(event) {
+    const { name } = event.target;
+    if (name && errors[name]) setErrors({ ...errors, [name]: '' });
+  }
+
   return (
     <main className="page contact">
       <h1>Me contacter</h1>
@@ -53,7 +143,9 @@ export default function Contact() {
             <span className="contact__rule" aria-hidden="true"></span>
           </div>
 
-          {/* Bloc mail — libellé puis valeur cliquable */}
+          {/* Bloc mail — libellé puis valeur cliquable. Le mailto
+              reste ici : ouvrir le client mail du visiteur est le
+              rôle naturel d'une adresse affichée. */}
           <div className="contact__mail">
             <div className="contact__label">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
@@ -103,50 +195,78 @@ export default function Contact() {
             via le formulaire — je réponds sous 48 heures.
           </p>
 
-          <form className="contact__form" onSubmit={handleSubmit} noValidate={false}>
-            {/* Honeypot anti-bots — jamais visible, jamais rempli par un humain.
-                Les lecteurs d'écran l'ignorent (aria-hidden), le clavier aussi (tabIndex -1). */}
+          {/* noValidate : l'infobulle native est remplacée par nos
+              messages rouges sur la ligne des labels (6/11).
+              onChange : efface l'erreur du champ retapé. */}
+          <form className="contact__form" onSubmit={handleSubmit}
+                noValidate onChange={handleFieldChange} aria-busy={busy}>
+            {/* Honeypot anti-bots — jamais visible, jamais rempli par un
+                humain. Les lecteurs d'écran l'ignorent (aria-hidden), le
+                clavier aussi (tabIndex -1). « botcheck » est le nom que
+                Formgong reconnaît côté serveur (leur pipeline anti-spam). */}
             <div className="contact__honeypot" aria-hidden="true">
-              <label htmlFor="entreprise">Ne pas remplir ce champ</label>
-              <input id="entreprise" name="entreprise" type="text"
+              <label htmlFor="botcheck">Ne pas remplir ce champ</label>
+              <input id="botcheck" name="botcheck" type="text"
                      tabIndex={-1} autoComplete="off" />
             </div>
 
             <div className="contact__field">
-              <label htmlFor="nom">Votre nom</label>
+              <div className="contact__field-head">
+                <label htmlFor="nom">Votre nom</label>
+                {errors.nom && (
+                  <span className="contact__field-error" id="nom-error">{errors.nom}</span>
+                )}
+              </div>
               <input className="contact__input" id="nom" name="nom" type="text"
                      placeholder="Comment vous appelez-vous ?"
-                     required autoComplete="name" />
+                     required autoComplete="name"
+                     aria-invalid={errors.nom ? 'true' : undefined}
+                     aria-describedby={errors.nom ? 'nom-error' : undefined} />
             </div>
 
             <div className="contact__field">
-              <label htmlFor="email">Votre e-mail</label>
+              <div className="contact__field-head">
+                <label htmlFor="email">Votre e-mail</label>
+                {errors.email && (
+                  <span className="contact__field-error" id="email-error">{errors.email}</span>
+                )}
+              </div>
               <input className="contact__input" id="email" name="email" type="email"
                      placeholder="vous@exemple.fr"
-                     required autoComplete="email" />
+                     required autoComplete="email"
+                     aria-invalid={errors.email ? 'true' : undefined}
+                     aria-describedby={errors.email ? 'email-error' : undefined} />
             </div>
 
             <div className="contact__field">
-              <label htmlFor="message">Votre message</label>
+              <div className="contact__field-head">
+                <label htmlFor="message">Votre message</label>
+                {errors.message && (
+                  <span className="contact__field-error" id="message-error">{errors.message}</span>
+                )}
+              </div>
               <textarea className="contact__input contact__input--area"
                         id="message" name="message" required rows={5}
-                        placeholder="Votre idée, vos besoins, vos questions…" />
+                        placeholder="Votre idée, vos besoins, vos questions…"
+                        aria-invalid={errors.message ? 'true' : undefined}
+                        aria-describedby={errors.message ? 'message-error' : undefined} />
             </div>
 
-            {/* Confidentialité — ironique en Option A (mailto : rien ne
-                transite), mais vraie dès la bascule Option B (Formspree). */}
+            {/* Confidentialité — VRAIE depuis la bascule (6/11) : le message
+                transite par un tiers (Formgong, UE), la mention le dit
+                honnêtement. Pas d'adresse en clair ici : elle est assemblée
+                à l'exécution dans Contacts directs, cette ligne ne la répète
+                pas dans le DOM servi. Pas d'icône : le cadenas apportait
+                peu (16px, muted), le texte se suffit (6/11). */}
             <div className="contact__privacy">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
-                   stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                   strokeLinejoin="round" aria-hidden="true">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-              <span>Vos informations servent uniquement à vous répondre.</span>
+              <span>
+                Votre message transite par Formgong (Union européenne) et me
+                parvient sur mon email de contact. Il sert uniquement à vous répondre.
+              </span>
             </div>
 
-            <CtaButton type="submit" variant="primary" size="lg">
-              Envoyer le message
+            <CtaButton type="submit" variant="primary" size="lg" disabled={busy}>
+              {busy ? 'Envoi en cours…' : 'Envoyer le message'}
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
                    stroke="currentColor" strokeWidth="2" strokeLinecap="round"
                    strokeLinejoin="round" aria-hidden="true">
@@ -154,6 +274,27 @@ export default function Contact() {
                 <path d="M7 7h10v10" />
               </svg>
             </CtaButton>
+
+            {/* Retour d'envoi — role="status" : annoncé par les lecteurs
+                d'écran. Focus en cas d'échec (voir useEffect).
+                Trois teintes (7/11) : neutre pendant l'envoi (muted),
+                ACCENT au succès, rouge (--error) à l'échec. La
+                couleur est un écho du résultat, pas le seul porteur :
+                le texte dit déjà tout (daltoniens, lecteurs d'écran). */}
+            <p
+              className={`contact__status${
+                failed
+                  ? ' contact__status--error'
+                  : !busy && status
+                    ? ' contact__status--success'
+                    : ''
+              }`}
+              ref={feedback}
+              role="status"
+              tabIndex={-1}
+            >
+              {status}
+            </p>
           </form>
         </section>
       </div>

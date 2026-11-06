@@ -7,6 +7,9 @@ export default function CtaButton({
   type = "button",     // submit / reset si <button>
   variant = "primary",
   size = "lg",
+  disabled = false,    // (6/11, bascule Formgong) : transmis au <button> —
+                       // désactive le bouton Envoyer pendant l'envoi.
+                       // Inutile sur <Link>/<a> : pas de soumission, pas d'état.
   children,
   className = "",
 }) {
@@ -27,5 +30,5 @@ export default function CtaButton({
     );
   }
 
-  return <button type={type} className={classes}>{children}</button>;
+  return <button type={type} className={classes} disabled={disabled}>{children}</button>;
 }
