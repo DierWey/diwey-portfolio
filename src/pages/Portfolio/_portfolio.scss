@@ -11,6 +11,13 @@
    - desktop ≥1024 : 3 colonnes, gouttière 48 → 3×384 + 2×48 = 1248
    - tablette 768–1023 : 2 colonnes, gouttière 24 → 2×324 + 24 = 672
    - mobile <768 : 1 colonne pleine largeur (carte 327 à 375)
+
+   HAUTEURS AUTO (9/11, inversion de la décision « hauteur commune »
+   du 31/10 — Loftur au rendu) : chaque carte prend la hauteur de
+   son contenu, comme la carte d'identité de l'Accueil. Le
+   grid-auto-rows: 1fr du 31/10 est RETIRÉ et align-items: start
+   remplace le stretch par défaut de la grille. Les rangées
+   s'alignent sur leurs sommets, jamais sur leurs bases.
    ------------------------------------------------------------------ */
 
 .portfolio {
@@ -43,7 +50,12 @@
 .portfolio__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));  /* desktop : 3×384 */
-  grid-auto-rows: 1fr;                  /* hauteur commune : toutes les rangées égales (31/10) */
+  /* HAUTEURS AUTO (9/11) : plus de grid-auto-rows: 1fr (31/10,
+     INVALIDÉ) — chaque rangée prend la hauteur de sa carte la plus
+     haute ; start empêche le stretch par défaut d'étirer les cartes
+     courtes à la hauteur de la rangée. Chaque carte s'arrête où
+     son contenu s'arrête. */
+  align-items: start;
   gap: var(--space-12);                 /* 48 : gouttière desktop */
 }
 

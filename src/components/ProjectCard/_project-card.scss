@@ -1,31 +1,39 @@
 /* ------------------------------------------------------------------
    ProjectCard — socle de la carte projet (grille Portfolio).
 
-   Cotes Figma 31/10 :
+   Cotes Figma 31/10 (label P3 ajouté 9/11) :
    - Aperçu : fond accent-soft, padding 24, totals 384×253 /
      324×221 / 327×223 (desktop/tablette/mobile) — la capture et le
      chrome 32 se partagent l'intérieur sans marge supplémentaire.
-   - Infos : padding 24, 4 blocs (Top/Nom/Description/Bottom)
-     écartés de 16.
+   - Infos : padding 24, 5 blocs (Top/Nom/Description/CTA/Bottom)
+     écartés de 16 — le CTA occupe le gap 16 existant, aucune
+     cote nouvelle pour lui.
    - Rayon 12 constant (31/10) — les 8/10 du prototype sont invalidés.
-   - HAUTEUR COMMUNE (31/10) : les cartes d'une rangée (et de la
-     grille) partagent la même hauteur — le texte ne décide pas.
-     La carte est un flex column, le Bottom est poussé en bas.
+   - HAUTEUR AUTO (9/11, INVERSION de la décision du 31/10) : la
+     carte prend la hauteur de son contenu — l'égalisation des
+     cartes est levée partout : la grille (align-items: start,
+     plus de grid-auto-rows: 1fr) ET l'intérieur (plus de flex: 1
+     sur Infos, plus de margin-top: auto sur le Bottom — les deux
+     n'étaient que les rouages du stretch). Le Bottom suit le
+     flux : c'est la dernière ligne de la carte, collée au CTA
+     par le gap 16, plus un socle plaqué en bas d'un vide.
 
-   Geste de survol (3/11, VALIDÉ) : bordure accent + Nom accent +
-   filet accent qui se déploie de gauche à droite sous le Nom
-   (width 0→100 %, absolute — aucun décalage de layout). Trois
-   signaux assumés : le h2 sémantique devient h2 visuel au survol,
-   et le filet annonce la hiérarchie Portfolio → fiche que le fil
-   d'Ariane confirmera.
+   Geste de survol (9/11, clôture du débat cartes) : bordure
+   accent + Nom accent + pilule du CTA révélée. TROIS signaux,
+   zéro mouvement. Le filet ::after scaleX du 3/11 est RETIRÉ :
+   l'argument « la fiche est une section de la page » est tombé
+   devant Vincent (6/11) — il ne vivait que dans la tête du
+   designer. Le « pourquoi » du clic est porté par le label CTA,
+   visible au repos (tactile inclus) — réponse à sa remarque.
 
-   Le composant ne connaît RIEN de la grille : colonnes, gouttières
-   (48 desktop / 24 tablette / 1 colonne mobile) et égalisation des
-   rangées vivent dans le partial de la page Portfolio.
+   Le composant ne connaît RIEN de la grille : colonnes et
+   gouttières (48 desktop / 24 tablette / 1 colonne mobile) vivent
+   dans le partial de la page Portfolio. L'égalisation des
+   hauteurs n'existe plus nulle part (9/11).
    ------------------------------------------------------------------ */
 
 .card {
-  display: flex;                          /* hauteur commune : column pour pousser le Bottom */
+  display: flex;                          /* colonne : Aperçu puis Infos, dans cet ordre */
   flex-direction: column;
   text-decoration: none;
   background-color: var(--surface);
@@ -35,8 +43,8 @@
   transition: border-color 250ms ease-out;
 }
 
-/* Survol/focus : contour accent — premier des trois signaux.
-   Sans translation : le détail compte, pas le rebond. */
+/* Survol/focus : contour accent — premier signal. Sans translation :
+   le détail compte, pas le rebond. */
 .card:hover,
 .card:focus-visible {
   border-color: var(--accent);
@@ -76,13 +84,14 @@
   color: var(--ink-muted);
 }
 
-/* ---- Informations : 4 blocs écartés de 16 ---- */
+/* ---- Informations : 5 blocs écartés de 16 ---- */
 .card__info {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);                    /* 16 : Top / Nom / Description / Bottom */
+  gap: var(--space-4);                    /* 16 : Top / Nom / Description / CTA / Bottom */
   padding: var(--space-6);                /* 24 */
-  flex: 1;                                 /* hauteur commune : absorbe l'espace, étire jusqu'au bas */
+  /* PAS de flex: 1 (9/11) : il n'y a plus de vide à absorber — la
+     carte prend la hauteur de son contenu, le bloc suit le flux. */
 }
 
 /* Top — badges techno : pilules accent-soft, bord accent, mono 16
@@ -108,16 +117,12 @@
 
 /* Nom — h2 sémantique (WAVE) ; style neutralisé : la base h2 est
    accent + --h2-size — ici ink et 24 constants AU REPOS.
-   Au survol/focus de la carte : le Nom passe accent (il adopte la
-   couleur des headings de la base — le h2 devient visuel) et un
-   filet apparaît À CÔTÉ du Nom — même pattern que les h2 de
-   section (Ma démarche) : le texte, puis le trait qui court
-   jusqu'au bord droit du bloc. Flex : le ::after est un item,
-   transform scaleX évite tout décalage de layout. */
+   Au survol/focus de la carte : le Nom passe accent (deuxième
+   signal — il adopte la couleur des headings de la base).
+   LE FILET ::after DU 3/11 EST RETIRÉ (9/11) : plus de flex, plus
+   de gap 16, plus de scaleX — le Nom redevient un simple libellé,
+   sa coloration suffit à signaler l'interactivité. */
 .card__name {
-  display: flex;                           /* le Nom et le filet partagent la ligne */
-  align-items: center;
-  gap: var(--space-4);                     /* 16 : texte ↔ filet, même écart que le pattern h2+filet des sections */
   font-family: var(--font-serif);
   font-size: 24px;
   font-weight: var(--weight-bold);
@@ -126,34 +131,9 @@
   transition: color var(--transition);    /* 250 ms : changement de couleur */
 }
 
-/* Filet — 2px accent À CÔTÉ du Nom (pattern des sections : le
-   trait court de la fin du texte jusqu'au bord droit du bloc
-   info). flex: 1 = il occupe tout le reste de la ligne ; scaleX
-   0→1 le déploie de gauche à droite (transform : aucun décalage
-   de layout), naissance à 500 ms (--transition-filet : un filet
-   naît plus lentement qu'une couleur ne change — règle du
-   24/10). */
-.card__name::after {
-  content: "";
-  flex: 1;                                  /* de la fin du texte au bord droit du bloc */
-  height: 2px;
-  background-color: var(--accent);
-  transform: scaleX(0);                     /* replié au repos */
-  transform-origin: left;                   /* se déploie depuis le texte vers la droite */
-  transition: transform var(--transition-filet);
-}
-
-/* Survol/focus : Nom accent (deuxième signal), filet déployé
-   (troisième). Le focus clavier voit exactement le geste du
-   survol souris. */
 .card:hover .card__name,
 .card:focus-visible .card__name {
   color: var(--accent);
-}
-
-.card:hover .card__name::after,
-.card:focus-visible .card__name::after {
-  transform: scaleX(1);                     /* le filet se déploie jusqu'au bord droit */
 }
 
 /* Description — Inter ink 16 CONSTANT tous paliers (31/10 :
@@ -166,14 +146,69 @@
   margin: 0;
 }
 
-/* Bottom — filet haut, type + année en space-between, POUSSÉ EN
-   BAS de la carte : hauteur commune, le texte ne décide pas. */
+/* ---- CTA « Voir le projet ↗ » (P3, acté 9/11) ----
+   Ligne propre JUSTIFIÉE À DROITE entre Description et Bottom :
+   la lecture du bloc Infos se ferme sur l'action.
+   - Mono 16 CONSTANT tous paliers (correction Loftur 9/11 soir) :
+     tous les textes de la carte gardent leur taille en desktop,
+     tablette ET mobile — même loi que les badges (16), la
+     description (16), le Nom (24) et les metas (12). PAS de
+     token --rank16-size : il descendrait à 12 en mobile et
+     casserait la règle de la carte.
+   - ACCENT au repos : le label dit POURQUOI la carte est cliquable,
+     visible sans survol (tactile, lecteurs d'écran — remarque de
+     Vincent : le survol n'existe pas au tactile).
+   - Pilule-fantôme : bordure 1px TRANSPARENTE + padding 4/8 au
+     REPOS — l'emprise est figée, la révélation au survol ne
+     décale RIEN (leçon des pilules-fantômes).
+   - Au survol de la carte : bordure → accent (troisième signal —
+     le regard va au BUT du clic, pas seulement à la carte).
+   - À l'appui du clic : fond accent-soft — le retour d'appui,
+     même famille que les boutons secondaires.
+   - Aucun mouvement : pas de flèche qui glisse (règle 24/10). */
+.card__cta {
+  align-self: flex-end;                    /* P3 : justifié à droite */
+  display: inline-flex;
+  align-items: center;
+  margin: -5px -9px;                      /* compense bordure 1 + padding 4/8 : la pilule ne mange ni le gap 16 ni la largeur du texte nu */
+  padding: 4px var(--space-2);            /* 4 haut/bas, 8 gauche/droite — même loi que les badges */
+  font-family: var(--font-mono);
+  font-size: 16px;                         /* LITTÉRAL, constant tous paliers — la carte ne descend pas (correction 9/11) */
+  color: var(--accent);
+  border: 1px solid transparent;           /* permanente — jamais absente : zéro décalage de layout */
+  border-radius: var(--radius);            /* 6 : le rayon des boutons de la charte */
+  transition: border-color var(--transition),
+              background-color var(--transition);
+}
+
+/* Flèche ornementale — aria-hidden côté JSX, jamais lue. Écart 16
+   du libellé (même loi libellé↔flèche que les CtaButton). */
+.card__cta-arrow {
+  margin-left: var(--space-4);            /* 16 */
+}
+
+/* Survol/focus de la carte : la pilule se révèle — troisième
+   signal. Le focus clavier voit exactement le geste du survol. */
+.card:hover .card__cta,
+.card:focus-visible .card__cta {
+  border-color: var(--accent);
+}
+
+/* Appui du clic : retour d'appui en accent-soft — la carte entière
+   étant le lien, :active vit sur .card. */
+.card:active .card__cta {
+  background-color: var(--accent-soft);
+}
+
+/* Bottom — filet haut, type + année en space-between. DERNIÈRE
+   LIGNE DU FLUX (9/11) : plus de margin-top: auto — il ne reste
+   plus de vide à combler depuis la levée de la hauteur commune.
+   La carte s'arrête 8px sous les metas. */
 .card__footer {
   display: flex;
   justify-content: space-between;
   padding-top: var(--space-2);            /* 8 : entre le filet et les textes */
   border-top: 1px solid var(--line);
-  margin-top: auto;                       /* colle le footer au bas, quelle que soit la longueur du texte */
 }
 
 /* Repères mono du Bottom : 12px LITTÉRAL (plancher, même loi que
