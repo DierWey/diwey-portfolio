@@ -45,9 +45,12 @@
      sont invalidés), SANS ombre portée.
      Capture adaptative (décision 21/10) : ratios par palier —
      desktop 16:10 (1248×780) / tablette 3:4 (672×896) /
-     mobile 9:16 (327×581, corrigé 6/11). Zone accent-soft en
-     attendant les .webp (tranche 6/11 : placeholder d'abord,
-     import.meta.glob après). */
+     mobile 9:16 (327×581, corrigé 6/11). Chantier captures
+     (10/11) : la vraie image (.project-detail__image) et le
+     placeholder (.project-detail__capture) partagent LES MÊMES
+     ratios par palier — aucune saute de layout au remplacement,
+     projet par projet. */
+
   &__frame {
     background: var(--surface);
     border: 1px solid var(--line);
@@ -55,6 +58,30 @@
     overflow: hidden;
   }
 
+  /* ---- Capture réelle (chantier captures 10/11) ----
+     Le <picture> remplit la zone aux ratios du palier.
+     object-fit: cover = GARDE-FOU durable (même loi que le
+     carousel et la carte) : replis de palier aux ratios
+     différents pendant le chantier → recadrage centré, pas de
+     déformation ni de letterbox ; no-op une fois les fichiers
+     d'un palier en place. */
+  &__image {
+    display: flex;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+  }
+
+  &__image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ---- Placeholder : repli officiel du chantier captures ----
+     Zone accent-soft tant que les .webp du projet n'existent
+     pas ; à retirer à la fin des 6 projets, avec sa
+     contrepartie JSX. */
   &__capture {
     aspect-ratio: 16 / 10;
     background: var(--accent-soft);
@@ -70,10 +97,12 @@
   }
 
   @media (max-width: 1023px) {
+    &__image { aspect-ratio: 3 / 4; }
     &__capture { aspect-ratio: 3 / 4; }
   }
 
   @media (max-width: 767px) {
+    &__image { aspect-ratio: 9 / 16; }
     &__capture { aspect-ratio: 9 / 16; }
   }
 
@@ -232,8 +261,8 @@
      Carte : surface, bordure line, rayon 12, padding 24 tous paliers.
      STICKY en desktop uniquement (top = marge de page) ; en
      mono-colonne (tablette/mobile), l'aside vit dans le flux ENTRE
-     le bloc desc+badges et la section Contexte : 48 tablette,
-     32 mobile autour de lui. Label : mono 24 ink-muted centré
+     le bloc desc+badges et la section Contexte : 48 tablette, 32
+     mobile autour de lui. Label : mono 24 ink-muted centré
      MAJUSCULES (texte en casse normale dans le DOM, transform CSS) ;
      16 mobile (littéral, échelle propre). Clés mono rang 16
      ink-muted ↔ valeurs Inter rang 16 ink, séparées de 8 dans le

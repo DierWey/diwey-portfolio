@@ -34,6 +34,33 @@
   text-decoration: none;
 }
 
+/* ---- Capture réelle (chantier captures 9/11) ----
+   Le <picture> remplit exactement la zone que le placeholder
+   occupait : pleine largeur, étiré en hauteur (le cadre fixe le
+   total, la capture suit). Les fichiers sont aux cotes exactes
+   par palier — le ratio vient d'eux.
+   object-fit: cover = GARDE-FOU de chantier : tant que les replis
+   servent (ex. desktop @2x seul → servi en tablette/mobile, de
+   ratios différents), cover recadre centré au lieu de déformer
+   ou de letterboxer. No-op une fois les 18 fichiers en place —
+   mais il ne mange rien, on ne l'enlève pas : la résilience
+   du résolveur est une règle durable, pas un état transitoire. */
+.carousel__image {
+  display: flex;
+  width: 100%;
+  align-self: stretch;
+}
+
+.carousel__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- Placeholder : visible pour tout projet non encore capturé
+   (repli du chantier — à retirer à la fin des 6 projets, avec
+   sa contrepartie JSX) ---- */
 .carousel__capture {
   display: flex;
   align-items: center;

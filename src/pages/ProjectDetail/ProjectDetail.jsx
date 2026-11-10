@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import BrowserFrame from "../../components/BrowserFrame/BrowserFrame";
 import CtaButton from "../../components/CtaButton/CtaButton";
+import Capture from "../../components/Capture/Capture";
+import { hasCapture } from "../../utils/captures";
 import NotFound from "../NotFound/NotFound";
 import data from "../../data/projects.json";
 
@@ -16,8 +18,11 @@ import data from "../../data/projects.json";
    Structure (relevé 6/11) :
    - Fil d'Ariane (parent cliquable .pill-link, courante accent)
    - Cadre navigateur (BrowserFrame lg) + capture adaptative
-     16:10 / 3:4 / 9:16 — PLACEHOLDER en attendant les .webp
-     (tranche 6/11 : placeholder d'abord, import.meta.glob après)
+     16:10 / 3:4 / 9:16 — Capture réelle si le rôle `preview`
+     existe pour le projet (chantier captures 10/11), placeholder
+     sinon — retrait progressif, projet par projet, comme le
+     carousel et la carte. alt="" : le h1 porte le nom, la capture
+     est décorative, elle ne répète rien au lecteur d'écran.
    - h1 pleine largeur (title complet du JSON)
    - Grille 2 colonnes desktop / 1 colonne tablette-mobile :
      DOM en ordre mono-colonne (intro → fiche technique → sections),
@@ -75,18 +80,26 @@ function ProjectDetail() {
         <span className="project-detail__crumbs-current">{name}</span>
       </nav>
 
-      {/* Cadre navigateur + capture adaptative.
-          PLACEHOLDER — captures réelles à venir (convention 30/10 :
-          src/assets/pictures/{slug}/preview-{palier}.webp + @2x,
-          1248×780 / 672×896 / 327×581, art direction via <picture> ;
-          résolution import.meta.glob APRÈS, tranche 6/11). */}
+      {/* Cadre navigateur + capture adaptative (chantier captures
+          10/11) : le rôle `preview` sert la vraie image si elle
+          existe pour ce projet, le placeholder sinon — pilote
+          ohmyfood d'abord, retrait progressif pour les 5 autres. */}
       <div className="project-detail__frame">
         <BrowserFrame slug={project.slug} size="lg">
-          <div className="project-detail__capture">
-            <span className="project-detail__capture-placeholder">
-              capture — à venir
-            </span>
-          </div>
+          {hasCapture(project.slug, "preview") ? (
+            <Capture
+              slug={project.slug}
+              role="preview"
+              alt=""
+              className="project-detail__image"
+            />
+          ) : (
+            <div className="project-detail__capture">
+              <span className="project-detail__capture-placeholder">
+                capture — à venir
+              </span>
+            </div>
+          )}
         </BrowserFrame>
       </div>
 

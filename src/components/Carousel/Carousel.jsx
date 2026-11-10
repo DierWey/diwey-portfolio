@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import data from '../../data/projects.json';
 import BrowserFrame from '../BrowserFrame/BrowserFrame';
+import Capture from '../Capture/Capture';
+import { hasCapture } from '../../utils/captures';
 
 const projects = data.projects;
 
@@ -25,10 +27,24 @@ export default function Carousel() {
             to={`/portfolio/${current.slug}`}
             aria-label={`Voir le projet ${current.title}`}
           >
-            {/* Placeholder en attendant les captures — remplacé par <img> à la brique assets */}
-            <div className="carousel__capture">
-              <span>Capture — {current.title}</span>
-            </div>
+            {/* Capture réelle si le rôle existe pour ce projet (chantier
+                captures, pilote ohmyfood 9/11), placeholder sinon — le
+                neuf remplace le vieux projet par projet, jamais de trou.
+                alt="" : le nom accessible du lien vit dans l'aria-label
+                ci-dessus — l'image ne le répète pas (c'est une capture,
+                pas une information). */}
+            {hasCapture(current.slug, 'carousel') ? (
+              <Capture
+                slug={current.slug}
+                role="carousel"
+                alt=""
+                className="carousel__image"
+              />
+            ) : (
+              <div className="carousel__capture">
+                <span>Capture — {current.title}</span>
+              </div>
+            )}
           </Link>
         </BrowserFrame>
       </div>

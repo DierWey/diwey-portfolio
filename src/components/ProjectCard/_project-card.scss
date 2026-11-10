@@ -9,14 +9,9 @@
      écartés de 16 — le CTA occupe le gap 16 existant, aucune
      cote nouvelle pour lui.
    - Rayon 12 constant (31/10) — les 8/10 du prototype sont invalidés.
-   - HAUTEUR AUTO (9/11, INVERSION de la décision du 31/10) : la
-     carte prend la hauteur de son contenu — l'égalisation des
-     cartes est levée partout : la grille (align-items: start,
-     plus de grid-auto-rows: 1fr) ET l'intérieur (plus de flex: 1
-     sur Infos, plus de margin-top: auto sur le Bottom — les deux
-     n'étaient que les rouages du stretch). Le Bottom suit le
-     flux : c'est la dernière ligne de la carte, collée au CTA
-     par le gap 16, plus un socle plaqué en bas d'un vide.
+   - HAUTEUR COMMUNE (31/10) : les cartes d'une rangée (et de la
+     grille) partagent la même hauteur — le texte ne décide pas.
+     La carte est un flex column, le Bottom est poussé en bas.
 
    Geste de survol (9/11, clôture du débat cartes) : bordure
    accent + Nom accent + pilule du CTA révélée. TROIS signaux,
@@ -26,14 +21,13 @@
    designer. Le « pourquoi » du clic est porté par le label CTA,
    visible au repos (tactile inclus) — réponse à sa remarque.
 
-   Le composant ne connaît RIEN de la grille : colonnes et
-   gouttières (48 desktop / 24 tablette / 1 colonne mobile) vivent
-   dans le partial de la page Portfolio. L'égalisation des
-   hauteurs n'existe plus nulle part (9/11).
+   Le composant ne connaît RIEN de la grille : colonnes, gouttières
+   (48 desktop / 24 tablette / 1 colonne mobile) et égalisation des
+   rangées vivent dans le partial de la page Portfolio.
    ------------------------------------------------------------------ */
 
 .card {
-  display: flex;                          /* colonne : Aperçu puis Infos, dans cet ordre */
+  display: flex;                          /* hauteur commune : column pour pousser le Bottom */
   flex-direction: column;
   text-decoration: none;
   background-color: var(--surface);
@@ -66,9 +60,28 @@
   overflow: hidden;
 }
 
-/* Capture : zone remplie par l'image du BrowserFrame (flux flex du
-   composant) — aucune hauteur en code, le ratio de l'<img> décide.
-   Placeholder visible en attendant les .webp. */
+/* ---- Capture réelle (chantier captures 10/11) ----
+   Le <picture> remplit la zone que le placeholder occupait.
+   object-fit: cover = GARDE-FOU durable (même loi que le carrousel) :
+   replis de palier aux ratios différents pendant le chantier →
+   recadrage centré, pas de déformation ni de letterbox ; no-op
+   une fois les fichiers d'un palier en place. */
+.card__image {
+  display: flex;
+  width: 100%;
+  align-self: stretch;
+}
+
+.card__image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- Placeholder : repli officiel du chantier captures ----
+   Visible pour tout projet non encore capturé ; à retirer à la
+   fin des 6 projets, avec sa contrepartie JSX et le fond --bg. */
 .card__capture {
   display: flex;
   align-items: center;
@@ -90,8 +103,7 @@
   flex-direction: column;
   gap: var(--space-4);                    /* 16 : Top / Nom / Description / CTA / Bottom */
   padding: var(--space-6);                /* 24 */
-  /* PAS de flex: 1 (9/11) : il n'y a plus de vide à absorber — la
-     carte prend la hauteur de son contenu, le bloc suit le flux. */
+  flex: 1;                                 /* hauteur commune : absorbe l'espace, étire jusqu'au bas */
 }
 
 /* Top — badges techno : pilules accent-soft, bord accent, mono 16
@@ -200,15 +212,14 @@
   background-color: var(--accent-soft);
 }
 
-/* Bottom — filet haut, type + année en space-between. DERNIÈRE
-   LIGNE DU FLUX (9/11) : plus de margin-top: auto — il ne reste
-   plus de vide à combler depuis la levée de la hauteur commune.
-   La carte s'arrête 8px sous les metas. */
+/* Bottom — filet haut, type + année en space-between, POUSSÉ EN
+   BAS de la carte : hauteur commune, le texte ne décide pas. */
 .card__footer {
   display: flex;
   justify-content: space-between;
   padding-top: var(--space-2);            /* 8 : entre le filet et les textes */
   border-top: 1px solid var(--line);
+  margin-top: auto;                       /* colle le footer au bas, quelle que soit la longueur du texte */
 }
 
 /* Repères mono du Bottom : 12px LITTÉRAL (plancher, même loi que

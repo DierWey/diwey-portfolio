@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import BrowserFrame from "../BrowserFrame/BrowserFrame";
+import Capture from "../Capture/Capture";
+import { hasCapture } from "../../utils/captures";
 import "./_project-card.scss";
 
 /* ------------------------------------------------------------------
@@ -33,10 +35,8 @@ import "./_project-card.scss";
           interne : ni latérale → ni externe ↗).
        5. Bottom : bordure haute 1px line, padding-top 8, type
           (`role`) + année (`year`) en space-between, mono 12
-          ink-muted — DERNIÈRE LIGNE DU FLUX : la carte prend la
-          hauteur de son contenu (9/11, inversion de la hauteur
-          commune du 31/10 — chaque carte s'arrête où son texte
-          s'arrête, l'égalisation est levée partout)
+          ink-muted — poussé en BAS de la carte (hauteur commune,
+          31/10 : les cartes ne dansent pas selon leur texte)
 
    Geste de survol (revu 9/11, clôture du débat) : bordure accent +
    Nom accent, SANS filet — le ::after scaleX est RETIRÉ (décision
@@ -53,8 +53,12 @@ import "./_project-card.scss";
    - La carte entière est le lien : le CTA est une ligne de texte
      du lien, JAMAIS un lien imbriqué (lien dans lien = HTML
      invalide — la flèche seule est aria-hidden).
-   - La capture est un PLACEHOLDER visible en attendant les .webp
-     (chemin futur : assets/pictures/{slug}/card-{palier}.webp).
+   - Capture (chantier captures 10/11) : le rôle `card` sert la
+     vraie image si elle existe pour le projet, le placeholder
+     sinon — retrait progressif, projet par projet, comme le
+     carousel. alt="" : le nom accessible du lien vit dans ses
+     textes (Nom + CTA), la capture est décorative, elle ne
+     répète rien au lecteur d'écran.
    ------------------------------------------------------------------ */
 export default function ProjectCard({ project }) {
   const { slug, title, stack, role, year, desc } = project;
@@ -69,11 +73,16 @@ export default function ProjectCard({ project }) {
         {/* BrowserFrame : la prop est `url` (chaîne complète), pas `slug` —
             la carte construit l'adresse {slug}.diwey.dev elle-même */}
         <BrowserFrame size="sm" url={`${slug}.diwey.dev`}>
-          {/* Placeholder capture — remplacer par <picture>/<img>
-              (336×173 / 276×141 / 279×143) + srcset 1x/2x */}
-          <div className="card__capture">
-            <span className="card__placeholder">card.webp — {name}</span>
-          </div>
+          {/* Capture réelle si le rôle existe pour ce projet (chantier
+              captures, pilote ohmyfood 10/11), placeholder sinon —
+              le neuf remplace le vieux projet par projet. */}
+          {hasCapture(slug, "card") ? (
+            <Capture slug={slug} role="card" alt="" className="card__image" />
+          ) : (
+            <div className="card__capture">
+              <span className="card__placeholder">card.webp — {name}</span>
+            </div>
+          )}
         </BrowserFrame>
       </div>
 
@@ -104,8 +113,7 @@ export default function ProjectCard({ project }) {
           Voir le projet<span className="card__cta-arrow" aria-hidden="true">↗</span>
         </p>
 
-        {/* Bottom — type (`role`) + année : dernière ligne du flux
-            (hauteur auto de la carte, 9/11 — plus poussée en bas) */}
+        {/* Bottom — type (`role`) + année, collé au bas de la carte */}
         <div className="card__footer">
           <span className="card__meta">{role}</span>
           <span className="card__meta">{year}</span>
