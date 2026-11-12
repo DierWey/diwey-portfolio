@@ -277,8 +277,8 @@ export default function Contact() {
 
             {/* Retour d'envoi — role="status" : annoncé par les lecteurs
                 d'écran. Focus en cas d'échec (voir useEffect).
-                Trois teintes (7/11) : neutre pendant l'envoi (muted),
-                ACCENT au succès, rouge (--error) à l'échec. La
+                Trois teintes (7/11) : neutre pendant l'envoi (--muted),
+                vert au succès (--accent), rouge (--error) à l'échec. La
                 couleur est un écho du résultat, pas le seul porteur :
                 le texte dit déjà tout (daltoniens, lecteurs d'écran). */}
             <p
