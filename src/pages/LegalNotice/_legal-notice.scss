@@ -1,0 +1,65 @@
+/* ============================================================
+   Le détail compte — page Mentions légales
+   Route : /mentions-legales. Gabarit identique à Privacy (12/11) :
+   texte ANCRÉ À GAUCHE, 816 max — règle des chapeaux (24/10),
+   comme portfolio__lede. Jamais centré : cohérence avec toutes
+   les pages du site. Texte courant via --body-size (24→16 mobile),
+   la règle du site. La duplication avec _privacy.scss est
+   ACCEPTÉE : deux pages qui ne bougeront plus — extraire un
+   gabarit partagé coûterait plus d'indirection que ces deux
+   fichiers ne coûtent de duplication (à rouvrir si une 3e page
+   légale voit le jour : statut, CGU…).
+   ============================================================ */
+
+.legal-notice {
+
+  /* ---- Titre + ligne de mise à jour (même pattern que Privacy) ---- */
+  &__title {
+    margin: 0 0 var(--space-4);
+  }
+
+  &__updated {
+    font-family: var(--font-mono);
+    font-size: var(--rank16-size);
+    color: var(--ink-muted);
+    text-align: center;
+    margin: 0 0 var(--space-12);
+  }
+
+  /* ---- Sections : gauche, 816 max (règle des chapeaux), pleine
+     largeur tablette/mobile par la seule contrainte 816. ---- */
+  &__section {
+    max-width: 816px;
+    margin-bottom: var(--space-12);
+
+    &:last-child { margin-bottom: 0; }
+  }
+
+  &__section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin: 0 0 var(--h2-size) 0;
+
+    &::after {
+      content: "";
+      flex: 1;
+      height: 2px;
+      background: var(--accent);
+    }
+  }
+
+  /* ---- Texte courant : --body-size (24→16 mobile), règle du site
+     (voir _privacy.scss) ; line-height 1.5 héritée du body. ---- */
+  &__text {
+    color: var(--ink);
+    margin: 0 0 var(--space-4);
+
+    &:last-child { margin-bottom: 0; }
+  }
+
+  @media (max-width: 767px) {
+    &__section { margin-bottom: var(--space-8); }
+    &__updated { margin-bottom: var(--space-8); }
+  }
+}

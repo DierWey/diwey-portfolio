@@ -1,0 +1,86 @@
+/* ============================================================
+   Le détail compte — page Confidentialité
+   Route : /confidentialite. Toutes les cotes de cette page sont
+   locales (règle de colocalisation) — la base fournit le h1
+   (centré, serif accent 48→40), le corps (Inter, line-height 1.5)
+   et le conteneur .page (marges et largeurs par palier).
+   ============================================================ */
+
+.privacy {
+
+  /* ---- Titre + ligne de mise à jour ------------------------------
+     h1 centré (base) ; la ligne « Dernière mise à jour » vit
+     dessous, mono rang 16, muted, centrée — repère discret qui
+     prouve que la page est tenue à jour. h1 → chapeau : 48 via la
+     marge de la ligne (48 = --space-12, écart inter-blocs). */
+  &__title {
+    margin: 0 0 var(--space-4);
+  }
+
+  &__updated {
+    font-family: var(--font-mono);
+    font-size: var(--rank16-size);
+    color: var(--ink-muted);
+    text-align: center;
+    margin: 0 0 var(--space-12);
+  }
+
+  /* ---- Chapeau — règle des chapeaux (24/10), comme portfolio__lede :
+     816 max (2 colonnes + 1 écart), corps Inter body-size (24→16),
+     line-height 1.6, ANCRÉ À GAUCHE (jamais centré — cohérence
+     avec toutes les pages du site). Pleine largeur tablette/mobile
+     par la seule contrainte : 816 dépassé = pleine marge. */
+  &__intro {
+    max-width: 816px;
+    font-size: var(--body-size);
+    line-height: 1.6;
+    color: var(--ink);
+    margin: 0 0 var(--space-12);
+  }
+
+  /* ---- Sections ----------------------------------------------------
+     Même ancrage que le chapeau : gauche, 816 max — le texte
+     démarre à la marge du site, comme partout. Inter-sections :
+     48 desktop/tablette, 32 mobile. Espace sous le h2 = h2-size
+     (32 → 24 mobile) — loi auto-similaire. Filet 2px accent
+     jusqu'au bord droit de la colonne — pattern Démarche/fiche. */
+  &__section {
+    max-width: 816px;
+    margin-bottom: var(--space-12);
+
+    &:last-child { margin-bottom: 0; }
+  }
+
+  &__section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin: 0 0 var(--h2-size) 0;
+
+    &::after {
+      content: "";
+      flex: 1;
+      height: 2px;
+      background: var(--accent);
+    }
+  }
+
+  /* ---- Texte courant ------------------------------------------------
+     RÈGLE DU SITE (Accueil, Portfolio…) : corps Inter via
+     --body-size — 24 desktop/tablette, 16 mobile (le token
+     descend tout seul, aucune media query ici). Line-height 1.5
+     héritée du body. Une page légale se lit comme le reste du
+     site — le « fine print » n'est pas une raison de déroger. */
+  &__text {
+    color: var(--ink);
+    margin: 0 0 var(--space-4);
+
+    &:last-child { margin-bottom: 0; }
+  }
+
+  @media (max-width: 767px) {
+    &__section { margin-bottom: var(--space-8); }
+    &__updated { margin-bottom: var(--space-8); }
+    &__intro { margin-bottom: var(--space-8); }
+  }
+}

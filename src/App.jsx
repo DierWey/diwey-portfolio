@@ -5,6 +5,8 @@ import Home from './pages/Home/Home.jsx';
 import Portfolio from './pages/Portfolio/Portfolio.jsx';
 import ProjectDetail from './pages/ProjectDetail/ProjectDetail.jsx';
 import Contact from './pages/Contact/Contact.jsx';
+import LegalNotice from './pages/LegalNotice/LegalNotice.jsx';
+import Privacy from './pages/Privacy/Privacy.jsx';
 import NotFound from './pages/NotFound/NotFound.jsx';
 
 export default function App() {
@@ -17,6 +19,8 @@ export default function App() {
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/portfolio/:slug" element={<ProjectDetail />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/mentions-legales" element={<LegalNotice />} />
+          <Route path="/confidentialite" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

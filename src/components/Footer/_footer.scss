@@ -1,8 +1,17 @@
 /* ============================================================
-   Footer — 3 blocs (Copyright, Liens, Ancre), fond accent-soft.
-   Desktop : 1 ligne. Tablette : Liens / Copyright+Ancre.
-   Mobile : 1 bloc par ligne. Réordre en grid-template-areas
-   (HTML sémantique inchangé). Filets 16 + 1 + 16 en empilé.
+   Footer — 4 blocs (Copyright, Liens, Ancre, Pages légales),
+   fond accent-soft.
+   Desktop : 1 ligne + légales. Tablette : Liens / Copyright+Ancre
+   / Légales. Mobile : 1 bloc par ligne.
+   Réordre en grid-template-areas (HTML sémantique inchangé).
+   Filets 16 + 1 + 16 en empilé.
+   Pages légales — VARIANTE B (tranchée avec Vincent, 12/11) :
+   paire en space-between pleine largeur, dernière ligne TOUS
+   paliers (zéro variante par palier). Spec commune actée :
+   mono 12 LITTÉRAL toutes versions (fine print, plancher
+   assumé pour des liens légaux), ink-muted, hover accent,
+   sans pilule, sans filet, écart 16 au-dessus (le row-gap de
+   la grille, pas une marge dédiée).
    ============================================================ */
 
 .footer {
@@ -15,7 +24,9 @@
   margin-inline: auto;
   padding-inline: var(--page-margin-x);
   display: grid;
-  grid-template-areas: "copyright links top";
+  grid-template-areas:
+    "copyright links top"
+    "legal legal legal";
   grid-template-columns: auto 1fr auto;
   align-items: center;
   column-gap: var(--space-8);
@@ -60,12 +71,39 @@
   justify-self: end;
 }
 
-/* ---- Tablette : Liens pleine largeur, puis Copyright + Ancre ---- */
+/* ---- Pages légales (variante B) ----------------------------------
+   La paire épouse les marges du site, bord à bord — le row-gap
+   de la grille (16) porte l'écart au-dessus, aucune marge dédiée.
+   PAS de pilule-fantôme ici : les liens légaux sont du fine print
+   discret, pas des interactifs de premier rang — ink-muted au
+   repos, accent au survol, rien d'autre. */
+.footer__legal {
+  grid-area: legal;
+  display: flex;
+  justify-content: space-between;
+}
+
+.footer__legal-link {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.footer__legal-link:hover,
+.footer__legal-link:focus-visible {
+  color: var(--accent);
+}
+
+/* ---- Tablette : Liens pleine largeur, puis Copyright + Ancre,
+       puis Légales ---- */
 @media (max-width: 1023px) {
   .footer__inner {
     grid-template-areas:
       "links links"
-      "copyright top";
+      "copyright top"
+      "legal legal";
     grid-template-columns: 1fr auto;
     row-gap: 0;
   }
@@ -83,6 +121,13 @@
   .footer__link--top {
     padding-top: var(--space-4);           /* 16 après le filet */
   }
+
+  /* Écart au-dessus des légales : 16 via padding-top (le row-gap
+     est à 0 en tablette/mobile — les écarts des autres lignes sont
+     portés par les filets, la ligne légale n'en a pas : marge dédiée) */
+  .footer__legal {
+    padding-top: var(--space-4);
+  }
 }
 
 /* ---- Mobile : 1 bloc par ligne ---- */
@@ -91,7 +136,8 @@
     grid-template-areas:
       "links"
       "copyright"
-      "top";
+      "top"
+      "legal";
     grid-template-columns: 1fr;
     row-gap: 0;
   }
@@ -122,5 +168,11 @@
   .footer__link--top {
     justify-self: center;
     margin-top: var(--space-4);
+  }
+
+  /* Légales : même loi qu'aux autres paliers — space-between,
+     16 au-dessus via padding-top (après le retour en haut) */
+  .footer__legal {
+    padding-top: var(--space-4);
   }
 }

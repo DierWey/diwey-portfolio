@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Footer() {
   return (
     <footer className="footer">
@@ -23,6 +25,20 @@ export default function Footer() {
           Retour en haut
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>
         </a>
+
+        {/* Pages légales — variante B (tranchée avec Vincent, 12/11) :
+            paire space-between pleine largeur, dernière ligne du footer.
+            Link react-router (navigation interne, pas d'ancre href),
+            nav séparé : les liens externes et les pages du site ne sont
+            pas la même nature de navigation. */}
+        <nav className="footer__legal" aria-label="Informations légales">
+          <Link className="footer__legal-link" to="/mentions-legales">
+            Mentions légales
+          </Link>
+          <Link className="footer__legal-link" to="/confidentialite">
+            Confidentialité
+          </Link>
+        </nav>
       </div>
     </footer>
   );
