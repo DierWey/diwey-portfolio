@@ -97,7 +97,7 @@
       "approach": "Une étude de cas avant/après : le diagnostic précède la correction, chaque modification est documentée dans le rapport, et l'effet est mesuré à l'audit Lighthouse et WAVE. L'objectif est mesurable ou il n'existe pas.",
       "features": [
         "Images redimensionnées et converties en WebP — le poids passe de 30,08 MB à 1,20 MB",
-        "Fichiers minifiés réellement chargés par le HTML (bootstrap.css, bootstrap.bundle.js)",
+        "Fichiers minifiés réellement chargés par le HTML",
         "SEO : balise title et meta description ajoutées, hiérarchie hn corrigée, attributs alt sur les 12 images",
         "Accessibilité : balises sémantiques, labels reliés aux inputs, lang=\"fr\", contrastes corrigés (chevrons du carrousel, menu de tri)",
         "Référencement local Schema.org en JSON-LD : adresse, horaires, Instagram — extraits enrichis validés par Google",
