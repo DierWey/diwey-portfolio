@@ -65,7 +65,7 @@
       "year": "2026",
       "level": "React",
       "desc": "Refonte complète d'une plateforme de location entre particuliers : migration du legacy ASP.NET vers une application React, composants réutilisables et routing complet, à partir des maquettes Figma.",
-      "demo": null,
+      "demo": "https://dierwey.github.io/site-kasa/",
       "repo": "https://github.com/DierWey/site-kasa",
       "context": "Kasa, leader français de la location d'appartements entre particuliers (plus de 500 annonces par jour), demande une refonte totale de son site vieux de dix ans (code legacy ASP.NET) et une migration vers une stack JavaScript avec React côté front-end. Ma mission : développer l'ensemble de l'application front — composants React et routes React Router — en suivant les maquettes Figma responsives. Le back-end n'étant pas encore recruté, les 20 dernières annonces extraites en JSON servent de données réalistes en attendant l'API.",
       "approach": "Application React montée avec Vite selon les coding guidelines de Kasa. Découpage en composants aligné sur la logique de composants du Figma, routing React Router avec paramètres d'URL, données logement isolées dans une couche mockée prête à brancher sur l'API NodeJS à venir.",

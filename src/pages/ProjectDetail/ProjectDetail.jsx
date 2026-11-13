@@ -85,7 +85,7 @@ function ProjectDetail() {
           existe pour ce projet, le placeholder sinon — pilote
           ohmyfood d'abord, retrait progressif pour les 5 autres. */}
       <div className="project-detail__frame">
-        <BrowserFrame slug={project.slug} size="lg">
+        <BrowserFrame url={`${project.slug}.diwey.dev`} size="lg">
           {hasCapture(project.slug, "preview") ? (
             <Capture
               slug={project.slug}
