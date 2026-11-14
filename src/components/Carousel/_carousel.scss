@@ -41,6 +41,15 @@
   text-decoration: none;
 }
 
+/* Focus clavier visible — le slide est un vrai lien, il doit se
+   signaler au Tab comme les flèches : bordure accent, langue du
+   composant. Outline négatif : le cadre porte overflow: hidden,
+   un ring extérieur serait rogné. */
+.carousel__slide:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
 /* ---- Capture réelle ----
    Le <picture> remplit exactement la zone que le placeholder
    occupait : pleine largeur, étiré en hauteur (la zone porte le
