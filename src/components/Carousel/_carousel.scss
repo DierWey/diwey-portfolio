@@ -3,16 +3,16 @@
    Le chrome (32 constant, points 8, pilule URL, fond --line)
    vit dans components/BrowserFrame/browser-frame.scss :
    rien ici ne le restyle, le composant est sa source unique.
-   Cotes (30/10) : cadre 472 / 288 / 232 selon palier
-   (chrome 32 + capture 440/256/200), barre de navigation 64px
-   dans les trois versions. La capture ne fixe JAMAIS sa hauteur :
-   le cadre porte le total, le chrome prend 32, le flux fait le reste.
+
+   La hauteur du cadre n'est PAS fixée : la zone capture porte
+   un aspect-ratio par palier (1248/440, 672/256, 327/200 —
+   les cotes des fichiers @1x), la hauteur suit la largeur.
+   Chrome 32 + barre 64 constants, le flux fait le reste.
    ============================================================ */
 
 .carousel__frame {
   display: flex;
   flex-direction: column;
-  height: 472px;                        /* chrome 32 + capture 440 */
   background-color: var(--surface);
   border: 1px solid var(--line);
   border-radius: 6px 6px 0 0;
@@ -20,10 +20,17 @@
 }
 
 /* BrowserFrame remplit le cadre : ses 32px de chrome en haut,
-   la zone capture prend ce qui reste (440 desktop). */
+   la zone capture prend le reste. */
 .carousel__frame > .browser-frame {
   flex: 1;
   min-height: 0;
+}
+
+/* Zone capture : le ratio gouverne. Le ratio vient des fichiers
+   eux-mêmes — à la largeur de référence du palier, on retrouve
+   les cotes Figma (1248 → 472, 672 → 288, 375 largeur → 232). */
+.carousel__frame .browser-frame__content {
+  aspect-ratio: 1248 / 440;
 }
 
 .carousel__slide {
@@ -34,11 +41,11 @@
   text-decoration: none;
 }
 
-/* ---- Capture réelle (chantier captures 9/11) ----
+/* ---- Capture réelle ----
    Le <picture> remplit exactement la zone que le placeholder
-   occupait : pleine largeur, étiré en hauteur (le cadre fixe le
-   total, la capture suit). Les fichiers sont aux cotes exactes
-   par palier — le ratio vient d'eux.
+   occupait : pleine largeur, étiré en hauteur (la zone porte le
+   ratio, la capture suit). Les fichiers sont aux cotes exactes
+   par palier.
    object-fit: cover = GARDE-FOU de chantier : tant que les replis
    servent (ex. desktop @2x seul → servi en tablette/mobile, de
    ratios différents), cover recadre centré au lieu de déformer
@@ -57,6 +64,7 @@
   height: 100%;
   object-fit: cover;
 }
+
 
 /* ---- Placeholder : visible pour tout projet non encore capturé
    (repli du chantier — à retirer à la fin des 6 projets, avec
@@ -123,16 +131,18 @@
   border-color: var(--accent);
 }
 
-/* ---- Paliers : le cadre seul descend (le chrome est constant) ---- */
+/* ---- Paliers : seul le ratio de la zone capture change
+     (le chrome est constant) ---- */
 @media (max-width: 1023px) {
-  .carousel__frame {
-    height: 288px;                       /* chrome 32 + capture 256 */
+  .carousel__frame .browser-frame__content {
+    aspect-ratio: 672 / 256;
   }
 }
 
+
 @media (max-width: 767px) {
-  .carousel__frame {
-    height: 232px;                       /* chrome 32 + capture 200 */
+  .carousel__frame .browser-frame__content {
+    aspect-ratio: 327 / 200;
   }
 
   .carousel__bar {
