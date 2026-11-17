@@ -329,6 +329,11 @@
     margin: 0;   /* neutralise le rechet dd par défaut */
   }
 
+  &__approach-item::before {
+    content: "— ";
+    color: var(--accent);
+  }
+
   /* Boutons : empilés, 16 entre eux (même bloc, un cran sous les
      24 qui les séparent des blocs de texte). */
   &__sheet-actions {

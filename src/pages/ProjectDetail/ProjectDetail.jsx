@@ -142,7 +142,13 @@ function ProjectDetail() {
             </div>
             <div className="project-detail__sheet-row">
               <dt className="project-detail__sheet-key">Approche</dt>
-              <dd className="project-detail__sheet-value">{project.approach}</dd>
+              <dd className="project-detail__sheet-value">
+                {project.approach.map((point, i) => (
+                  <p key={i} className="project-detail__approach-item">
+                    {point}
+                  </p>
+                ))}
+              </dd>
             </div>
           </dl>
           <div className="project-detail__sheet-actions">
