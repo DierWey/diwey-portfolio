@@ -15,7 +15,16 @@ export default function Home() {
         <div className="home__banner">
           <div className="home__banner-head">
             <p className="home__kicker">Projets sélectionnés</p>
-            <Link className="pill-link" to="/portfolio">Tout voir →</Link>
+            <Link className="pill-link" to="/portfolio">
+              Tout voir
+              <svg className="pill-link__arrow" viewBox="0 0 24 24" width="16"
+                   height="16" fill="none" stroke="currentColor"
+                   strokeWidth="2.5" strokeLinecap="round"
+                   strokeLinejoin="round" aria-hidden="true">
+                <path d="M5 12h14" />
+                <path d="m13 6 6 6-6 6" />
+              </svg>
+            </Link>
           </div>
 
           <Carousel />
@@ -54,7 +63,13 @@ export default function Home() {
               </CtaButton>
               <CtaButton to="/contact" variant="secondary" size="lg">
                 <span>Me contacter</span>
-                <span aria-hidden="true">↗</span>
+                <svg className="id-card__cv-icon" viewBox="0 0 24 24" width="16"
+                     height="16" fill="none" stroke="currentColor"
+                     strokeWidth="2.5" strokeLinecap="round"
+                     strokeLinejoin="round" aria-hidden="true">
+                  <path d="M7 17 17 7" />
+                  <path d="M7 7h10v10" />
+                </svg>
               </CtaButton>
             </div>
           </div>

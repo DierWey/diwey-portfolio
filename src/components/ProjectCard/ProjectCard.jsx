@@ -110,7 +110,14 @@ export default function ProjectCard({ project }) {
             de la décision 6/11, sans aucun aria additionnel. La flèche
             est décorative : aria-hidden, jamais lue. */}
         <p className="card__cta">
-          Voir le projet<span className="card__cta-arrow" aria-hidden="true">↗</span>
+          <span>Voir le projet</span>
+          <svg className="id-card__cv-icon" viewBox="0 0 24 24" width="16"
+                height="16" fill="none" stroke="currentColor"
+                strokeWidth="2.5" strokeLinecap="round"
+                strokeLinejoin="round" aria-hidden="true">
+            <path d="M7 17 17 7" />
+            <path d="M7 7h10v10" />
+          </svg>
         </p>
 
         {/* Bottom — type (`role`) + année, collé au bas de la carte */}

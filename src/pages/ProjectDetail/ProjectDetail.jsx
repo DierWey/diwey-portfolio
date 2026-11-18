@@ -154,7 +154,14 @@ function ProjectDetail() {
           <div className="project-detail__sheet-actions">
             {project.demo ? (
               <CtaButton href={project.demo} target="_blank" rel="noreferrer" size="sm">
-                Voir la démo ↗
+                <span>Voir la démo</span>
+                <svg className="id-card__cv-icon" viewBox="0 0 24 24" width="16"
+                     height="16" fill="none" stroke="currentColor"
+                     strokeWidth="2.5" strokeLinecap="round"
+                     strokeLinejoin="round" aria-hidden="true">
+                  <path d="M7 17 17 7" />
+                  <path d="M7 7h10v10" />
+                </svg>
               </CtaButton>
             ) : null}
             {project.repo ? (
@@ -224,10 +231,24 @@ function ProjectDetail() {
 
       <div className="project-detail__footer">
         <CtaButton to="/portfolio" variant="secondary">
-          ← Tous les projets
+          <svg className="project-detail__footer-arrow project-detail__footer-arrow--left"
+               viewBox="0 0 24 24" width="16" height="16" fill="none"
+               stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+               strokeLinejoin="round" aria-hidden="true">
+            <path d="M19 12H5" />
+            <path d="m11 6-6 6 6 6" />
+          </svg>
+          Tous les projets
         </CtaButton>
         <CtaButton to={`/portfolio/${next.slug}`}>
-          Projet suivant : {next.title.split(" — ")[0]} →
+          Projet suivant : {next.title.split(" — ")[0]}
+          <svg className="project-detail__footer-arrow project-detail__footer-arrow--right"
+               viewBox="0 0 24 24" width="16" height="16" fill="none"
+               stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+               strokeLinejoin="round" aria-hidden="true">
+            <path d="M5 12h14" />
+            <path d="m13 6 6 6-6 6" />
+          </svg>
         </CtaButton>
       </div>
     </section>

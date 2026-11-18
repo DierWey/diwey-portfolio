@@ -184,6 +184,7 @@
   align-items: center;
   margin: -5px -9px;                      /* compense bordure 1 + padding 4/8 : la pilule ne mange ni le gap 16 ni la largeur du texte nu */
   padding: 4px var(--space-2);            /* 4 haut/bas, 8 gauche/droite — même loi que les badges */
+  gap: 8px;
   font-family: var(--font-mono);
   font-size: 16px;                         /* LITTÉRAL, constant tous paliers — la carte ne descend pas (correction 9/11) */
   color: var(--accent);
