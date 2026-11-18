@@ -110,7 +110,7 @@ export default function Home() {
                 <span className="id-card__dot" aria-hidden="true"></span>
                 Disponible - 2026
               </p>
-              <a className="id-card__cv" href="/cv.pdf" download>
+              <a className="id-card__cv" href="/CV-Didier-Wey-2026.pdf" download>
                 Télécharger le CV
                 <svg className="id-card__cv-icon" viewBox="0 0 24 24" width="16"
                      height="16" fill="none" stroke="currentColor"
