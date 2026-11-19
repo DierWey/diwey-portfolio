@@ -1,6 +1,6 @@
 # Diwey.dev — Portfolio
 
-Portfolio de Loftur, développeur frontend, réalisé en formation Intégrateur Web (OpenClassrooms, 2025-2026).
+Portfolio de Didier Wey, développeur frontend, réalisé en formation Intégrateur Web (OpenClassrooms, 2025-2026).
 
 ## Stack
 

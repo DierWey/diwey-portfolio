@@ -35,7 +35,7 @@
   display: grid;
   grid-template-columns: 1fr 464px;   /* 464 fixe — tranché 21/10 */
   gap: var(--space-12);               /* gouttière 48 */
-  /* HAUTEUR AUTO DE LA CARTE (correction Loftur 9/11) : sans
+  /* HAUTEUR AUTO DE LA CARTE (correction Didier Wey 9/11) : sans
      align-items, la grille étire ses deux enfants à la hauteur de
      la rangée (défaut = stretch) — la carte d'identité héritait
      de la hauteur de l'Accroche et finissait en accordéon vide.
