@@ -102,3 +102,9 @@ select:focus-visible,
     color var(--transition),
     border-color var(--transition);
 }
+
+.pill-link:hover,
+.pill-link:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
+}

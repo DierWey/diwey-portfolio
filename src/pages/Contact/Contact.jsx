@@ -40,6 +40,14 @@ const MAIL_TO = `${MAIL_USER}@${MAIL_TLD}`;
 const FORM_ENDPOINT = 'https://formgong.com/submit';
 const FORM_ACCESS_KEY = 'fk_wGF7WJufhE4AUSZdkboRzFkT';
 
+/* Syntaxe e-mail — locale@domaine.tld : le navigateur n'exige qu'un
+   « x@y » dans un type="email", l'absence de point passe donc le
+   checkValidity et part au serveur. Cette regex est le standard du
+   formulaire : au moins un caractère de chaque côté de l'arobase,
+   un point dans le domaine, pas d'espace. Règle maison ≥ règle
+   Formgong — sinon le serveur rejette ce que le client croyait bon. */
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function Contact() {
   /* Machine à états : idle → sending → (success | error).
      Le message de retour prend le focus en cas d'échec —
@@ -71,9 +79,10 @@ export default function Contact() {
        d'infobulle native (« Veuillez compléter ce champ », non
        stylable, elle appartient au navigateur). checkValidity()
        fonctionne toujours sans l'UI native : valueMissing (champ
-       vide) et typeMismatch (e-mail mal formé) sont lus depuis
-       ValidityState, rien à réinventer. Message : rouge 12 sur la
-       ligne du label, justifié à droite (voir _contact.scss).
+       vide) est lu depuis ValidityState ; l'e-mail passe par
+       EMAIL_RE — le typeMismatch navigateur accepte une adresse
+       sans point dans le domaine. Message : rouge 12 sur la ligne
+       du label, justifié à droite (voir _contact.scss).
        Focus sur le premier champ en erreur : remplace le
        comportement natif perdu avec noValidate (a11y). */
     const next = {};
@@ -81,7 +90,7 @@ export default function Contact() {
       if (!field.name) continue;
       if (field.validity.valueMissing) {
         next[field.name] = 'Complétez ce champ';
-      } else if (field.name === 'email' && field.validity.typeMismatch) {
+      } else if (field.name === 'email' && !EMAIL_RE.test(field.value.trim())) {
         next[field.name] = 'Adresse e-mail invalide';
       }
     }

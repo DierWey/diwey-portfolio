@@ -109,7 +109,7 @@
   }
 
   /* Filet entre les lignes : porté par la ligne du dessus (nav pleine
-     largeur), JAMAIS sur la pilule — elle reste pure (règle Rev. 2) */
+     largeur), JAMAIS sur la pilule — elle reste pure */
   .footer__nav {
     justify-content: space-between;
     gap: var(--space-6);
@@ -148,12 +148,15 @@
     font-size: 12px;
   }
 
-  /* Deux filets inter-lignes, portés par les lignes au-dessus (16 + 1 + 16) */
+  /* Nav une seule ligne : space-between gouverne la répartition,
+     le gap n'est qu'un plancher — 16 pour que le trio tienne à 375 */
   .footer__nav {
+    gap: var(--space-4);
     padding-bottom: var(--space-4);
     border-bottom: 1px solid var(--line);
   }
 
+  /* Deux filets inter-lignes, portés par les lignes au-dessus (16 + 1 + 16) */
   .footer__copyright {
     text-align: center;
     padding-top: var(--space-4);
