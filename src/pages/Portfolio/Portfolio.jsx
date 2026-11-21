@@ -21,7 +21,7 @@ export default function Portfolio() {
       <h1 className="portfolio__title">Portfolio</h1>
 
       <p className="portfolio__lede">
-        Six réalisations — cinq projets de formation et ce portfolio même —
+        Six réalisations — cinq projets de formation et ce portfolio —
         conçues et développées avec la même exigence : chaque pixel a une
         raison d'être.
       </p>
