@@ -129,6 +129,38 @@
       ]
     },
     {
+      "slug": "argent-bank",
+      "title": "Argent Bank — application bancaire",
+      "stack": ["React", "Redux", "API REST", "Swagger"],
+      "role": "Projet de formation",
+      "year": "2026",
+      "level": "Avancé",
+      "desc": "Tableau de bord d'une banque en ligne : application React complète avec authentification et état global Redux, puis conception du contrat d'API des transactions en Swagger.",
+      "demo": null,
+      "repo": "https://github.com/DierWey/ArgentBank",
+      "context": "Je viens d'intégrer Argent Bank, une nouvelle banque en ligne qui cherche à percer dans le secteur, où j'occupe le poste de développeur front-end aux côtés de Mila, la cheffe de projet. Le CTO me confie le développement du tableau de bord utilisateur qui doit se dérouler en deux phases. D'une part, je dois livrer l'application React complète — authentification, profil, déconnexion — avec Redux pour gérer l'état global. D'autre part, comme les transactions sont encore en conception, je dois proposer la modélisation des routes API dans un document Swagger, sans implémenter la page.",
+      "approach": [
+        "Intervention sur un existant : repos front et back fournis, design déjà posé.",
+        "Le sujet est l'architecture d'état : store Redux et appels API authentifiés au token.",
+        "Routes protégées visibles seulement connecté.",
+        "Phase 2 : réflexion en amont, spécifier le contrat d'API côté back end avant qu'il ne soit codé."
+      ],
+      "features": [
+        "Application React complète et responsive : accueil, connexion, profil",
+        "Authentification : connexion avec gestion des erreurs d'identifiants, déconnexion, routes protégées",
+        "Profil visible seulement connecté ; nom et prénom non modifiables, pseudo modifiable",
+        "État global Redux : actions, reducers, selectors — token et profil partagés entre les pages",
+        "Green Code : images optimisées en poids et dimensions, composants réutilisables au maximum",
+        "Phase 2 : proposition d'API transactions en Swagger (YAML) — transactions groupées par compte, détail d'une transaction, modification catégorie et note"
+      ],
+      "method": [
+        "Suivi du travail via les issues GitHub des repos fournis, avec leurs modèles",
+        "Documentation Swagger du back end explorée avant de consommer la moindre route",
+        "Redux posé dès la phase 1 comme l'anticipe le CTO : peu de données aujourd'hui, beaucoup avec les transactions demain",
+        "Contrat d'API spécifié endpoint par endpoint : méthode HTTP, route, paramètres, codes de réponse"
+      ]
+    },
+    {
       "slug": "portfolio",
       "title": "Diwey.dev — Portfolio",
       "stack": ["React", "SASS", "Vite"],
