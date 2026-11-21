@@ -1,0 +1,53 @@
+# Déploiement automatique du portfolio vers OVH — GitHub Actions
+# Fichier : .github/workflows/deploy.yml
+#
+# Ce qu'il fait à chaque push sur main (ou lancement manuel) :
+#   1. Build du site (npm ci + npm run build) sur les machines GitHub
+#   2. Envoi du contenu de dist/ vers www/ de l'hébergement OVH via SFTP (chiffré)
+#
+# Prérequis — 3 secrets à créer dans GitHub :
+#   Settings du repo > Secrets and variables > Actions > New repository secret
+#     FTP_SERVER   = ftp.cluster130.hosting.ovh.net
+#     FTP_USERNAME = (nom d'utilisateur FTP de l'onglet FTP-SSH OVH)
+#     FTP_PASSWORD = (mot de passe FTP régénéré le 21/11)
+
+name: Deploy to OVH
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+# Un seul déploiement à la fois ; un push pendant un déploiement
+# annule le précédent et remplace la file — pas de collisions
+concurrency:
+  group: deploy-ovh
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Node 20 avec cache npm
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Construire le site
+        run: npm run build
+
+      - name: Déployer dist/ vers www/ en SFTP (lftp mirror)
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" -p 22 "sftp://$FTP_SERVER" -e "set sftp:auto-confirm yes; mirror -R --parallel=10 --verbose dist/ www/; quit"
