@@ -1,40 +1,59 @@
 /* ============================================================
    Le détail compte — tokens (custom properties)
    Source unique de toutes les valeurs. Rien en dur ailleurs.
+   Tout ce qui a une valeur partagée vit ici : couleurs, typo,
+   écarts, grille, composants. Un changement dans ce fichier se
+   propage à tout le site ; une valeur en dur dans un composant
+   est une charte cassée.
    ============================================================ */
 
 :root {
-  /* ---- Couleurs (charte, 21/10) ---- */
-  --accent: #046A38;        /* émeraude — boutons primaires, filets, interactivité */
-  --accent-soft: #DEEFE5;   /* fonds UNIQUEMENT : header, footer, boutons secondaires, badges */
-  --bg: #F7F3EC;            /* fond beige (corrigé 21/10) */
+  /* ---- Couleurs (charte) ----
+     Palette volontairement courte : une couleur = un rôle.
+     Aucune nuance ne vit dans un composant : le composant cite
+     le token, ou il crée l'exception à documenter ici. */
+  --accent: #046A38;        /* émeraude — la langue de l'interactivité : boutons primaires, filets, survols, focus */
+  --accent-soft: #DEEFE5;   /* verts d'eau — fonds UNIQUEMENT : header, footer, boutons secondaires, badges */
+  --bg: #F7F3EC;            /* fond beige de toutes les pages */
   --surface: #FFFFFF;       /* cartes, cadres navigateur, texte des boutons primaires */
-  --ink: #1A1A1A;
-  --ink-muted: #6B6B6B;
-  --line: #E6E0D2;          /* bordures, filets, fond top-barre Chrome */
-  --chrome-dot: #C0BBAE;    /* points barre Chrome — Line assombri */
-  --error: #B3261E;         /* rouge des erreurs de saisie — première couleur
-                              ajoutée à la palette (6/11), réservée aux erreurs */
+  --ink: #1A1A1A;           /* texte courant — le brun-noir de la charte */
+  --ink-muted: #6B6B6B;     /* textes secondaires : repères, labels, fine print */
+  --line: #E6E0D2;          /* bordures et filets discrets, fond de la barre de navigation simulée */
+  --chrome-dot: #C0BBAE;    /* points de la barre de navigation simulée — un cran plus sombre que --line pour rester perceptible sur le fond */
+  --error: #B3261E;         /* rouge sobre des erreurs de saisie — réservé aux erreurs, contraste AA sur --surface */
 
-  /* ---- Typographie ---- */
-  --font-serif: 'IBM Plex Serif', Georgia, serif;                   /* titres — statique 400+700 */
-  --font-mono: 'JetBrains Mono Variable', 'Courier New', monospace; /* nav, badges, repères */
+  /* ---- Typographie ----
+     Trois voix : serif pour les titres, mono pour les repères,
+     sans pour le texte courant. */
+  --font-serif: 'IBM Plex Serif', Georgia, serif;                   /* titres — graisses statiques 400+700 */
+  --font-mono: 'JetBrains Mono Variable', 'Courier New', monospace; /* nav, badges, repères, labels, fine print */
   --font-sans: 'Inter Variable', system-ui, sans-serif;             /* texte courant */
 
-  /* Graisses : 400 / 700 uniquement (medium/semi-bold proscrits) */
+  /* Graisses : 400 / 700 uniquement. Medium et semi-bold sont
+     proscrits — deux graisses suffisent, et un import de police
+     ne l'emporte pas sur l'unité de lecture. */
   --weight-regular: 400;
   --weight-bold: 700;
 
-  /* ---- Échelle typo (21/10) — desktop & tablette ---- */
+  /* ---- Échelle typographique — desktop & tablette ----
+     Quatre tailles, pas de degré intermédiaire : chaque rang
+     a un rôle. La tablette partage les tailles desktop. */
   --h1-size: 48px;
   --h2-size: 32px;
   --h3-size: 24px;
   --body-size: 24px;
-  
-  /* Rang 16 : 16 desktop/tablette, 12 mobile (12 = plancher absolu) */
+
+  /* Rang 16 : texte courant réduit (nav, badges, labels,
+     surtitres). Descend à 12 en mobile — 12 est le plancher
+     absolu du site : rien n'est écrit plus petit. */
   --rank16-size: 16px;
 
-  /* ---- Espacements — base 8 ---- */
+  /* ---- Écarts — unité 4px ----
+     Le nom du token donne le nombre d'unités (--space-4 =
+     4 × 4 = 16). Tous les écarts du site tombent sur cette
+     échelle. Rôles : --space-12 = gouttières et padding
+     interne des sections ; --space-24 = écart ENTRE sections
+     et marges verticales de page desktop. */
   --space-2: 8px;
   --space-4: 16px;
   --space-6: 24px;
@@ -42,41 +61,63 @@
   --space-12: 48px;   /* gouttières, padding interne des sections */
   --space-24: 96px;   /* écart ENTRE sections, marges de page desktop */
 
-  /* ---- Grille ---- */
+  /* ---- Grille ----
+     Cible de design 1440px ; largeur de contenu 1248 =
+     3 colonnes de carte (384) + 2 gouttières (48). Les marges
+     horizontales changent par palier (ci-dessous), pas les
+     colonnes : la structure ne bouge pas, seulement l'air
+     autour d'elle. */
   --viewport-target: 1440px;
+
   --content-width: 1248px;          /* 3 × 384 + 2 × 48 */
   --card-width: 384px;
   --page-margin-x: 96px;            /* desktop — 48 tablette, 24 mobile */
   --page-margin-y: 96px;            /* desktop/tablette — 48 mobile */
 
-  /* ---- Carrousel ---- */
-  --carousel-frame: 472px;   /* chrome 32 + capture 440 */
+  /* ---- Carrousel ----
+     Barre de navigateur simulée du cadre BrowserFrame :
+     32px de haut ; 472 = 32 de barre + 440 de capture.
+     (--chrome-dot garde son nom : un nom de token est du
+     code, la passe commentaires n'y touche pas.) */
+  --carousel-frame: 472px;   /* 32 de barre + 440 de capture */
   --carousel-nav: 64px;
 
-  /* ---- Composants ---- */
-  --radius: 6px;             /* boutons */
+  /* ---- Composants ----
+     L'unité de rayon des pilules ET des boutons (6) vit dans
+     --radius ; les transitions couleur/opacité du site
+     partagent la même courbe (250 ms ease-out). Le filet des
+     h2 a SON token dédié pour rester trouvable. */
+  --radius: 6px;             /* boutons (et pilules) */
   --filet-h2: 2px solid var(--accent);
   --transition: 250ms ease-out;       /* toutes les transitions couleur/opacité du site */
-  --transition-filet: 500ms ease-out; /* filet intérieur au survol (24/10) */
+  --transition-filet: 500ms ease-out; /* cadence lente du site — consommé par
+                                        CtaButton (transition d'opacité) ; le nom
+                                        porte l'origine filet du geste */
 
-  /* ---- Focus clavier (AA) ---- */
+  /* ---- Focus clavier (AA) ----
+     Un seul traitement de focus pour tout le site : c'est un
+     pilier accessibilité, il se voit ET il se reconnaît. */
   --focus-outline: 2px solid var(--accent);
   --focus-offset: 2px;
 }
 
-/* ---- Mobile : descente d'un cran (−8), sauf règles spécifiques en composants ---- */
+/* ---- Mobile : descente d'un cran (−8) dans l'échelle typo.
+   Les écarts et la grille ne changent qu'en cas de besoin
+   (règles spécifiques en composants). ---- */
 @media (max-width: 767px) {
   :root {
     --h1-size: 40px;
     --h2-size: 24px;
     --h3-size: 16px;
     --body-size: 16px;
-    --rank16-size: 12px;   /* plancher absolu */
+    --rank16-size: 12px;   /* plancher absolu du site */
     --page-margin-y: 48px;
   }
 }
 
-/* ---- Marges de page horizontales par palier ---- */
+/* ---- Marges de page horizontales par palier ----
+   96 desktop / 48 tablette / 24 mobile : jamais de rupture de
+   symétrie, la marge se resserre avec la largeur. */
 @media (max-width: 1023px) {
   :root {
     --page-margin-x: 48px;   /* tablette */

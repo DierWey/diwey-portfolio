@@ -7,6 +7,30 @@ import { hasCapture } from '../../utils/captures';
 
 const projects = data.projects;
 
+/* ------------------------------------------------------------------
+   Carousel — carrousel des projets sélectionnés, page Accueil.
+
+   Un projet à la fois, dans un BrowserFrame (adresse simulée
+   {slug}.diwey.dev) : flèches précédent/suivant, compteur
+   numéroté (01 / 06) et titre du projet courant.
+
+   Contrats :
+   - La rotation est un état React (index), PAS une animation
+     auto : le carrousel ne bouge que si on lui demande — aucune
+     animation gratuite.
+   - Le slide est un <Link> vers la fiche : le carrousel est une
+     invitation, la barre d'adresse simulée en est la promesse.
+     Nom accessible porté par aria-label (« Voir le projet X ») —
+     l'image elle-même vit en alt="".
+   - Capture réelle si le rôle `carousel` existe pour le projet,
+     placeholder beige sinon (repli de résilience : la source
+     est remplacée projet par projet, jamais de trou). Un jour
+     sans capture ≠ un jour sans carrousel.
+   - Flèches : vrais <button type="button"> avec aria-label —
+     l'icône seule n'est pas un nom, le SVG est aria-hidden.
+   - aria-roledescription="carrousel" : annonce le motif aux
+     lecteurs d'écran, le reste vit dans le DOM natif.
+   ------------------------------------------------------------------ */
 export default function Carousel() {
   const [index, setIndex] = useState(0);
   const current = projects[index];
@@ -18,8 +42,9 @@ export default function Carousel() {
 
   return (
     <div className="carousel" aria-roledescription="carrousel" aria-label="Projets sélectionnés">
-      {/* Cadre parent : porte bordure + rayon + hauteur totale (472/288/232).
-          Le chrome vit dans BrowserFrame (32 constant, points 8, pilule URL). */}
+      {/* Cadre parent : porte bordure + rayon + hauteur totale.
+          La barre de navigateur simulée vit dans BrowserFrame
+          (32 constant, points 8, pilule URL). */}
       <div className="carousel__frame">
         <BrowserFrame url={`${current.slug}.diwey.dev`}>
           <Link
@@ -27,12 +52,11 @@ export default function Carousel() {
             to={`/portfolio/${current.slug}`}
             aria-label={`Voir le projet ${current.title}`}
           >
-            {/* Capture réelle si le rôle existe pour ce projet (chantier
-                captures, pilote ohmyfood 9/11), placeholder sinon — le
-                neuf remplace le vieux projet par projet, jamais de trou.
-                alt="" : le nom accessible du lien vit dans l'aria-label
-                ci-dessus — l'image ne le répète pas (c'est une capture,
-                pas une information). */}
+            {/* Capture réelle si le rôle existe, placeholder
+                sinon (repli de résilience, jamais de trou).
+                alt="" : le nom accessible du lien vit dans
+                l'aria-label ci-dessus — l'image ne le répète pas
+                (c'est une capture, pas une information). */}
             {hasCapture(current.slug, 'carousel') ? (
               <Capture
                 slug={current.slug}

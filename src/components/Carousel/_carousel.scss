@@ -1,15 +1,19 @@
 /* ============================================================
    Carrousel Accueil — cadre parent + barre de navigation.
-   Le chrome (32 constant, points 8, pilule URL, fond --line)
-   vit dans components/BrowserFrame/browser-frame.scss :
-   rien ici ne le restyle, le composant est sa source unique.
+   La barre de navigateur simulée (32 constant, points 8, pilule
+   URL, fond --line) vit dans components/BrowserFrame : rien ici
+   ne la restyle, le composant est sa source unique.
 
    La hauteur du cadre n'est PAS fixée : la zone capture porte
    un aspect-ratio par palier (1248/440, 672/256, 327/200 —
    les cotes des fichiers @1x), la hauteur suit la largeur.
-   Chrome 32 + barre 64 constants, le flux fait le reste.
+   Barre de navigateur 32 + barre de navigation 64 constantes,
+   le flux fait le reste.
    ============================================================ */
 
+/* Cadre : surface, bordure line, rayon haut seul (la barre de
+   navigation ferme le bas, rayon bas chez elle) — le chrome
+   intérieur appartient à BrowserFrame. */
 .carousel__frame {
   display: flex;
   flex-direction: column;
@@ -19,7 +23,7 @@
   overflow: hidden;
 }
 
-/* BrowserFrame remplit le cadre : ses 32px de chrome en haut,
+/* BrowserFrame remplit le cadre : sa barre de 32px en haut,
    la zone capture prend le reste. */
 .carousel__frame > .browser-frame {
   flex: 1;
@@ -28,7 +32,9 @@
 
 /* Zone capture : le ratio gouverne. Le ratio vient des fichiers
    eux-mêmes — à la largeur de référence du palier, on retrouve
-   les cotes Figma (1248 → 472, 672 → 288, 375 largeur → 232). */
+   les cotes de la maquette (1248 → 472, 672 → 288, 375 → 232).
+   Garde-fou : largeur fluide + ratio = la boîte garde toujours le
+   rapport des captures, le rognage ne peut mentir sur sa forme. */
 .carousel__frame .browser-frame__content {
   aspect-ratio: 1248 / 440;
 }
@@ -50,17 +56,23 @@
   outline-offset: -2px;
 }
 
-/* ---- Capture réelle ----
-   Le <picture> remplit exactement la zone que le placeholder
+/* ---- Capture réelle : le trajet JSX → DOM ----
+   Dans le JSX, le <Capture> vit dans un <Link> ; au rendu, cela
+   donne <a class="carousel__slide"><picture class="carousel__image">…
+   </picture></a> : le Link devient un <a>, le Capture devient un
+   <picture> qui reçoit la classe en prop (className est posé sur
+   le picture par Capture.jsx). L'<img> de Capture n'a AUCUNE
+   classe : la règle ci-dessous l'attrape par FILIATION
+   (.carousel__image img = le <img> enfant du picture).
+   Le picture remplit exactement la zone que le placeholder
    occupait : pleine largeur, étiré en hauteur (la zone porte le
    ratio, la capture suit). Les fichiers sont aux cotes exactes
    par palier.
-   object-fit: cover = GARDE-FOU de chantier : tant que les replis
-   servent (ex. desktop @2x seul → servi en tablette/mobile, de
-   ratios différents), cover recadre centré au lieu de déformer
-   ou de letterboxer. No-op une fois les 18 fichiers en place —
-   mais il ne mange rien, on ne l'enlève pas : la résilience
-   du résolveur est une règle durable, pas un état transitoire. */
+   object-fit: cover = GARDE-FOU durable : si un repli sert un
+   fichier d'un autre palier (ratios différents), cover recadre
+   centré au lieu de déformer ou de letterboxer. No-op quand le
+   palier a ses fichiers — mais la résilience est
+   une règle durable, pas un état transitoire, on ne l'enlève pas. */
 .carousel__image {
   display: flex;
   width: 100%;
@@ -75,9 +87,11 @@
 }
 
 
-/* ---- Placeholder : visible pour tout projet non encore capturé
-   (repli du chantier — à retirer à la fin des 6 projets, avec
-   sa contrepartie JSX) ---- */
+/* ---- Placeholder : REPLI DURABLE pour tout projet sans capture
+   pour ce rôle — un futur projet entré au JSON
+   s'affiche proprement (tuile beige + libellé) pendant que
+   ses captures se produisent. Il ne se retire pas : la résilience est une règle
+   de charte, pas un état transitoire (même loi que cover). ---- */
 .carousel__capture {
   display: flex;
   align-items: center;
@@ -100,10 +114,13 @@
   padding-inline: var(--space-8);
   background-color: var(--surface);
   border: 1px solid var(--line);
-  border-top: none;
+  border-top: none;                     /* la barre ferme le cadre : pas de double filet */
   border-radius: 0 0 6px 6px;
 }
 
+/* Titre + compteur : une seule ligne, dégradation propre —
+   ellipsis si le titre dépasse, jamais de retour à la ligne
+   (la hauteur 64 est une loi, le texte s'y soumet). */
 .carousel__index {
   grid-column: 2;
   text-align: center;
@@ -121,6 +138,10 @@
   color: var(--accent);                 /* numéro en accent — rappel des titres de niveau 3 */
 }
 
+/* Flèches : 32×32, accent sur accent-soft — l'interactivité dans
+   la langue de la charte. Cadre line au repos → accent au
+   survol, même geste que les pilules (sans décalage : la bordure
+   existe déjà). */
 .carousel__arrow {
   display: inline-flex;
   align-items: center;
@@ -141,7 +162,7 @@
 }
 
 /* ---- Paliers : seul le ratio de la zone capture change
-     (le chrome est constant) ---- */
+     (la barre de navigateur simulée est constante) ---- */
 @media (max-width: 1023px) {
   .carousel__frame .browser-frame__content {
     aspect-ratio: 672 / 256;
@@ -155,7 +176,7 @@
   }
 
   .carousel__bar {
-    padding-inline: var(--space-4);      /* 16 g/d en mobile (cote Figma mobile) */
+    padding-inline: var(--space-4);      /* 16 g/d en mobile */
   }
 
   .carousel__index,

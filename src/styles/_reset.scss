@@ -1,19 +1,37 @@
 /* ============================================================
-   Le détail compte — reset minimal moderne (validé 26/10)
-   Importé EN PREMIER dans main.scss
+   Le détail compte — reset minimal moderne
+   Importé EN PREMIER dans main.scss : il conditionne tout ce
+   qui suit (composants, pages). Le reset ne décore rien :
+   il pose un rendu neutre, identique sur tous les navigateurs,
+   pour que chaque style du site soit une décision explicite.
    ============================================================ */
 
+/*
+ * Box-sizing : border-box partout, y compris les pseudo-éléments.
+ * Les largeurs annonchées incluent padding et bordures — c'est le
+ * contrat de tous les calculs de largeur du site (grille, cartes,
+ * pilules). Un seul standard, jamais d'exception.
+ */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
+/* Aucune marge par défaut : le rythme vertical est porté par les
+   écarts de la grille de page (--space-*), jamais par les marges
+   natives des navigateurs (qui varient entre eux). */
 * {
   margin: 0;
 }
 
-/* Médias : block + fluide, jamais de débordement */
+/* Médias : block + fluides, jamais de débordement.
+   display: block retire l'espace réservé aux descendantes du
+   texte des images inline ; max-width + height:auto contraignent
+   les médias à leur conteneur en conservant leur ratio.
+   Effet de bord assumé : les SVG inline (flèches) passent en
+   block — d'où l'inline-flex posé sur leurs conteneurs de texte
+   (voir .pill-link dans _base.scss), insensible à ce choix. */
 img,
 picture,
 video,
@@ -24,7 +42,10 @@ svg {
   height: auto;
 }
 
-/* Héritage typographique sur les éléments de formulaire et titres */
+/* Héritage typographique : les contrôles de formulaire ne posent
+   pas leur propre police système — ils parlent comme la page
+   (labels, placeholders et saisie partagent la voix du site,
+   sans une seule règle à écrire par composant). */
 input,
 button,
 textarea,
@@ -32,6 +53,11 @@ select {
   font: inherit;
 }
 
+/* Titres : dégraissés du style navigateur (taille ET graisse —
+   ils héritent du texte courant). Chaque niveau reçoit ensuite
+   son style réel dans _base.scss ; ici on ne garde que la
+   protection contre les mots longs débordant des colonnes
+   (liens crus, identifiants techniques dans les textes). */
 h1,
 h2,
 h3,
@@ -48,13 +74,18 @@ figcaption {
   overflow-wrap: break-word;
 }
 
-/* Liens : aucune couleur ni soulignement par défaut (tout est posé) */
+/* Liens : aucune couleur ni soulignement par défaut — les
+   couleurs d'état (repos, survol, focus) sont posées
+   explicitement là où elles servent, pas héritées de l'habituel
+   bleu navigateur. Tout est décision ; rien n'est omission. */
 a {
   color: inherit;
   text-decoration: none;
 }
 
-/* Boutons : aucune chrome par défaut */
+/* Boutons : aucun habillage natif — fond, bordure et padding
+   du navigateur supprimés. Un bouton ressemble à ce que la
+   charte décide, pas à un bouton système. */
 button {
   background: none;
   border: none;
@@ -62,20 +93,31 @@ button {
   cursor: pointer;
 }
 
-/* Curseur pointer sur tout ce qui est interactif non-disabled */
+/* Curseur main sur tout ce qui est interactif non disabled :
+   le curseur annonce « c'est cliquable », y compris sur les
+   éléments non natifs (rôles ARIA, boutons personnalisés).
+   Un élément disabled ne le montre PAS — il n'est pas
+   cliquable. */
 button:not(:disabled),
 [role='button'] {
   cursor: pointer;
 }
 
+/* Listes : ni puces ni retrait natif. Quand une vraie liste de
+   projets se dessine, ses items portent leurs propres tirets
+   (voir .project-detail__approach-item). */
 ul,
 ol {
   list-style: none;
   padding: 0;
 }
 
-/* Accessibilité mouvement : l'exception canonique assumée à la règle
-   « pas de !important » — transition/animation quasi instantanées */
+/* Accessibilité mouvement : l'exception canonique assumée à la
+   règle « pas de !important » — ce bloc doit gagner contre
+   n'importe quelle transition déclarée ailleurs, sinon il ne
+   protège personne. Quasi instantané plutôt que désactivé :
+   les gestionnaires attachés à la fin d'une transition
+   (transitionend) continuent de recevoir leur événement. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

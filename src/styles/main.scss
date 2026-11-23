@@ -1,14 +1,27 @@
 /* ============================================================
    Le détail compte — point d'entrée des styles
-   Architecture en couches : global d'abord, puis composants, pages en dernier.
+   Architecture en couches : le global d'abord, les composants
+   ensuite, les pages en dernier. L'ordre des @use EST la
+   cascade : ce qui est posé ici ne peut plus être rattrapé
+   depuis un fichier fini.
    Chaque décision a une source unique.
    ============================================================ */
 
+/* ---- Couche 1 : global ----
+   reset : le rendu neutre identique sur tous les navigateurs.
+   tokens : la source unique de toutes les valeurs (couleurs,
+   typo, écarts, grille) — rien en dur ailleurs.
+   base : les règles universelles du corps de page (titres,
+   focus clavier, .page, pilule-fantôme). */
 @use './reset';
 @use './tokens';
 @use './base';
 
-/* Composants (colocalisés : un .scss par composant) */
+/* ---- Couche 2 : composants ----
+   Colocalisés avec leur JSX : un .scss par composant, dans le
+   dossier du composant. Un composant ne stylise que son propre
+   bloc BEM (bloc__élément--modificateur) — jamais les classes
+   d'un autre composant, jamais un sélecteur global. */
 @use '../components/Header/header';
 @use '../components/Footer/footer';
 @use '../components/Carousel/carousel';
@@ -16,7 +29,11 @@
 @use '../components/BrowserFrame/browser-frame';
 @use '../components/ProjectCard/project-card';
 
-/* Pages — uniquement la mise en page propre à chaque page */
+/* ---- Couche 3 : pages ----
+   Uniquement la mise en page propre à chaque page (grilles,
+   sections, paliers). Tout ce qui se factorise remonte en
+   composant ou dans base — une page ne définit jamais une
+   règle qu'une deuxième page devra copier. */
 @use '../pages/Home/home';
 @use '../pages/Portfolio/portfolio';
 @use '../pages/ProjectDetail/project-detail';
