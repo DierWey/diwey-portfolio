@@ -1,16 +1,26 @@
 /* ------------------------------------------------------------------
-   CtaButton — primaire accent/surface, secondaire accent-soft/ink
-   gap 16 entre libellé et flèche (langage directionnel 30/10 :
-   la flèche vit dans un <span aria-hidden> séparé)
-   Survol : filet intérieur 1px, inset 2, arrondi 4, currentColor,
-   naissance 500ms ease-out, sans translation
-   ------------------------------------------------------------------ */
+Style de CtaButton.jsx
+   
+Primaire : fond accent, texte surface.
+Secondaire : fond accent-soft, texte ink.
+Gap 16 entre le libellé et la flèche, posé par CtaButton.jsx comme deux enfants.
+
+Survol et focus : 
+Naissance d'un filet intérieur de 1px, à 2px du bord, arrondi 4px, de la couleur
+du texte, en 500 ms ease-out. 
+Contrairement à la convention, pas de translation ni de rebond.
+------------------------------------------------------------------ */
+
+/* La base du bouton : inline-flex avec align-items et justify-content center.
+C'est ce trio qui aligne le libellé et la flèche l'un avec l'autre, quelles que
+soient leurs tailles. Le gap de 16 les sépare et le centrage reste le même pour
+les trois rendus (Link, a, button). */
 .cta {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-4);        /* 16 : libellé ↔ flèche (règle 30/10) */
+  gap: var(--space-4);        /* 16 : espace entre libellé et flèche */
   font-family: var(--font-sans);
   font-size: 16px;
   text-decoration: none;
@@ -19,6 +29,11 @@
   cursor: pointer;
 }
 
+/* Filet intérieur : la seule naissance lente du site (500 ms, --transition-filet).
+Il vit dans un ::before positionné en absolu. 
+Au repos, son opacité vaut 0 ; Au survol, elle vaut 1.
+Aucune propriété de layout ne bouge, jamais de décalage. 
+pointer-events: none : le filet ne vole pas le clic au libellé. */
 .cta::before {
   content: "";
   position: absolute;
@@ -30,16 +45,23 @@
   pointer-events: none;
 }
 
+/* Survol et focus partagent le même geste : ce que la souris montre au survol, le clavier
+le montre au focus. */
 .cta:hover::before,
 .cta:focus-visible::before {
   opacity: 1;
 }
 
+/* Primaire : l'interacité à fond — accent plein, texte surface.
+Le seul bouton qui ose l'inverse du fond du site. */
 .cta--primary {
   background-color: var(--accent);
   color: var(--surface);
 }
 
+/* Secondaire : accent-soft + ink — la respiration ; le filet
+currentColor suit la couleur du texte de chaque variante, une
+seule règle ::before pour les deux. */
 .cta--secondary {
   background-color: var(--accent-soft);
   color: var(--ink);

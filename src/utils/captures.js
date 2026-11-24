@@ -29,9 +29,10 @@ const PICTURES = import.meta.glob("/src/assets/pictures/*/*.webp", {
   import: "default",
 });
 
-/* index = { [slug]: { [role]: { [palier]: { "1x": url, "2x": url } } } }
-   Fichiers hors convention (nom mal formé) : ignorés silencieusement —
-   une image mal nommée ne doit pas casser la résolution des autres. */
+/* index est la bibliothèque des captures. Elle range les URL dans cet ordre : projet, puis role, puis palier, puis densité (1x ou 2x). 
+La boucle construit cette bibliothèque à partir de PICTURES.
+Pour chaque fichier, l'expression régulière lit son nom. Un nom mal formé ne respecte pas la convention. La boucle l'ignore et passe au fichier suivant.
+Une image mal nommée ne doit pas casser la résolution des autres. */
 const index = {};
 for (const [path, url] of Object.entries(PICTURES)) {
   const m = path.match(
@@ -45,20 +46,24 @@ for (const [path, url] of Object.entries(PICTURES)) {
   index[slug][role][palier][is2x ? "2x" : "1x"] = url;
 }
 
-/* Ordre de repli entre paliers : le plus proche du palier demandé.
-   desktop manque → tablet ; tablet manque → desktop ou mobile ;
-   mobile manque → tablet. Le rendu d'un projet dont un palier
-   manque reste propre. */
+/* Ordres de repli entre paliers. 
+   Pour chaque palier demandé (desktop, tablet ou mobile), FALLBACK donne
+   la liste des paliers à essayer, dans l'ordre : d'abord le palier demandé,
+   puis les autres.
+   Une capture manquante est donc servie par le palier le plus proche,
+   et le rendu d'un projet incomplet reste propre. */
 const FALLBACK = {
   desktop: ["desktop", "tablet", "mobile"],
   tablet: ["tablet", "desktop", "mobile"],
   mobile: ["mobile", "tablet", "desktop"],
 };
 
-/* getCapture(slug, role, palier) → { "1x": url|"", "2x": url|"" }
-   Toujours un objet : densités existantes remplies, absentes en "".
-   Le consommateur construit son srcSet sans jamais vérifier
-   l'existence — les helpers ci-dessous gèrent les trous. */
+/* getCapture est la fonction de consultation du module.
+   Elle reçoit le slug du projet, le rôle et le palier demandés,
+   et rend toujours un objet à deux clés : "1x" et "2x".
+   Si la capture existe, chaque clé vaut l'URL hachée ; sinon, chaque clé vaut "".
+   Le composant qui l'appelle peut donc construire son srcSet sans jamais
+   vérifier l'existence de la capture demandée : les cas manquants sont déjà gérés ici. */
 export function getCapture(slug, role, palier) {
   const roleIndex = index[slug]?.[role];
   if (!roleIndex) return { "1x": "", "2x": "" };
@@ -70,10 +75,10 @@ export function getCapture(slug, role, palier) {
   return { "1x": "", "2x": "" };
 }
 
-/* Le rôle existe-t-il pour ce projet ? (au moins un fichier)
-   Le placeholder vit tant que la réponse est false — repli
-   durable : la tuile s'affiche pour tout projet du JSON dont
-   le rôle n'a pas encore ses fichiers. */
+/* hasCapture vérifie si un role donné (carousel, preview ou card) existe pour un projet donné.
+Si c'est le cas, la réponse est true. Si ce n'est pas le cas, la réponse est false.
+Carousel.jsx, ProjectCard.jsx et ProjectDetail.jsx font appel à cette fonction pour gérer 
+les placeholders */
 export function hasCapture(slug, role) {
   return Boolean(index[slug]?.[role]);
 }

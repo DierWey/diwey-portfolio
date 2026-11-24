@@ -1,15 +1,19 @@
 /* ============================================================
-   Header — bandeau logo + nav (fond accent-soft, spec 21/10)
-   Nav rev.2 (24/10) : boutons-fantômes, cadre accent au survol
-   uniquement ; actif = accent + 700, sans cadre persistant.
-   30/10 soir : .dev du logo en accent (span .header__tld).
-   ============================================================ */
+Header : le bandeau logo et nav, sur fond accent-soft.
+Le logo : pilule surface à bordure accent, monogramme sur carré
+émeraude, le .dev en accent. 
+La nav : des boutons-fantômes mono dont le cadre accent n'apparaît
+qu'au survol. L'état actif se lit par la couleur et le gras,
+sans cadre persistant : l'actif ne clignote pas.
+============================================================ */
 
 .header {
   background-color: var(--accent-soft);
   padding-block: 24px;
 }
 
+/* Colonne de contenu alignée sur le site (mêmes marges que .page),
+logo à gauche, nav à droite. */
 .header__inner {
   max-width: calc(var(--content-width) + 2 * var(--page-margin-x));
   margin-inline: auto;
@@ -20,6 +24,9 @@
   gap: var(--space-6);
 }
 
+/* Logo — pilule : surface, bordure accent, rayon 6 (famille pilule).
+nowrap + flex-shrink: 0 : jamais compressé ni coupé, le logo est
+l'identité, il ne donne pas de terrain à l'étroit. */
 .header__logo {
   display: inline-flex;
   align-items: center;                  /* la colonne de textes centrée verticalement sur l'image */
@@ -27,12 +34,12 @@
   white-space: nowrap;                  /* ses textes ne wrappent jamais */
   background-color: var(--surface);
   border: 1px solid var(--accent);
-  border-radius: 6px;                   /* famille pilule — cohérent avec la nav */
-  overflow: hidden;                     /* le cadre découpe le carré — fusion parfaite */
+  border-radius: 6px;                   /* famille pilule : cohérent avec la nav */
+  overflow: hidden;                     /* le cadre découpe le carré : fusion parfaite */
   text-decoration: none;
-  transition: border-color var(--transition);
 }
 
+/* Carré émeraude du monogramme — plein, desktop et tablette. */
 .header__logo-mark {
   display: flex;                        /* centre l'image dans le carré */
   align-items: center;
@@ -48,6 +55,7 @@
   height: auto;                         /* le ratio du fichier suit — jamais déformé */
 }
 
+/* Colonne de textes : nom au-dessus, baseline dessous. */
 .header__texts {
   display: flex;
   flex-direction: column;               /* nom au-dessus, baseline dessous */
@@ -62,10 +70,10 @@
   transition: color var(--transition);
 }
 
-/* .dev du logo : accent en permanence (30/10). Le span hérite du
-   gras et du mono du nom — seule la couleur change. Au survol du
-   logo, le nom entier passe en accent : le .dev l'était déjà, la
-   fusion est invisible — aucun cas particulier à gérer. */
+/* .dev du logo : accent en permanence. Le span hérite du gras et
+du mono du nom — seule la couleur change. Au survol du logo, le
+nom entier passe en accent : le .dev l'était déjà, la fusion est 
+invisible : aucun cas particulier à gérer. */
 .header__tld {
   color: var(--accent);
 }
@@ -74,12 +82,6 @@
 .header__logo:hover .header__name,
 .header__logo:focus-visible .header__name {
   color: var(--accent);
-}
-
-/* Survol du logo : la bordure passe en accent (famille pilule nav) */
-.header__logo:hover,
-.header__logo:focus-visible {
-  border-color: var(--accent);
 }
 
 .header__baseline {
@@ -94,7 +96,8 @@
   gap: var(--space-8);
 }
 
-/* Pilule-fantôme : bordure permanente transparente (aucun décalage de layout) */
+/* Pilule-fantôme : bordure permanente transparente, révélée accent
+au survol/focus — jamais de décalage de layout (loi du site). */
 .header__link {
   display: inline-block;
   padding: var(--space-2) 12px;
@@ -112,29 +115,31 @@
   border-color: var(--accent);
 }
 
-/* État actif : accent + gras, SANS cadre persistant */
+/* État actif : accent et gras, sans cadre persistant. L'actif se lit
+par la couleur, pas par un contour qui le ferait passer pour un survol. */
 .header__link--active {
   color: var(--accent);
   font-weight: var(--weight-bold);
 }
 
 /* ---------------------------------------------------------------
-   Tablette (768 → 1023)
-   --------------------------------------------------------------- */
+Tablette (768 à 1023) : la nav resserre ses rangs, les tailles 
+desktop ne tiennent pas à 768.
+--------------------------------------------------------------- */
 @media (min-width: 768px) and (max-width: 1023px) {
   .header__nav {
-    gap: var(--space-2);                /* 8 : entre les trois items (simulation Figma validée) */
+    gap: var(--space-2);                /* 8 : entre les trois items */
   }
 
   .header__link {
-    font-size: 16px;                    /* rang 16 en tablette — les tailles desktop ne tiennent pas à 768 */
+    font-size: 16px;                    /* rang 16 en tablette */
   }
 }
 
 /*  ---------------------------------------------------------------
-    Mobile (767 -> 375) :
-    empilé, tailles −8 (nav 16, Diwey.dev 16, baseline 12)
-    --------------------------------------------------------------- */
+Mobile (jusqu'à 767) : empilé (logo puis nav), tailles réduites : 
+nav 16, Diwey.dev 16, baseline 12, carré 56.
+--------------------------------------------------------------- */
 @media (max-width: 767px) {
   .header__inner {
     flex-direction: column;
@@ -152,7 +157,7 @@
   }
 
   .header__baseline {
-    font-size: 12px;                  /* plancher absolu, exception nav mobile confirmée */
+    font-size: 12px;                  /* plancher absolu de la charte */
   }
 
   .header__link {

@@ -1,24 +1,32 @@
 /* ============================================================
-   Footer — 4 blocs (Copyright, Liens, Ancre, Pages légales),
-   fond accent-soft.
-   Desktop : 1 ligne + légales. Tablette : Liens / Copyright+Ancre
-   / Légales. Mobile : 1 bloc par ligne.
-   Réordre en grid-template-areas (HTML sémantique inchangé).
-   Filets 16 + 1 + 16 en empilé.
-   Pages légales — VARIANTE B (tranchée avec Vincent, 12/11) :
-   paire en space-between pleine largeur, dernière ligne TOUS
-   paliers (zéro variante par palier). Spec commune actée :
-   mono 12 LITTÉRAL toutes versions (fine print, plancher
-   assumé pour des liens légaux), ink-muted, hover accent,
-   sans pilule, sans filet, écart 16 au-dessus (le row-gap de
-   la grille, pas une marge dédiée).
-   ============================================================ */
+Footer : quatre blocs (copyright, liens, ancre, pages légales),
+sur fond accent-soft. Le HTML ne bouge jamais, le réordonnancement
+par palier se fait en grid-template-areas.
+
+Desktop : une ligne, puis les légales. 
+Tablette : les liens, puis copyright et ancre, puis les légales.
+Mobile : un bloc par ligne. Les écarts entre lignes en empilé sont : 
+16 au-dessus du filet, 1 de filet, 16 dessous.
+
+Pages légales : la paire s'étend sur toute la ligne, en space-between, 
+toujours en dernière ligne quel que soit le palier.
+La même spec partout : mono 12 littéral (fine print, plancher assumé
+pour des liens légaux), ink au repos, accent au survol, sans pilule
+ni filet. L'écart au-dessus vaut 16 à tous les paliers :
+au desktop il vient du row-gap de la grille, 
+en tablette et mobile il vient d'un padding-top dédié (le row-gap
+y vaut 0, la ligne légale est la seule sans filet pour porter son
+écart).
+============================================================ */
 
 .footer {
   background-color: var(--accent-soft);
   padding-block: 32px;
 }
 
+/* Grille : à chaque palier, les rangées se réordonnent en template-areas,
+le HTML ne bouge jamais. Au desktop, la ligne principale occupe la première 
+rangée et les légales étendent la seconde sur toute la largeur. */
 .footer__inner {
   max-width: calc(var(--content-width) + 2 * var(--page-margin-x));
   margin-inline: auto;
@@ -47,6 +55,9 @@
   justify-content: center;
 }
 
+/* Pilule-fantôme (lien externe ET retour en haut) : bordure
+transparente permanente, révélée accent au survol. Le layout
+ne bouge jamais, aucun décalage. */
 .footer__link {
   display: inline-flex;
   align-items: center;
@@ -71,12 +82,16 @@
   justify-self: end;
 }
 
-/* ---- Pages légales (variante B) ----------------------------------
-   La paire épouse les marges du site, bord à bord — le row-gap
-   de la grille (16) porte l'écart au-dessus, aucune marge dédiée.
-   PAS de pilule-fantôme ici : les liens légaux sont du fine print
-   discret, pas des interactifs de premier rang — ink-muted au
-   repos, accent au survol, rien d'autre. */
+/* ---- Pages légales ---------------------------------------------
+La paire épouse les marges du site, bord à bord. Au desktop, l'écart 
+au-dessus vient du row-gap de la grille (16), sans marge dédiée ; 
+en tablette et mobile, le row-gap tombe à 0 et un padding-top
+dédié porte le même écart (voir les media queries) : la ligne légale
+est la seule sans filet pour porter son écart. 
+Pas de pilule-fantôme ici : les liens légaux sont du fine print
+discret, pas des interactifs de premier rang. Ink au repos, lisible :
+un lien doit passer le contraste, même en fine print. Accent au survol,
+rien d'autre. */
 .footer__legal {
   grid-area: legal;
   display: flex;
@@ -97,7 +112,7 @@
 }
 
 /* ---- Tablette : Liens pleine largeur, puis Copyright + Ancre,
-       puis Légales ---- */
+puis Légales ---- */
 @media (max-width: 1023px) {
   .footer__inner {
     grid-template-areas:
@@ -109,7 +124,7 @@
   }
 
   /* Filet entre les lignes : porté par la ligne du dessus (nav pleine
-     largeur), JAMAIS sur la pilule — elle reste pure */
+  largeur), JAMAIS sur la pilule — elle reste pure */
   .footer__nav {
     justify-content: space-between;
     gap: var(--space-6);
@@ -123,8 +138,8 @@
   }
 
   /* Écart au-dessus des légales : 16 via padding-top (le row-gap
-     est à 0 en tablette/mobile — les écarts des autres lignes sont
-     portés par les filets, la ligne légale n'en a pas : marge dédiée) */
+  est à 0 en tablette/mobile — les écarts des autres lignes sont
+  portés par les filets, la ligne légale n'en a pas : marge dédiée) */
   .footer__legal {
     padding-top: var(--space-4);
   }
@@ -142,14 +157,14 @@
     row-gap: 0;
   }
 
-  /* Rang 16 → 12 en mobile (plancher, autorisé au footer) */
+  /* La police passe de 16 à 12 en mobile : plancher, autorisé au footer */
   .footer__copyright,
   .footer__link {
     font-size: 12px;
   }
 
   /* Nav une seule ligne : space-between gouverne la répartition,
-     le gap n'est qu'un plancher — 16 pour que le trio tienne à 375 */
+  le gap n'est qu'un plancher — 16 pour que le trio tienne à 375 */
   .footer__nav {
     gap: var(--space-4);
     padding-bottom: var(--space-4);
@@ -174,7 +189,7 @@
   }
 
   /* Légales : même loi qu'aux autres paliers — space-between,
-     16 au-dessus via padding-top (après le retour en haut) */
+  16 au-dessus via padding-top (après le retour en haut) */
   .footer__legal {
     padding-top: var(--space-4);
   }
