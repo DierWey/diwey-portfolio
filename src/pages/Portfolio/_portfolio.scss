@@ -1,65 +1,63 @@
 /* ------------------------------------------------------------------
-   Page Portfolio — h1 + chapeau + grille des cartes.
+   Page Portfolio : h1, chapeau, grille des cartes.
 
-   Même configuration que NotFound (31/10) : structure flex column,
-   paddings verticaux 96/48, requêtes max-width desktop-first.
+   La page ne style aucune carte : tout le visuel du composant
+   vit dans _project-card.scss. Ce fichier porte le rythme
+   vertical et la grille. 
+   La grille : trois colonnes de 384, gouttière 48 en desktop
+   (3×384 + 2×48 = 1248) ; deux colonnes, gouttière 24
+   en tablette (2×324 + 24 = 672) ; une colonne pleine largeur
+   en mobile (carte 327 à 375).
 
-   La page ne style AUCUNE carte : tout le visuel du composant vit
-   dans project-card.scss. Ici : le rythme vertical et la grille.
-
-   Grille (cotes Figma 31/10) :
-   - desktop ≥1024 : 3 colonnes, gouttière 48 → 3×384 + 2×48 = 1248
-   - tablette 768–1023 : 2 colonnes, gouttière 24 → 2×324 + 24 = 672
-   - mobile <768 : 1 colonne pleine largeur (carte 327 à 375)
-
-   HAUTEURS AUTO (9/11, inversion de la décision « hauteur commune »
-   du 31/10 — Didier Wey au rendu) : chaque carte prend la hauteur de
-   son contenu, comme la carte d'identité de l'Accueil. Le
-   grid-auto-rows: 1fr du 31/10 est RETIRÉ et align-items: start
-   remplace le stretch par défaut de la grille. Les rangées
-   s'alignent sur leurs sommets, jamais sur leurs bases.
+   La hauteur suit le contenu, même loi que la carte d'identité
+   de l'Accueil : chaque carte garde sa hauteur de contenu. La
+   rangée, elle, fait la hauteur de sa carte la plus haute ;
+   align-items: start empêche la grille d'étirer les cartes
+   courtes à la hauteur de la rangée. Les rangées s'alignent
+   sur leurs sommets, jamais sur leurs bases.
    ------------------------------------------------------------------ */
 
 .portfolio {
   display: flex;
   flex-direction: column;
-  padding-top: var(--space-24);         /* 96 : py page — loi 96/48 confirmée */
+  padding-top: var(--space-24);         /* 96 : paddings verticaux de la page (48 en mobile) */
   padding-bottom: var(--space-24);
 }
 
-/* h1 « Portfolio » — centré et accent via la base (règle des titres
-   universalisés). align-self: stretch : même garde-fou que la 404 —
-   le centrage ne dépend pas du shrink-to-fit du parent flex. */
+/* h1 « Portfolio » : centré et accent via la base (règle des
+   titres universalisés). align-self: stretch : même garde-fou
+   que la 404, le centrage ne dépend pas du shrink-to-fit du
+   parent flex. */
 .portfolio__title {
   align-self: stretch;
 }
 
-/* Chapeau — règle des chapeaux (24/10) : 816px = 2 colonnes + 1
+/* Chapeau : règle des chapeaux, 816px = deux colonnes plus un
    écart de la grille dessous (384 + 48 + 384) ; pleine largeur
-   tablette/mobile. Corps Inter ink via la base. */
+   en tablette et mobile. Corps Inter ink via la base. */
 .portfolio__lede {
   max-width: 816px;
   font-size: var(--body-size);
   line-height: 1.6;
   color: var(--ink);
-  margin-top: var(--space-12);         /* 48 : h1 → chapeau (loi du 30/10) */
-  margin-bottom: var(--space-12);     /* 48 : chapeau → grille (confirmé 31/10 — le 64 du prototype est invalidé) */
+  margin-top: var(--space-12);         /* 48 : entre le h1 et le chapeau */
+  margin-bottom: var(--space-12);     /* 48 : entre le chapeau et la grille */
 }
 
-/* ---- Grille : la seule règle qui parle des cartes ---- */
+/* Grille : la seule règle qui parle des cartes. 
+La hauteur suit le contenu : chaque carte garde sa hauteur
+de contenu ; la rangée fait la hauteur de sa carte la plus
+haute. align-items: start empêche le stretch par défaut
+d'étirer les cartes courtes à la hauteur de la rangée :
+chaque carte s'arrête où son contenu s'arrête. */
 .portfolio__grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));  /* desktop : 3×384 */
-  /* HAUTEURS AUTO (9/11) : plus de grid-auto-rows: 1fr (31/10,
-     INVALIDÉ) — chaque rangée prend la hauteur de sa carte la plus
-     haute ; start empêche le stretch par défaut d'étirer les cartes
-     courtes à la hauteur de la rangée. Chaque carte s'arrête où
-     son contenu s'arrête. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));  /* desktop : trois colonnes de 384 */
   align-items: start;
   gap: var(--space-12);                 /* 48 : gouttière desktop */
 }
 
-/* Tablette : 2×324, gouttière 24 — dérogation confirmée 31/10 */
+/* Tablette : deux colonnes de 324, gouttière 24 */
 @media (max-width: 1023px) {
   .portfolio__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -67,7 +65,7 @@
   }
 }
 
-/* Mobile : 1 colonne pleine largeur, py 48 (loi 96/48) */
+/* Mobile : une colonne pleine largeur, paddings 48 */
 @media (max-width: 767px) {
   .portfolio {
     padding-top: var(--space-12);      /* 48 */
@@ -75,7 +73,7 @@
   }
 
   .portfolio__lede {
-    margin-bottom: var(--space-8);     /* 32 : chapeau → grille en mobile (confirmé 31/10) */
+    margin-bottom: var(--space-8);     /* 32 : entre le chapeau et la grille en mobile */
   }
 
   .portfolio__grid {

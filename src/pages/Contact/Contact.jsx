@@ -1,32 +1,56 @@
-/* Page Contact — structure Figma (30/10) :
-   h1 centré ↔ 48 ↔ infos-form ;
-   desktop 384 (informations) + 96 + 768 (échanges) = 1248 ;
-   tablette/mobile : empilés, écart 96 tablette / 48 mobile.
+/* Page Contact. 
 
-   OPTION B BASCULÉE (6/11) — FORMGONG, récepteur UE.
-   Décisions (charte, 6/11) : pas de récepteur français existant ;
-   Formgong retenu pour juridiction UE explicite (vs Formcarry :
-   data centers UE mais société US → CLOUD Act), 1000 envois/mois
-   gratuits, honeypot + heuristiques de base sur toute soumission.
-   Réglages posés côté Formgong : Turnstile DÉSACTIVÉ (pas de
-   script Cloudflare sur le site), « signaux du navigateur »
-   DÉSACTIVÉS (notre fetch maison ne passerait pas leurs filtres),
-   conservation 30 jours, notifications e-mail immédiates vers
-   contact@diwey.dev, vérifications serveur : nom (texte,
-   obligatoire), email (format e-mail), message (texte,
-   obligatoire) — les attributs name du JSX restent français.
+Structure : 
 
-   Le POST part en FormData vers https://formgong.com/submit avec
-   l'access_key (PUBLIQUE par design, comme l'URL d'un formulaire
-   Formspree — ce n'est pas un secret) et _lang=fr pour que les
-   messages serveur arrivent en français. Honeypot : le champ
-   « botcheck » (le nom reconnu par Formgong), gardé AUSSI côté
-   client — rempli = bot = silence radio, on n'envoie même pas.
+Le h1 centré, puis deux sections. 
+À gauche, les contacts directs (384) : l'adresse e-mail, le
+profil LinkedIn. 
+À droite, les échanges (768) : le pitch, puis le formulaire. 
+Desktop : 384 + 96 + 768 = 1248. 
+Tablette et mobile : empilées, écart 96 en tablette, 48 en mobile.
 
-   Zéro script tiers chargé : pas de fg.js (analytics e-commerce,
-   inutile ici), pas de Turnstile. Le JS assemblé de l'adresse
-   e-mail (section Informations) reste en place : le mailto
-   disparaît du FORMULAIRE, pas de la page. */
+Fonctionnalités :
+
+Le formulaire envoie vers Formgong, un service de réception de
+formulaires retenu pour sa juridiction UE explicite (l'alternative
+hébergeait en UE mais restait une société US, donc CLOUD Act).
+Le POST part en FormData vers le service, avec l'access_key publique
+par design (comme l'URL d'un formulaire hébergé, ce n'est pas un
+secret) et _lang=fr pour que les messages serveur arrivent en français.
+Aucun script tiers chargé : la page porte ses sécurités elle-même.
+
+Le honeypot « botcheck » : 
+Caché aux humains (jamais visible, aria-hidden, tabIndex -1), rempli par un bot.
+Deux barrières : côté client, on n'envoie même pas ; 
+côté serveur, le service reconnaît le nom et jette.
+
+Validation maison, en français stylable : 
+Le navigateur gardait son infobulle native (« Veuillez compléter ce champ »), non stylable. 
+noValidate coupe cette UI, checkValidity lit toujours l'état du champ.
+La règle e-mail maison (expression régulière) est plus stricte que celle
+du navigateur (un « x@y » sans point dans le domaine passerait
+le checkValidity ; avec la règle maison, il ne part pas). Cette règle
+maison doit être au moins aussi stricte que celle du serveur, sinon le serveur
+rejette ce que le client croyait bon.
+
+Les retours : 
+Message rouge sur la ligne du label, effacé dès que la personne retape dans le champ.
+Le message de statut est role="status", annoncé par les lecteurs d'écran, avec focus
+dessus en cas d'échec. 
+La couleur (--muted / --accent / --error) est un écho du résultat, jamais le seul
+porteur : le texte dit déjà tout.
+
+Anti-bots, contacts directs : 
+L'adresse e-mail est assemblée à l'exécution (voir les constantes MAIL), ni le href
+ni le texte n'existent en clair dans le DOM servi. 
+Contrairement au bouton d'envoi du formulaire, le mailto reste : ouvrir le client
+mail du visiteur est le rôle naturel d'une adresse affichée.
+
+Confidentialité : 
+Le message transite par un tiers (le service, UE), la mention le dit honnêtement,
+et l'adresse n'est pas répétée en clair dans cette ligne puisqu'elle est assemblée
+dans la section voisine. */
+
 import { useEffect, useRef, useState } from 'react';
 import CtaButton from '../../components/CtaButton/CtaButton';
 
@@ -40,19 +64,17 @@ const MAIL_TO = `${MAIL_USER}@${MAIL_TLD}`;
 const FORM_ENDPOINT = 'https://formgong.com/submit';
 const FORM_ACCESS_KEY = 'fk_wGF7WJufhE4AUSZdkboRzFkT';
 
-/* Syntaxe e-mail — locale@domaine.tld : le navigateur n'exige qu'un
-   « x@y » dans un type="email", l'absence de point passe donc le
-   checkValidity et part au serveur. Cette regex est le standard du
-   formulaire : au moins un caractère de chaque côté de l'arobase,
-   un point dans le domaine, pas d'espace. Règle maison ≥ règle
-   Formgong — sinon le serveur rejette ce que le client croyait bon. */
+/* La règle e-mail maison : au moins un caractère de chaque
+   côté de l'arobase, un point dans le domaine, pas d'espace
+   (le contrat complet vit dans l'en-tête du fichier). */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function Contact() {
-  /* Machine à états : idle → sending → (success | error).
-     Le message de retour prend le focus en cas d'échec —
-     retour clavier/lecteur d'écran, emprunté au snippet
-     officiel Formgong (leur a11y était bonne, on la garde). */
+  /* Machine à états : idle, sending, puis success ou error.
+     En cas d'échec, le focus part sur le message de retour (useEffect) :
+     le clavier et le lecteur d'écran le trouvent sans chercher
+     (idée reprise de la doc du service, dont l'a11y était
+     solide). */
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
   const [status, setStatus] = useState('');
@@ -75,48 +97,56 @@ export default function Contact() {
        n'envoie rien, silence radio. */
     if (data.get('botcheck')) return;
 
-    /* Validation maison (6/11) — noValidate côté JSX : plus
-       d'infobulle native (« Veuillez compléter ce champ », non
-       stylable, elle appartient au navigateur). checkValidity()
-       fonctionne toujours sans l'UI native : valueMissing (champ
-       vide) est lu depuis ValidityState ; l'e-mail passe par
-       EMAIL_RE — le typeMismatch navigateur accepte une adresse
-       sans point dans le domaine. Message : rouge 12 sur la ligne
-       du label, justifié à droite (voir _contact.scss).
-       Focus sur le premier champ en erreur : remplace le
-       comportement natif perdu avec noValidate (a11y). */
+    /* Validation maison : valueMissing pour les champs vides,
+       la règle EMAIL_RE pour l'e-mail ; le focus va au premier
+       champ en erreur, il remplace le geste natif perdu avec
+       noValidate (le contrat complet vit dans l'en-tête). */
+    
+    /* objet vide qui servira de relevé d'erreur: une clé par champ fautif,
+    la clé étant le name du champ, la valeur étant le message à afficher. */
     const next = {};
+    /* La boucle passe dans chaque champ du formulaire, dans l'ordre du JSX :
+    botcheck (le honeypot), nom, email, message. Un champ sans attribut name
+    est ignoré (continue saute au suivant) */ 
     for (const field of form.elements) {
       if (!field.name) continue;
+      /* Premier test : le champ est-il vide alors qu'il est requis ? */
       if (field.validity.valueMissing) {
         next[field.name] = 'Complétez ce champ';
+      /* Deuxième test, seulement si le premier est faux (le champ est rempli) : 
+      si c'est le champ e-mail et que sa valeur ne passe pas la regex maison,
+      le relevé prend « Adresse e-mail invalide » */
       } else if (field.name === 'email' && !EMAIL_RE.test(field.value.trim())) {
         next[field.name] = 'Adresse e-mail invalide';
       }
     }
+    // Si le relevé d'erreurs contient quelque chose
     if (Object.keys(next).length) {
-      setErrors(next);
-      form.querySelector(`[name="${Object.keys(next)[0]}"]`)?.focus();
-      return;
+      setErrors(next); // le relevé part dans l'état React, ce qui rend visibles les phrases rouges
+      form.querySelector(`[name="${Object.keys(next)[0]}"]`)?.focus(); //Le focus va sur le premier champ fautif
+      return; // on s'arrête là, le formulaire ne part pas
     }
-    setErrors({});
+    setErrors({}); // Si le relevé d'erreurs vide, tout est bon
 
-    setBusy(true);
-    setFailed(false);
+    setBusy(true); // bouton d'envoi n'est plus cliquaable tant que l'envoi est en cours
+    setFailed(false); 
     setStatus('Envoi en cours…');
 
+    // Envoi du formulaire
     try {
+      // Le colis : tous les champs nommés du formulaire
       const body = new FormData(form);
       body.set('access_key', FORM_ACCESS_KEY);
       body.set('_lang', 'fr');
-
+      // Envoi du colis vers l'url du service (de diwey.dev vers formgong.com)
       const response = await fetch(FORM_ENDPOINT, {
         method: 'POST',
         headers: { Accept: 'application/json' },
         body,
       });
-      const result = await response.json();
 
+      // le verdict : réponse du service (succés ou échec) qui conditionne le message affiché
+      const result = await response.json();
       setFailed(!result.success);
       setStatus(
         result.success
@@ -125,7 +155,8 @@ export default function Contact() {
       );
       if (result.success) form.reset();
     } catch {
-      /* Réseau coupé, serveur injoignable… */
+      /* On attrape l'absence de réponse (réseau coupé, serveur injoignable : même échec,
+         autre message. */
       setFailed(true);
       setStatus('Connexion impossible. Veuillez réessayer.');
     } finally {
@@ -134,7 +165,7 @@ export default function Contact() {
   }
 
   /* Efface l'erreur du champ dès que la personne retape dedans :
-     le message est un rappel, pas une punition :p */
+     le message est un rappel, pas une punition */
   function handleFieldChange(event) {
     const { name } = event.target;
     if (name && errors[name]) setErrors({ ...errors, [name]: '' });
@@ -145,16 +176,15 @@ export default function Contact() {
       <h1>Me contacter</h1>
 
       <div className="contact__infos-form">
-        {/* ---------- SECTION INFORMATIONS (384) ---------- */}
+        {/* ---------- SECTION INFORMATIONS (384px) ---------- */}
         <section className="contact__informations">
           <div className="contact__head">
             <h2>Contacts directs</h2>
             <span className="contact__rule" aria-hidden="true"></span>
           </div>
 
-          {/* Bloc mail — libellé puis valeur cliquable. Le mailto
-              reste ici : ouvrir le client mail du visiteur est le
-              rôle naturel d'une adresse affichée. */}
+          {/* Bloc mail : libellé puis valeur cliquable, le mailto
+              ouvre le client mail du visiteur. */}
           <div className="contact__mail">
             <div className="contact__label">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
@@ -168,8 +198,7 @@ export default function Contact() {
             <a className="contact__value" href={`mailto:${MAIL_TO}`}>{MAIL_TO}</a>
           </div>
 
-          {/* Bloc LinkedIn — profil créé/à venir (30/10) : URL posée sur
-              linkedin.com/in/didier-wey, à corriger si l'identifiant diffère. */}
+          {/* Bloc LinkedIn */}
           <div className="contact__linkedin">
             <div className="contact__label">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"
@@ -192,7 +221,7 @@ export default function Contact() {
           </div>
         </section>
 
-        {/* ---------- SECTION ÉCHANGES (768) ---------- */}
+        {/* ---------- SECTION ÉCHANGES (768 px) ---------- */}
         <section className="contact__echanges">
           <div className="contact__head">
             <h2>Échanges</h2>
@@ -204,15 +233,15 @@ export default function Contact() {
             via le formulaire — je réponds sous 48 heures.
           </p>
 
-          {/* noValidate : l'infobulle native est remplacée par nos
-              messages rouges sur la ligne des labels (6/11).
-              onChange : efface l'erreur du champ retapé. */}
+          {/* noValidate coupe l'UI native du navigateur ; onChange
+              efface l'erreur du champ retapé dès la frappe. */}
           <form className="contact__form" onSubmit={handleSubmit}
                 noValidate onChange={handleFieldChange} aria-busy={busy}>
-            {/* Honeypot anti-bots — jamais visible, jamais rempli par un
-                humain. Les lecteurs d'écran l'ignorent (aria-hidden), le
-                clavier aussi (tabIndex -1). « botcheck » est le nom que
-                Formgong reconnaît côté serveur (leur pipeline anti-spam). */}
+            {/* Honeypot anti-bots : jamais visible, jamais rempli
+                par un humain. Les lecteurs d'écran l'ignorent
+                (aria-hidden), le clavier aussi (tabIndex -1).
+                « botcheck » est le nom que le service reconnaît
+                côté serveur (son canal anti-spam). */}
             <div className="contact__honeypot" aria-hidden="true">
               <label htmlFor="botcheck">Ne pas remplir ce champ</label>
               <input id="botcheck" name="botcheck" type="text"
@@ -261,12 +290,9 @@ export default function Contact() {
                         aria-describedby={errors.message ? 'message-error' : undefined} />
             </div>
 
-            {/* Confidentialité — VRAIE depuis la bascule (6/11) : le message
-                transite par un tiers (Formgong, UE), la mention le dit
-                honnêtement. Pas d'adresse en clair ici : elle est assemblée
-                à l'exécution dans Contacts directs, cette ligne ne la répète
-                pas dans le DOM servi. Pas d'icône : le cadenas apportait
-                peu (16px, muted), le texte se suffit (6/11). */}
+            {/* Confidentialité : la mention honnête du transit, sans
+                adresse en clair ni icône (le texte se suffit) ; le
+                contrat complet vit dans l'en-tête du fichier.  */}
             <div className="contact__privacy">
               <span>
                 Votre message transite par Formgong (Union européenne) et me
@@ -284,12 +310,12 @@ export default function Contact() {
               </svg>
             </CtaButton>
 
-            {/* Retour d'envoi — role="status" : annoncé par les lecteurs
-                d'écran. Focus en cas d'échec (voir useEffect).
-                Trois teintes (7/11) : neutre pendant l'envoi (--muted),
-                vert au succès (--accent), rouge (--error) à l'échec. La
-                couleur est un écho du résultat, pas le seul porteur :
-                le texte dit déjà tout (daltoniens, lecteurs d'écran). */}
+            {/* Retour d'envoi : role="status" annonce le message aux
+                lecteurs d'écran, avec focus en cas d'échec (voir
+                useEffect). Trois teintes : muted pendant l'envoi,
+                accent au succès, error à l'échec. La couleur est un
+                écho du résultat, jamais le seul porteur : le texte
+                dit déjà tout. */}
             <p
               className={`contact__status${
                 failed

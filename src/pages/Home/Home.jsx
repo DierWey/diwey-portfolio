@@ -1,5 +1,20 @@
-/* Page Accueil — Hero (h1, bannière, carrousel, accroche, identité) + Démarche.
-   Typo des titres : _base.scss ; tailles et descentes : _tokens.scss. */
+/* =====================================================
+Page Accueil.
+
+Structure :
+
+Le hero : h1, bannière des projets sélectionnés (kicker,
+lien « Tout voir », carrousel).
+L'accroche.
+La carte d'identité. 
+La démarche avec trois principes numérotés : Clarté,
+Accessibilité, Précision.
+
+Les styles vivent dans _home.scss ; la typo des
+titres dans _base.scss, les tailles et leurs
+descentes dans _tokens.scss.
+===================================================== */
+
 import { Link } from 'react-router-dom';
 import Carousel from '../../components/Carousel/Carousel';
 import CtaButton from '../../components/CtaButton/CtaButton';
@@ -30,7 +45,7 @@ export default function Home() {
           <Carousel />
         </div>
 
-        {/* Brique 3 : Accroche + Carte d'identité */}
+        {/* Accroche et carte d'identité */}
         <div className="home__about">
           {/* --- Accroche --- */}
           <div className="pitch">
@@ -125,7 +140,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------- DÉMARCHE — écart 96 (48 mobile) porté par la section ---------- */}
+      {/* ---------- Démarche : écart 96 en desktop, porté par la section, 48 en mobile ---------- */}
       <section className="home__approach">
         <div className="home__approach-head">
           <h2>Ma démarche</h2>

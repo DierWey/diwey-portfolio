@@ -1,15 +1,27 @@
 /* ============================================================
-   Page Accueil — Hero (h1, bannière, carrousel, accroche, identité)
-   + Démarche.
-   Typo des titres : _base.scss (h1 bold ink centré, h2/h3 bold
-   accent, h3 uppercase regular). Tailles et descentes : _tokens.scss.
-   Écarts : 48 entre blocs du Hero, 96 Hero↔Démarche (porté par la
-   Démarche ; 48 en mobile).
-   ============================================================ */
+Page Accueil : styles.
+
+La structure. Le hero : h1, bannière des projets
+sélectionnés (kicker, lien « Tout voir », carrousel),
+puis l'accroche et la carte d'identité ; 48 d'écart
+entre ces blocs en desktop, 32 en mobile. La démarche
+en dessous, trois principes en colonnes égales, gouttière
+48 en desktop, empilés en tablette et mobile.
+
+La carte d'identité. Alignée au sommet de sa colonne
+(align-items: start, voir le contrat au .home__about),
+elle garde la hauteur de son contenu. Son bouclier anti-
+accordéon et son alignement vertical vivent dans les
+règles concernées.
+
+La typo des titres vit dans _base.scss, les tailles
+et leurs descentes dans _tokens.scss : ce fichier ne
+répète pas les deux, il les cite.
+============================================================ */
 
 .home__hero {
   display: grid;
-  row-gap: var(--space-12);           /* 48 : h1 ↔ bannière ↔ accroche — vaut aussi en mobile */
+  row-gap: var(--space-12);           /* 48 en desktop ; le mobile descend à 32 (voir paliers) */
 }
 
 .home__banner-head {
@@ -21,30 +33,26 @@
 
 .home__kicker {
   font-family: var(--font-mono);
-  font-size: var(--rank16-size);      /* rang 16 : 16 → 12 mobile via token */
+  font-size: var(--rank16-size);      /* rang 16 : le token descend à 12 en mobile */
   text-transform: uppercase;
   color: var(--accent);
   margin: 0;
 }
 
 /* ============================================================
-   Brique 3 — Accroche + Carte d'identité (home__about)
+   Accroche et carte d'identité (home__about)
    ============================================================ */
 
 .home__about {
   display: grid;
-  grid-template-columns: 1fr 464px;   /* 464 fixe — tranché 21/10 */
+  grid-template-columns: 1fr 464px;   /* colonne carte fixe : 464 */
   gap: var(--space-12);               /* gouttière 48 */
-  /* HAUTEUR AUTO DE LA CARTE (correction Didier Wey 9/11) : sans
-     align-items, la grille étire ses deux enfants à la hauteur de
-     la rangée (défaut = stretch) — la carte d'identité héritait
-     de la hauteur de l'Accroche et finissait en accordéon vide.
-     start : chaque enfant garde SA hauteur de contenu ; la carte
-     s'arrête où son contenu s'arrête. L'« alignement bas
-     accroche/carte à 1920 » du 29/10 était une émergence de ce
-     stretch, PAS une règle — invalidée par le rendu 9/11.
-     Tablette/mobile (1 colonne) : aucun effet, les blocs sont déjà
-     en flux empilé. */
+  /* La grille étire ses enfants par défaut (stretch) : sans align-items,
+  la carte d'identité hériterait de la hauteur de l'accroche et finirait
+  en accordéon vide. start : chaque enfant garde sa hauteur de contenu,
+  la carte s'arrête où son contenu s'arrête. 
+  Tablette et mobile (une colonne) : aucun effet, les blocs sont déjà en
+  flux empilé. */
   align-items: start;
 }
 
@@ -57,15 +65,15 @@
 
 .pitch__promise {
   font-family: var(--font-serif);
-  font-style: italic;                 /* Plex Serif italique — validé */
-  font-size: 32px;                    /* dérive mobile 24 */
+  font-style: italic;                 /* Plex Serif, en italique */
+  font-size: 32px;                    /* 32 en desktop, 24 en mobile */
 }
 
 .pitch__text {
   display: flex;
-  flex-direction: column;             /* les 4 phrases empilées... */
-  gap: 0;                             /* ...sans air — Figma : retours continus */
-  font-size: var(--body-size);        /* 24 → 16 : descente tokenisée */
+  flex-direction: column;             /* les quatre phrases empilées */
+  gap: 0;                             /* sans air : retours continus */
+  font-size: var(--body-size);        /* le token descend de 24 à 16 selon le palier */
   line-height: 1.5;
   color: var(--ink);
 }
@@ -77,11 +85,11 @@
 
 /* --- Carte d'identité --- */
 .id-card {
-  align-self: center;                  /* 9/11 soir : centrée verticalement dans SA colonne — l'air se répartit dessus/dessous ; start = collée en haut comme l'Accroche. À trancher au rendu (voir charte) */
+  align-self: center;                  /* centrée verticalement dans sa colonne : l'air se répartit dessus et dessous */
   display: flex;
   flex-direction: column;
   gap: var(--space-8);                /* 32 entre les trois blocs — cohérent avec le padding */
-  padding: var(--space-8);            /* 32 : bordure de carte ↔ blocs */
+  padding: var(--space-8);            /* 32 : entre la bordure de carte et les blocs */
   background-color: var(--surface);
   border: 1px solid var(--line);      /* filet 1px — même encre que les filets internes */
   border-radius: 6px;                  /* les quatre coins — famille des pilules */
@@ -100,7 +108,7 @@
 .id-card__mark {
   width: 64px;
   height: 64px;
-  object-fit: contain;                /* proportion préservée, letterbox accent */
+  object-fit: contain;                /* proportion préservée, letterbox --accent */
   border-radius: 6px;
   background-color: var(--accent);
 }
@@ -109,7 +117,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: var(--space-2);                /* 8 : pseudo ↔ métier */
+  gap: var(--space-2);                /* 8 entre pseudo et métier */
 }
 
 .id-card__name {
@@ -128,7 +136,7 @@
   color: var(--ink);
 }
 
-/* Bloc Métadonnées — 4 blocs Détail : les filets vivent dans leurs bordures */
+/* Bloc Métadonnées — quatre Détail : les filets vivent dans leurs bordures */
 .id-card__meta {
   display: flex;
   flex-direction: column;            /* gap 0 : le rythme vit dans les paddings */
@@ -136,8 +144,8 @@
 
 .id-card__row {
   display: flex;
-  justify-content: space-between;     /* clé ↔ valeur aux extrémités */
-  gap: var(--space-4);                /* 16 en plancher — la clé-valeur ne se touche jamais */
+  justify-content: space-between;     /* clé et valeur aux extrémités */
+  gap: var(--space-4);                /* 16 en plancher — la clé et la valeur ne se touche jamais */
   padding-block: var(--space-4);      /* 16 haut/bas, 0 g/d */
   border-bottom: 1px solid var(--line);
 }
@@ -152,11 +160,11 @@
 
 .id-card__row dd {
   margin: 0;                          /* le reset universel couvre, ce margin: 0 protège si le reset évolue */
-  color: var(--ink);                  /* valeurs encre */
+  color: var(--ink);                  /* couleur encre */
   text-align: right;
 }
 
-/* Bloc Disponibilité + CV — empilés, centrés */
+/* Bloc Disponibilité et CV — empilés, centrés */
 .id-card__availability {
   display: flex;
   flex-direction: column;
@@ -166,7 +174,7 @@
 .id-card__status {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);                /* 8 : point ↔ texte */
+  gap: var(--space-2);                /* 8 entre le point et le texte */
   padding: var(--space-2);
   font-family: var(--font-mono);
   font-size: var(--rank16-size);
@@ -174,7 +182,7 @@
 }
 
 .id-card__dot {
-  width: var(--space-2);              /* 8 px — validé */
+  width: var(--space-2);              /* 8 px */
   height: var(--space-2);
   border-radius: 50%;
   background-color: var(--accent);
@@ -183,7 +191,7 @@
 .id-card__cv {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-4);                /* 16 : texte ↔ icône */
+  gap: var(--space-4);                /* 16 entre texte et icône */
   padding: var(--space-2);            /* 8 : pilule symétrique */
   font-family: var(--font-mono);
   font-size: var(--rank16-size);
@@ -201,17 +209,17 @@
 }
 
 /* ============================================================
-   Démarche — titre + 3 principes
+   Démarche : le titre et les trois principes
    ============================================================ */
 
 .home__approach {
-  padding-top: var(--space-24);       /* 96 : écart ENTRE sections (48 mobile) */
+  padding-top: var(--space-24);       /* 96 : écart entre les sections (48 en mobile) */
 }
 
 .home__approach-head {
   display: flex;
   align-items: center;
-  gap: var(--space-4);                 /* 16 : titre ↔ filet */
+  gap: var(--space-4);                 /* 16 entre le titre et le filet */
 }
 
 .home__approach-rule {
@@ -221,7 +229,7 @@
 }
 
 .home__approach-list {
-  margin-top: var(--space-8);         /* 32 : titre de section ↔ principes */
+  margin-top: var(--space-8);         /* 32 entre le titre de section et les principes */
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-12);               /* 48 : gouttière desktop */
@@ -230,13 +238,13 @@
 .principle {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);                 /* 16 : h3 ↔ sous-titre ↔ texte */
+  gap: var(--space-4);                 /* 16 : h3 puis sous-titre puis texte */
 }
 
 .principle__tagline {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: var(--body-size);        /* 24 → 16 : descente tokenisée */
+  font-size: var(--body-size);        /* le token descend de 24 à 16 selon le palier */
   color: var(--ink);
 }
 
@@ -247,7 +255,7 @@
 }
 
 /* ============================================================
-   Tablette (768 → 1023) — empilé, mise en forme interne conservée
+   Tablette (de 768 à 1023) : empilé, mise en forme interne conservée
    ============================================================ */
 @media (min-width: 768px) and (max-width: 1023px) {
   .home__about {
@@ -259,38 +267,38 @@
 @media (max-width: 1023px) {
   .home__approach-list {
     grid-template-columns: 1fr;
-    gap: var(--space-8);              /* 48 → 32 dès la tablette, inchangé en mobile */
+    gap: var(--space-8);              /* 48 en desktop, 32 dès la tablette, inchangé en mobile */
   }
 }
 
 /* ============================================================
-   Mobile (≤ 767) — descentes ; les écarts du Hero restent à 48
+   Mobile (jusqu'à 767) : descentes ; les écarts du Hero descendent à 32
    ============================================================ */
 @media (max-width: 767px) {
   .home__hero {
-    row-gap: var(--space-8);           /* 48 → 32 : h1 ↔ bannière ↔ accroche — relevé Figma 375 */
+    row-gap: var(--space-8);           /* le Hero descend à 32 */
   }
 
   .home__banner-head {
-    margin-bottom: var(--space-2);     /* 16 → 8 : surtitre ↔ carrousel */
+    margin-bottom: var(--space-2);     /* passage de 16 à 8 entre surtitre et carrousel */
   }
 
   .home__about {
     grid-template-columns: 1fr;
-    gap: var(--space-8);               /* 48 → 32 : accroche ↔ carte */
+    gap: var(--space-8);               /* passage de 48 à 32 entre accroche et carte */
   }
 
   .pitch__promise {
-    font-size: 24px;                   /* 32 → 24 */
+    font-size: 24px;                   /* passage de 32 à 24 */
   }
 
   .pitch__actions {
     flex-direction: column;             /* boutons empilés pleine largeur */
-    gap: var(--space-6);                /* 24 — confirmé */
+    gap: var(--space-6);                /* 24 */
   }
 
   .home__approach {
-    padding-top: var(--space-12);      /* 96 → 48 : confirmé */
+    padding-top: var(--space-12);      /* passage de 96 à 48 */
   }
 
   .id-card__row {

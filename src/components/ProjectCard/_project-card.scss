@@ -1,38 +1,36 @@
 /* ------------------------------------------------------------------
-   ProjectCard — socle de la carte projet (grille Portfolio).
+ProjectCard : le style du socle de la carte projet (la grille Portfolio,
+elle, vit dans le partial de sa page).
 
-   Cotes Figma 31/10 (label P3 ajouté 9/11) :
-   - Aperçu : fond accent-soft, padding 24, totals 384×253 /
-     324×221 / 327×223 (desktop/tablette/mobile) — la capture et le
-     chrome 32 se partagent l'intérieur sans marge supplémentaire.
-   - Infos : padding 24, 5 blocs (Top/Nom/Description/CTA/Bottom)
-     écartés de 16 — le CTA occupe le gap 16 existant, aucune
-     cote nouvelle pour lui.
-   - Rayon 12 constant (31/10) — les 8/10 du prototype sont invalidés.
-   - HAUTEUR COMMUNE (31/10) : les cartes d'une rangée (et de la
-     grille) partagent la même hauteur — le texte ne décide pas.
-     La carte est un flex column, le Bottom est poussé en bas.
+Cotes et structure. 
+L'aperçu : fond accent-soft, padding 24, la barre de navigateur (32) et la
+capture se partagent l'intérieur sans marge supplémentaire.
+Les infos : padding 24, cinq blocs (Top, Nom, Description, CTA, Bottom) écartés de
+16, le CTA occupe le gap 16 existant, aucune cote nouvelle pour lui. Rayon 12 
+constant : pas de token, valeur de maquette assumée pour la carte seule.
 
-   Geste de survol (9/11, clôture du débat cartes) : bordure
-   accent + Nom accent + pilule du CTA révélée. TROIS signaux,
-   zéro mouvement. Le filet ::after scaleX du 3/11 est RETIRÉ :
-   l'argument « la fiche est une section de la page » est tombé
-   devant Vincent (6/11) — il ne vivait que dans la tête du
-   designer. Le « pourquoi » du clic est porté par le label CTA,
-   visible au repos (tactile inclus) — réponse à sa remarque.
+La hauteur suit le contenu : la grille Portfolio n'étire pas les cartes 
+(align-items: start côté page), chacune prend la hauteur de son texte. 
+Le flex: 1 de .card__info et le margin-top: auto de .card__footer ne produisent
+donc rien tant que rien n'étire la carte ; ils restent comme solution de secours
+pour l'éventualité future d'un conteneur qui contraindrait les cartes à avoir
+une hauteur égale.
 
-   Le composant ne connaît RIEN de la grille : colonnes, gouttières
-   (48 desktop / 24 tablette / 1 colonne mobile) et égalisation des
-   rangées vivent dans le partial de la page Portfolio.
+Survol : la bordure passe accent, le nom passe accent, la pilule du CTA se révèle.
+Trois signaux, zéro mouvement. Le pourquoi du clic est porté par le label CTA,
+visible au repos (tactile inclus).
+
+Le composant ne connaît rien de la grille : colonnes, gouttières et égalisation des
+rangées vivent dans les styles de la page Portfolio, pas ici.
    ------------------------------------------------------------------ */
 
 .card {
-  display: flex;                          /* hauteur commune : column pour pousser le Bottom */
+  display: flex;                          /* flex column : le Bottom suit le flux du contenu */
   flex-direction: column;
   text-decoration: none;
   background-color: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 12px;                     /* constant 31/10 — pas de token, valeur Figma */
+  border-radius: 12px;                     /* constant — pas de token, valeur dédiée à la carte */
   overflow: hidden;                        /* arrondit le contenu aux coins de la carte */
   transition: border-color 250ms ease-out;
 }
@@ -50,21 +48,26 @@
   background-color: var(--accent-soft);
 }
 
-/* Coins du navigateur arrondis DANS la carte (rayon 8, 31/10) —
-   le contrat reste respecté : c'est le parent (la carte) qui
+/* Coins du navigateur arrondis dans la carte (rayon 8) : le
+   contrat reste respecté, c'est le parent (la carte) qui
    arrondit son enfant via ce sélecteur descendant, le composant
-   BrowserFrame ne porte toujours ni bordure ni rayon lui-même.
-   À ajuster si la classe racine réelle du composant diffère. */
+   BrowserFrame ne porte toujours ni bordure ni rayon lui-même. */
 .card__preview .browser-frame {
   border-radius: 8px;
   overflow: hidden;
 }
 
-/* ---- Capture réelle (chantier captures 10/11) ----
-   Le <picture> remplit la zone que le placeholder occupait.
-   object-fit: cover = GARDE-FOU durable (même loi que le carrousel) :
-   replis de palier aux ratios différents pendant le chantier →
-   recadrage centré, pas de déformation ni de letterbox ; no-op
+/* ---- Capture réelle : le trajet JSX vers DOM ----
+   La carte entière est un <Link> : au rendu, le <a class="card">
+   en est la racine. Le <Capture> devient un <picture
+   class="card__image"> (la classe reçue en prop est posée sur
+   le picture par Capture.jsx), et son <img> N'A AUCUNE classe :
+   la règle ci-dessous l'attrape par filiation (.card__image img
+   = le <img> enfant du picture).
+   Le picture remplit la zone que le placeholder occupait.
+   object-fit: cover = GARDE-FOU durable (même loi que le
+   carrousel) : un repli de palier aux ratios différents donne un
+   recadrage centré, pas une déformation ni un letterbox ; no-op
    une fois les fichiers d'un palier en place. */
 .card__image {
   display: flex;
@@ -79,16 +82,18 @@
   object-fit: cover;
 }
 
-/* ---- Placeholder : repli officiel du chantier captures ----
-   Visible pour tout projet non encore capturé ; à retirer à la
-   fin des 6 projets, avec sa contrepartie JSX et le fond --bg. */
+/* ---- Placeholder : REPLI DURABLE, visible pour tout projet sans
+   capture pour ce rôle — un futur projet entré au JSON
+   s'affiche proprement pendant que ses captures se produisent. 
+   Il ne se retire pas : la résilience est une règle de charte (même loi
+   que le cover du carrousel). ---- */
 .card__capture {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  aspect-ratio: 336 / 173;                 /* ratio placeholder ≈ desktop — l'<img> réelle le remplacera */
-  background-color: var(--bg);           /* fond neutre bg (31/10) — à retirer avec les .webp */
+  aspect-ratio: 336 / 173;         /* ratio placeholder ≈ desktop — l'<img> réelle le remplacera */
+  background-color: var(--bg);     /* fond neutre du repli — même fond que la page, la tuile est muette sans dire « cassé » */
 }
 
 .card__placeholder {
@@ -103,15 +108,15 @@
   flex-direction: column;
   gap: var(--space-4);                    /* 16 : Top / Nom / Description / CTA / Bottom */
   padding: var(--space-6);                /* 24 */
-  flex: 1;                                 /* hauteur commune : absorbe l'espace, étire jusqu'au bas */
+  flex: 1;                                 /* absorbe l'espace restant SI la carte est étirée (inactif sinon — la hauteur suit le contenu) */
 }
 
-/* Top — badges techno : pilules accent-soft, bord accent, mono 16
-   (hauteur 29px au Figma — padding vertical 4, confirmé 31/10) */
+/* Badges techno : pilules accent-soft, bord accent, mono 16
+   (hauteur de maître-cadre : padding vertical 4) */
 .card__badges {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);                    /* 8 : écart entre badges — confirmé Figma 31/10 */
+  gap: var(--space-2);                    /* 8 : écart entre badges */
   list-style: none;
   margin: 0;
   padding: 0;
@@ -127,13 +132,12 @@
   padding: 4px var(--space-2);           /* 4 haut/bas, 8 gauche/droite */
 }
 
-/* Nom — h2 sémantique (WAVE) ; style neutralisé : la base h2 est
-   accent + --h2-size — ici ink et 24 constants AU REPOS.
-   Au survol/focus de la carte : le Nom passe accent (deuxième
-   signal — il adopte la couleur des headings de la base).
-   LE FILET ::after DU 3/11 EST RETIRÉ (9/11) : plus de flex, plus
-   de gap 16, plus de scaleX — le Nom redevient un simple libellé,
-   sa coloration suffit à signaler l'interactivité. */
+/* Nom : h2 sémantique, style neutralisé. La base h2 est accent
+   et --h2-size ; ici ink et 24 constants au repos, l'accent est
+   réservé au survol : c'est la couleur du geste, pas celle du
+   repos. Au survol/focus de la carte, le nom passe accent
+   (deuxième signal). Pas de filet, pas de scaleX : le nom est un
+   libellé, sa coloration suffit à signaler l'interactivité. */
 .card__name {
   font-family: var(--font-serif);
   font-size: 24px;
@@ -148,9 +152,8 @@
   color: var(--accent);
 }
 
-/* Description — Inter ink 16 CONSTANT tous paliers (31/10 :
-   16px littéral, comme les autres constantes — pas de token qui
-   varierait selon le palier). */
+/* Description : Inter ink 16 constant à tous les paliers : pas de
+   token qui varierait selon le palier, la carte garde ses tailles. */
 .card__text {
   font-size: 16px;
   line-height: 1.6;
@@ -158,46 +161,46 @@
   margin: 0;
 }
 
-/* ---- CTA « Voir le projet ↗ » (P3, acté 9/11) ----
-   Ligne propre JUSTIFIÉE À DROITE entre Description et Bottom :
-   la lecture du bloc Infos se ferme sur l'action.
-   - Mono 16 CONSTANT tous paliers (correction Didier Wey 9/11 soir) :
-     tous les textes de la carte gardent leur taille en desktop,
-     tablette ET mobile — même loi que les badges (16), la
-     description (16), le Nom (24) et les metas (12). PAS de
-     token --rank16-size : il descendrait à 12 en mobile et
-     casserait la règle de la carte.
-   - ACCENT au repos : le label dit POURQUOI la carte est cliquable,
-     visible sans survol (tactile, lecteurs d'écran — remarque de
-     Vincent : le survol n'existe pas au tactile).
-   - Pilule-fantôme : bordure 1px TRANSPARENTE + padding 4/8 au
-     REPOS — l'emprise est figée, la révélation au survol ne
-     décale RIEN (leçon des pilules-fantômes).
-   - Au survol de la carte : bordure → accent (troisième signal —
-     le regard va au BUT du clic, pas seulement à la carte).
-   - À l'appui du clic : fond accent-soft — le retour d'appui,
-     même famille que les boutons secondaires.
-   - Aucun mouvement : pas de flèche qui glisse (règle 24/10). */
+/* ---- CTA « Voir le projet ↗ » ----
+   Ligne propre justifiée à droite entre description et
+   bottom : la lecture du bloc infos se ferme sur l'action.
+
+   Mono 16 constant à tous les paliers : tous les textes
+   de la carte gardent leur taille en desktop, tablette
+   et mobile, même loi que les badges, la description et
+   le nom. Pas de token --rank16-size : il descendrait à
+   12 en mobile et casserait la règle de la carte.
+
+   Accent au repos : le label dit pourquoi la carte est
+   cliquable, visible sans survol (tactile, lecteurs
+   d'écran).
+
+   Pilule-fantôme : bordure 1px transparente et padding
+   4/8 au repos ; l'emprise est figée, la révélation au
+   survol ne décale rien.
+
+   Au survol de la carte, la bordure passe accent
+   (troisième signal) : le regard va au but du clic, pas
+   seulement à la carte.
+
+   À l'appui du clic, fond accent-soft : le retour
+   d'appui, même famille que les boutons secondaires.
+
+   Aucun mouvement : pas de flèche qui glisse. */
 .card__cta {
-  align-self: flex-end;                    /* P3 : justifié à droite */
+  align-self: flex-end;                    /* justifié à droite */
   display: inline-flex;
   align-items: center;
   margin: -5px -9px;                      /* compense bordure 1 + padding 4/8 : la pilule ne mange ni le gap 16 ni la largeur du texte nu */
   padding: 4px var(--space-2);            /* 4 haut/bas, 8 gauche/droite — même loi que les badges */
   gap: 8px;
   font-family: var(--font-mono);
-  font-size: 16px;                         /* LITTÉRAL, constant tous paliers — la carte ne descend pas (correction 9/11) */
+  font-size: 16px;                         /* littéral, constant tous paliers — la carte ne descend pas */
   color: var(--accent);
   border: 1px solid transparent;           /* permanente — jamais absente : zéro décalage de layout */
   border-radius: var(--radius);            /* 6 : le rayon des boutons de la charte */
-  transition: border-color var(--transition),
-              background-color var(--transition);
-}
-
-/* Flèche ornementale — aria-hidden côté JSX, jamais lue. Écart 16
-   du libellé (même loi libellé↔flèche que les CtaButton). */
-.card__cta-arrow {
-  margin-left: var(--space-4);            /* 16 */
+  transition: border-color var(--transition),       // --accent au survol
+              background-color var(--transition);   // --accent-soft au clic
 }
 
 /* Survol/focus de la carte : la pilule se révèle — troisième
@@ -220,11 +223,11 @@
   justify-content: space-between;
   padding-top: var(--space-2);            /* 8 : entre le filet et les textes */
   border-top: 1px solid var(--line);
-  margin-top: auto;                       /* colle le footer au bas, quelle que soit la longueur du texte */
+  margin-top: auto;                       /* colle le Bottom au bas SI la carte est étirée (inactif sinon — la hauteur suit le contenu) */
 }
 
-/* Repères mono du Bottom : 12px LITTÉRAL (plancher, même loi que
-   l'URL du chrome — pas de token, comme les autres 12). */
+/* Repères mono du Bottom : 12px littéral (valeur plancher de la charte, même loi que
+   l'URL de la barre simulée — pas de token, comme les autres 12). */
 .card__meta {
   font-family: var(--font-mono);
   font-size: 12px;

@@ -1,37 +1,52 @@
 /* ============================================================
-   Page Contact — structure Figma (30/10) :
-   h1 centré (loi h1 de la base) ↔ 48 ↔ bloc infos-form ;
-   desktop : informations 384 + 96 + échanges 768 = 1248 ;
-   tablette/mobile : empilés, écart 96 tablette / 48 mobile
-   (même loi que les sections de l'Accueil).
+   Page Contact : styles.
 
-   Corrections rendu (30/10, soir) :
-   - section informations : Inter regular --body-size (plus de mono) ;
-   - libellés ink-muted, icônes accent ;
-   - valeurs = pilules-fantômes (bordure transparente permanente,
-     hover/focus → texte + bordure accent — zéro décalage) ;
-   - formulaire : row-gap 24 toutes versions, champs padding 16,
-     tout le texte en Inter regular, placeholders ink-muted ;
-   - ligne Confidentialité (icône lock + texte, ink-muted) entre
-     le dernier champ et le bouton.
+   La structure : 
+   Le h1 centré, 48 d'écart fixe, puis la grille infos-form :
+   en desktop, informations 384, échanges 768, colonnes séparées de 96 ;
+   empilées en tablette et mobile, écart 96 tablette puis 48 mobile
+   (même loi que les sections de l'Accueil). 
+   Le gap 96 posé en colonne ET en rangée : une valeur, deux
+   rôles, le colonne-gap s'exprime en desktop, le row-gap prend
+   le relais dès l'empilement.
 
-   Bascule Formgong (6/11) : ajout du retour d'envoi —
-   .contact__status sous le bouton (voir plus bas).
-   ============================================================ */
+   Le langage de la page : 
+   Les valeurs cliquables (e-mail, LinkedIn) sont des pilules-fantômes.
+   Mêmes lois que le footer : bordure transparente permanente,
+   texte et bordure --accent au survol et au focus, zéro décalage de layout.
+   Le bouton d'envoi, 242 de large centré à partir de 768 ; en mobile il
+   reprend sa largeur naturelle. 
+   Le texte du formulaire en Inter regular 16 constants à tous les paliers :
+   sous 16, iOS Safari zoome à la prise de focus, la règle n'est pas un goût
+   mais une contrainte.
+
+   Les états :
+   Le focus des inputs : la bordure passe --accent et remplace l'outline
+   global de la base,un seul indicateur visible (WCAG). 
+   L'erreur de saisie : message rouge 12 sur la ligne du label, justifié
+   à droite en space-between, aligné sur la ligne de base du label ;
+   --error (rouge) est la couleur de l'erreur seule, pas une couleur d'accent.
+   Le message de statut : trois teintes, --muted pendant l'envoi,
+   --accent au succès, --error à l'échec ; la couleur est un écho du résultat,
+   jamais le seul porteur (WCAG 1.4.1 : le texte dit déjà tout).
+
+   Le honeypot hors écran : positionné loin à gauche, un pixel, invisible pour tous
+   les humains, son contrat vit dans le JSX de la page. 
+   =================================================== */
 
 .contact {
   display: grid;
-  row-gap: var(--space-12);           /* 48 : h1 ↔ infos-form — vaut aussi en mobile */
+  row-gap: var(--space-12);           /* 48 : entre le h1 et le bloc infos-form, vaut aussi en mobile */
 }
 
 /* ---- Bloc infos-form : la grille 384 + 96 + 768 ----
-   Column-gap ET row-gap posés à 96 : en desktop (une rangée),
+   Column-gap et row-gap posés à 96 : en desktop (une rangée),
    seul le column-gap s'exprime ; dès l'empilement, c'est le
-   row-gap qui prend le relais — une valeur, deux rôles. */
+   row-gap qui prend le relais, une valeur, deux rôles. */
 .contact__infos-form {
   display: grid;
   grid-template-columns: 384px 1fr;   /* 384 + reste = 768 à pleine largeur */
-  column-gap: var(--space-24);        /* 96 : informations ↔ échanges */
+  column-gap: var(--space-24);        /* 96 : entre informations et échanges */
   row-gap: var(--space-24);           /* 96 : sert dès l'empilement tablette/mobile */
 }
 
@@ -39,10 +54,10 @@
 .contact__informations {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);                 /* 32 : h2 → mail → linkedin (loi « 32 sous le h2 ») */
+  gap: var(--space-8);                 /* 32 : h2 puis mail puis linkedin (loi « 32 sous le h2 ») */
 }
 
-/* h2 + filet — même pattern que la Démarche (Accueil) */
+/* h2 et filet : même pattern que la Démarche (Accueil) */
 .contact__head {
   display: flex;
   align-items: center;
@@ -73,20 +88,21 @@
 
 .contact__label-text {
   font-family: var(--font-sans);       /* Inter regular — plus de mono */
-  font-size: var(--body-size);         /* 24 → 16 : descente tokenisée */
+  font-size: var(--body-size);         /* le token descend de 24 à 16 selon le palier */
   color: var(--ink-muted);             /* libellé discret, la valeur est l'acteur */
 }
 
-/* Valeur = pilule-fantôme : bordure TRANSPARENTE permanente (aucun
-   décalage de layout), texte ink ; hover/focus → texte + bordure
-   accent. Même langage que la pilule fantôme du footer. */
+/* Valeur = pilule-fantôme : bordure transparente permanente (aucun
+  décalage de layout), texte ink ; au survol et au focus, texte et
+  bordure passent accent. Même langage que la pilule fantôme
+  du footer. */
 .contact__value {
   display: inline-flex;
   align-items: center;
   width: fit-content;                  /* la pilule épouse son contenu, pas la colonne */
   padding: var(--space-2) var(--space-4);  /* 8 vertical · 12 horizontal */
   font-family: var(--font-sans);
-  font-size: var(--body-size);         /* 24 → 16 : suit la section */
+  font-size: var(--body-size);         /* le token descend de 24 à 16 selon le palier */
   color: var(--ink);
   background-color: transparent;
   border: 1px solid transparent;       /* fantôme au repos : invisible, mais déjà là */
@@ -100,9 +116,9 @@
   border-color: var(--accent);
 }
 
-/* Variante lien externe (LinkedIn) : valeur + arrow-up-right.
-   La flèche reste ACCENT en permanence (icône-direction, comme
-   les liens du footer) — seul le texte suit le survol. */
+/* Variante lien externe (LinkedIn) : valeur plus flèche.
+   La flèche reste accent en permanence (icône-direction,
+   comme les liens du footer) : seul le texte suit le survol. */
 .contact__value--external {
   gap: var(--space-2);                 /* 8 : texte ↔ flèche */
 }
@@ -115,17 +131,17 @@
 .contact__echanges {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);                 /* 32 : h2 → accroche → formulaire (loi « 32 sous le h2 ») */
+  gap: var(--space-8);                 /* 32 : h2 puis accroche puis formulaire (loi « 32 sous le h2 ») */
 }
 
 .contact__pitch {
-  font-size: var(--body-size);         /* 24 → 16 : descente tokenisée */
+  font-size: var(--body-size);         /* le token descend de 24 à 16 selon le palier */
   line-height: 1.5;
-  color: var(--ink-muted);             /* accroche en muted — à confirmer au rendu contre le Figma */
+  color: var(--ink-muted);             
 }
 
-/* Formulaire : champs, confidentialité et bouton empilés à 24
-   TOUTES versions (30/10 soir) — plus de 16. */
+/* Formulaire : champs, confidentialité et bouton, empilés à 24
+   à tous les paliers. */
 .contact__form {
   display: flex;
   flex-direction: column;
@@ -133,8 +149,8 @@
 }
 
 /* Champ : label au-dessus de l'input, pleine largeur de la colonne
-   échanges (30/10, soir) — plus aucun padding : les surlignages de
-   saisie (autocomplete iOS/Chrome) s'étendent bord à bord. */
+   échanges. Sans padding : les surlignages de saisie (autocomplete
+   iOS/Chrome) s'étendent bord à bord. */
 .contact__field {
   display: flex;
   flex-direction: column;
@@ -148,7 +164,7 @@
   color: var(--ink);
 }
 
-/* Ligne label ↔ erreur (6/11) : le label à gauche, le message
+/* Ligne label et erreur : le label à gauche, le message
    d'erreur rouge 12 à droite. justify-content: space-between =
    l'erreur est justifiée à droite dès qu'elle apparaît, et le
    label ne bouge pas d'un pixel : l'erreur occupe l'espace
@@ -162,12 +178,10 @@
   gap: var(--space-2);                 /* 8 : label ↔ erreur */
 }
 
-/* Message d'erreur — ROUGE taille 12 (décision 6/11 : le rouge
-   entre dans la charte pour les erreurs de saisie uniquement).
-   NOUVEAU TOKEN : --error à ajouter dans les tokens de la base
-   (proposition : #B3261E — rouge sobre, lisible sur --surface,
-   contraste > 4.5:1). Aucune autre règle ne l'utilise : c'est
-   la couleur de l'erreur, pas une couleur d'accent. */
+/* Message d'erreur : rouge, taille 12, la couleur de l'erreur de
+   saisie seule, pas une couleur d'accent. --error vit dans
+   _tokens.scss : rouge sobre, lisible sur --surface (contraste
+   supérieur à 4.5:1). */
 .contact__field-error {
   font-family: var(--font-sans);
   font-size: 12px;
@@ -175,13 +189,13 @@
 }
 
 /* Inputs — rayon 6 (famille pilules), bordure line, focus accent.
-   Focus : la BORDURE change de couleur (indicateur visible, WCAG) ;
+   Focus : la bordure change de couleur (indicateur visible, WCAG) ;
    l'outline global de la base est neutralisé ici pour ne pas doubler. */
 .contact__input {
   font-family: var(--font-sans);       /* Inter regular */
-  font-size: 16px;                     /* CONSTANT : sous 16px, iOS Safari zoome à la prise de focus */
+  font-size: 16px;                     /* constant : sous 16px, iOS Safari zoome à la prise de focus */
   color: var(--ink);
-  padding: var(--space-2) var(--space-4); /* 8/16 — à confirmer au rendu contre le Figma */
+  padding: var(--space-2) var(--space-4); /* 8 vertical / 16 horizontal */
   background-color: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);        /* 6 */
@@ -220,32 +234,25 @@
   resize: none;
 }
 
-/* Ligne Confidentialité — entre le dernier champ et le bouton.
-   Texte seul ink-muted, Inter regular (6/11) : le cadenas 16px en
-   muted apportait peu, le texte se suffit. Plus de flex/gap non
-   plus : un seul enfant, le flux naturel suffit. Pas d'adresse en
-   clair dans le texte — elle est assemblée à l'exécution dans
-   Contacts directs. */
+/* Ligne Confidentialité : texte seul en ink-muted, entre le
+   dernier champ et le bouton ; le contrat complet vit dans le
+   JSX de la page. */
 .contact__privacy {
   font-family: var(--font-sans);
   font-size: 16px;
   color: var(--ink-muted);
 }
 
-/* Retour d'envoi (6/11, bascule Formgong) — message de statut sous
-   le bouton : « Envoi en cours… » / « Message envoyé — merci ! » /
-   « Échec de l'envoi… ». role="status" côté JSX : annoncé par les
-   lecteurs d'écran, focus en cas d'échec (reprise en lecture).
-   Inter regular 16 : même langage que la ligne Confidentialité.
-   L'écart avec le bouton vient du gap 24 du formulaire (flex
-   column), pas d'une marge — pas de piège du row-gap en fantôme :p
-
-   Trois teintes (7/11, décision rendu) : MUTED pendant l'envoi
-   (neutre, on ne prétend rien), ACCENT au succès (le vert positif
-   de la charte), ROUGE (--error) à l'échec. La couleur est un ÉCHO
-   du résultat, pas le porteur de l'information : le texte dit déjà
-   tout (daltoniens, lecteurs d'écran — WCAG 1.4.1 : la couleur
-   n'est jamais le seul indicateur). */
+/* Retour d'envoi : message de statut sous le bouton (« Envoi en
+   cours… », « Message envoyé », « Échec de l'envoi »), role="status"
+   côté JSX : annoncé par les lecteurs d'écran, avec focus en cas
+   d'échec. L'écart avec le bouton vient du gap 24 du formulaire
+   (flex column), pas d'une marge.
+   Trois teintes : muted pendant l'envoi (neutre, on ne prétend
+   rien), accent au succès (le vert positif de la charte), error
+   à l'échec. La couleur est un écho du résultat, pas le porteur
+   de l'information : le texte dit déjà tout (WCAG 1.4.1 : la
+   couleur n'est jamais le seul indicateur). */
 .contact__status {
   font-family: var(--font-sans);
   font-size: 16px;
@@ -260,13 +267,14 @@
   color: var(--error);                /* échec / connexion impossible : le rouge */
 }
 
-/* Focus du statut : programmatique uniquement (tabIndex -1) — pas
-   d'indicateur visible, l'information EST le message, déjà lu. */
+/* Focus du statut : programmatique uniquement (tabIndex -1), pas
+   d'indicateur visible : l'information est le message, déjà lu. */
 .contact__status:focus-visible {
   outline: none;
 }
 
-/* Honeypot — hors écran, invisible pour tous les humains */
+/* Honeypot : hors écran, invisible pour tous les humains ;
+le contrat vit dans le JSX de la page */
 .contact__honeypot {
   position: absolute;
   left: -9999px;
@@ -284,6 +292,6 @@
 
 @media (max-width: 767px) {
   .contact__infos-form {
-    row-gap: var(--space-12);          /* 96 → 48 mobile (loi Accueil) */
+    row-gap: var(--space-12);          /* 48 en mobile (loi Accueil) */
   }
 }
