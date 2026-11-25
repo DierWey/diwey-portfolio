@@ -8,70 +8,114 @@ import NotFound from "../NotFound/NotFound";
 import data from "../../data/projects.json";
 
 /* ============================================================
-   Fiche projet — /portfolio/:slug
-   Générique, pilotée par data/projects.json (charte 21/10) :
-   une seule page, six fiches. Toutes les cotes et décisions
-   visuelles sont relevées dans la charte du 6/11 (Figma fait foi)
-   et implémentées dans le SCSS colocalisé — ce JSX ne porte
-   aucune décision de style, seulement la structure.
+Fiche projet. /portfolio/:slug
 
-   Structure (relevé 6/11) :
-   - Fil d'Ariane (parent cliquable .pill-link, courante accent)
-   - Cadre navigateur (BrowserFrame lg) + capture adaptative
-     16:10 / 3:4 / 9:16 — Capture réelle si le rôle `preview`
-     existe pour le projet (chantier captures 10/11), placeholder
-     sinon — retrait progressif, projet par projet, comme le
-     carousel et la carte. alt="" : le h1 porte le nom, la capture
-     est décorative, elle ne répète rien au lecteur d'écran.
-   - h1 pleine largeur (title complet du JSON)
-   - Grille 2 colonnes desktop / 1 colonne tablette-mobile :
-     DOM en ordre mono-colonne (intro → fiche technique → sections),
-     le grid replace l'aside en 2e colonne sur toute la hauteur
-   - Items : h3 « 01 / » seul (exception 29/10 confirmée 6/11) +
-     texte frère — même ligne, même taille, mono ↔ Inter
-   - Fiche technique : dl (clé/valeur) — Type ← role, Niveau ←
-     level, Année ← year, Approche ← approach
-   - Pied : ← Tous les projets (secondaire) + Projet suivant
-     (primaire, boucle sur le 1er projet après le dernier)
+Générique, pilotée par data/projects.json : une seule
+page, six fiches. Ce JSX ne porte aucune décision de
+style, seulement la structure ; tout le visuel vit dans
+le SCSS colocalisé.
 
-   A11Y — question OUVERTE (à l'audit WAVE) : un h3 « 01 / » est
-   un titre muet pour un lecteur d'écran. Si WAVE le signale,
-   ajouter dans le h3 un <span className="visually-hidden">
-   informatif (« Fonctionnalité 01 » / « Méthode 01 »), sans
-   toucher au visuel. Ne rien changer avant l'audit.
-   ============================================================ */
+L'arrivée sur la page : 
+- La carte cliquée fabrique l'URL /portfolio/{slug}.
+- React Router colle l'adresse au gabarit ci-dessus, crée 
+params ({ slug : la valeur de l'URL }) et rend ce composant.
+- useParams lit params et la déstructuration en déplie la valeur
+dans une variable slug.
+- findIndex fait la jonction avec le JSON.
+
+Structure :
+
+Le fil d'Ariane : parent cliquable en pilule, page
+courante en accent, non cliquable.
+
+Le cadre navigateur (BrowserFrame lg) et sa capture
+adaptative : Capture réelle si le rôle `preview` existe
+pour le projet, placeholder sinon, même loi de repli
+durable que le carrousel et la carte. alt="" : le h1
+porte le nom, la capture est décorative, elle ne répète
+rien au lecteur d'écran.
+
+Le h1 pleine largeur (title complet du JSON).
+
+La grille deux colonnes en desktop, une seule en
+tablette et mobile : le DOM reste en ordre mono-colonne
+(intro, fiche technique, sections), la grille replace
+l'aside en seconde colonne sur toute la hauteur.
+
+h3 court (01 /) assumé (l'audit n'a rien signalé).
+
+La fiche technique : liste de description dl, des paires
+clé/valeur (Type reprend role, Niveau reprend level,
+Année reprend year, Approche reprend approach).
+
+Le pied : Tous les projets (bouton secondaire) et Projet
+suivant (bouton primaire, qui boucle sur le premier projet
+après le dernier).
+
+Fonctionnalités :
+
+Le scroll remis en haut à chaque changement de fiche :
+la navigation de fiche en fiche ne recharge pas la
+page, le navigateur ne remet donc pas le scroll tout
+seul (le Hook vit avant le retour anticipé : règle
+des hooks).
+
+Un slug inconnu rend la 404 : la route * capte aussi,
+mais la fiche reste robuste aux liens internes
+malformés.
+
+Le nom court du fil d'Ariane et du bouton "Projet suivant" suit
+le gabarit « Nom — sous-titre », séparé au tiret long,
+avec repli natif si le tiret manque.
+============================================================ */
+
 
 function ProjectDetail() {
-  const { slug } = useParams();
-  const { projects } = data;
 
-  // Navigation SPA : une fiche → l'autre ne fait pas de chargement
-  // complet, le navigateur ne reset donc pas le scroll tout seul.
-  // (Hook AVANT le retour anticipé : règle des hooks.)
+  const { slug } = useParams();  // const slug = useParams().slug;
+  const { projects } = data;     // const projects = data.projects;
+
+  /* Navigation SPA : de fiche en fiche, pas de chargement complet, le
+  navigateur ne remet pas le scroll en haut tout seul.
+  Ce repositionnement du scroll à chaque nouveau projet détaillé est un
+  effet de bord. On le fait donc vivre dans un `useEffect`, exécuté après
+  le rendu, au rythme du tableau de dépendances `[slug]` : à chaque nouvelle
+  fiche (ou à l'arrivée), React affiche d'abord le contenu, puis remet la 
+  fenêtre en haut. */
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
 
+  /* Retrouver et stocker (dans idx) la position (l'index) du projet affiché dans le tableau
+  projects, en comparant chaque fiche au slug de l'URL. */
   const idx = projects.findIndex((project) => project.slug === slug);
-
-  // Slug inconnu → 404 (la route * capte aussi, mais la fiche reste
-  // robuste aux liens internes malformés).
+  
+  /* Lorsque le slug de l'URL ne correspond à aucun projet du JSON, findIndex rend -1 et
+  la page rend la page NotFound (404 maison) plutôt qu'une fiche vide. 
+  La route * capte aussi les URLs inconnues, mais cette garde rend la fiche robuste même
+  servie avec un slug défectueux (un lien interne malformé) : elle n'affiche jamais une
+  fiche cassée. */
   if (idx === -1) {
     return <NotFound />;
   }
 
-  const project = projects[idx];
+  // project = la fiche entière se trouvant à la position idx dans le tableau projects
+  const project = projects[idx];  
+  /* next = la fiche suivante dans l'ordre du JSON. Mais le modulo (%) fait boucler la navigation
+   afin que la dernière fiche ramène à la première, sans jamais déborder du tableau. */
   const next = projects[(idx + 1) % projects.length];
 
-  // Nom court : même loi que la carte et le fil d'Ariane (31/10) —
-  // le title suit le gabarit « Nom — sous-titre », split au tiret
-  // long ; sans tiret, split renvoie le title entier (fallback natif).
+  /* Nom court du projet. Dans le JSON, le title se lit « Nom — sous-titre ».
+  split découpe la chaîne au niveau du tiret long et [0] garde la première partie
+  (le nom seul).
+  Sans tiret dans le title, split rend la chaîne entière dans une seule part.
+  [0] garde alors le title entier. */
   const name = project.title.split(" — ")[0];
 
   return (
     <section className="page project-detail">
-      {/* Fil d'Ariane — repère de position : parent cliquable,
-          page courante non cliquable (tranché 24/10) */}
+      {/* Le fil d'Ariane montre d'où l'on vient : le parent Portfolio
+      est cliquable, la page courante ne l'est pas. */}
       <nav className="project-detail__crumbs" aria-label="Fil d'Ariane">
         <Link to="/portfolio" className="pill-link">
           Portfolio
@@ -80,10 +124,9 @@ function ProjectDetail() {
         <span className="project-detail__crumbs-current">{name}</span>
       </nav>
 
-      {/* Cadre navigateur + capture adaptative (chantier captures
-          10/11) : le rôle `preview` sert la vraie image si elle
-          existe pour ce projet, le placeholder sinon — pilote
-          ohmyfood d'abord, retrait progressif pour les 5 autres. */}
+      {/* Cadre navigateur et capture adaptative. Si une image avec le rôle preview
+      existe pour ce projet, on sert la vraie capture. Sinon, on sert le placeholder.
+      C'est la même règle de repli que pour le carrousel et la carte. */}
       <div className="project-detail__frame">
         <BrowserFrame url={`${project.slug}.diwey.dev`} size="lg">
           {hasCapture(project.slug, "preview") ? (
@@ -106,8 +149,8 @@ function ProjectDetail() {
       <h1 className="project-detail__title">{project.title}</h1>
 
       <div className="project-detail__grid">
-        {/* Bloc 1 : description + badges — les seuls badges de la
-            page (charte 21/10), donnée `stack` du JSON */}
+        {/* Bloc 1 de la grille : la description du projet puis ses badges.
+        Ces derniers viennent de la propriété stack du JSON. */}
         <div className="project-detail__intro">
           <p className="project-detail__desc">{project.desc}</p>
           <ul className="project-detail__badges">
@@ -117,15 +160,13 @@ function ProjectDetail() {
           </ul>
         </div>
 
-        {/* FICHE TECHNIQUE — aside ; en tablette/mobile, il vit
-            dans le flux entre le bloc 1 et Contexte (ordre du DOM) */}
+        {/* La fiche technique vit dans un aside, une région complémentaire du contenu.
+        Sur grand écran, la grille la place en seconde colonne. 
+        En tablette et mobile, elle revient dans le flux de la page, entre le Bloc 1 et
+        la section Contexte. C'est l'ordre du DOM qui décide. */}
         <aside className="project-detail__sheet">
-          {/* h2 (promotion 6/11) : la FICHE TECHNIQUE titre une vraie
-              région complémentaire — WAVE avait raison, ce n'est pas
-              un label décoratif. Le visuel est inchangé : les règles
-              .project-detail__sheet-label écrasent la base h2
-              (serif accent 32) — vérifier que famille/graisse/
-              couleur restent bien overridées dans le SCSS. */}
+          {/* Un vrai h2 qui titre une région complémentaire pour les lecteurs d'écran.
+          Le SCSS lui donne le visuel sobre d'un label via .project-detail__sheet-label. */}
           <h2 className="project-detail__sheet-label">Fiche technique</h2>
           <dl className="project-detail__sheet-list">
             <div className="project-detail__sheet-row">
@@ -143,6 +184,9 @@ function ProjectDetail() {
             <div className="project-detail__sheet-row">
               <dt className="project-detail__sheet-key">Approche</dt>
               <dd className="project-detail__sheet-value">
+                {/* Approche est la seule clé à valeur multiple. Chaque point de
+                project.approach devient un paragraphe .project-detail__approach-item.
+                Le tiret d'introduction ne vit pas ici : il est ajouté par le SCSS. */}
                 {project.approach.map((point, i) => (
                   <p key={i} className="project-detail__approach-item">
                     {point}
@@ -152,6 +196,11 @@ function ProjectDetail() {
             </div>
           </dl>
           <div className="project-detail__sheet-actions">
+            {/* Les boutons vivent ou meurent selon les données du projet.
+            "Voir la démo" n'apparaît que si project.demo existe : sans démo, rien.
+            "Code source" suit la même règle, mais son absence laisse une mention à la
+            place : "// projet de formation — sur demande" (son style vit dans la
+            classe .project-detail__sheet-norepo du SCSS). */}
             {project.demo ? (
               <CtaButton href={project.demo} target="_blank" rel="noreferrer" size="sm">
                 <span>Voir la démo</span>
@@ -191,19 +240,32 @@ function ProjectDetail() {
           </div>
         </aside>
 
-        {/* Sections — Contexte (paragraphe nu) puis les deux listes
-            numérotées ; inter-sections portées par le SCSS */}
+        {/* Le corps de la fiche. L'espacement entre ses sections est porté par le SCSS. */}
         <div className="project-detail__body">
+
+          {/* Section Contexte : un titre (h2) et un paragraphe simple. */}
           <section className="project-detail__section">
-            <h2 className="project-detail__section-title">Contexte</h2>
+            <div className="project-detail__section-head">
+              <h2>Contexte</h2>
+              <span className="project-detail__rule" aria-hidden="true"></span>
+            </div>
             <p className="project-detail__context">{project.context}</p>
           </section>
 
+          {/* Section Fonctionnalités : un titre (h2) et la liste des fonctionnalités
+          issues de la propriété features du JSON. */}
           <section className="project-detail__section">
-            <h2 className="project-detail__section-title">Fonctionnalités</h2>
+            <div className="project-detail__section-head">
+              <h2>Fonctionnalités</h2>
+              <span className="project-detail__rule" aria-hidden="true"></span>
+            </div>
             <ul className="project-detail__list">
               {project.features.map((feature, index) => (
                 <li key={index} className="project-detail__item">
+                  {/* Titre h3 court, appliqué au groupe "numérotation + /" 
+                  La numérotation est déterminée par la position de la fonctionnalité
+                  dans la liste (index + 1), transformée en numérotation à deux chiffres
+                  par padStart (1 devient 01). */}
                   <h3 className="project-detail__num">
                     {String(index + 1).padStart(2, "0")} /
                   </h3>
@@ -213,11 +275,20 @@ function ProjectDetail() {
             </ul>
           </section>
 
+          {/* Section Méthode : un titre (h2) et la liste des étapes issues de la
+          propriété method du JSON. */}
           <section className="project-detail__section">
-            <h2 className="project-detail__section-title">Méthode</h2>
+            <div className="project-detail__section-head">
+              <h2>Méthode</h2>
+              <span className="project-detail__rule" aria-hidden="true"></span>
+            </div>
             <ul className="project-detail__list">
               {project.method.map((step, index) => (
                 <li key={index} className="project-detail__item">
+                  {/* Titre h3 court, appliqué au groupe "numérotation + /" 
+                  La numérotation est déterminée par la position de l'étape dans la liste
+                  (index + 1), transformée en numérotation à deux chiffres par padStart
+                  (1 devient 01). */}
                   <h3 className="project-detail__num">
                     {String(index + 1).padStart(2, "0")} /
                   </h3>
@@ -228,7 +299,11 @@ function ProjectDetail() {
           </section>
         </div>
       </div>
-
+      
+      {/* Le pied de la page propose deux boutons de navigation. 
+      "Tous les projets" ramène à la grille.
+      "Projet suivant" mène à next, la fiche calculée plus haut par le modulo
+      (dernière fiche ramenée à la première). */}
       <div className="project-detail__footer">
         <CtaButton to="/portfolio" variant="secondary">
           <svg className="project-detail__footer-arrow project-detail__footer-arrow--left"
